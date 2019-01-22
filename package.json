@@ -4,7 +4,8 @@
   "description": "Touhou Card Game is a web-based online card game platform which uses characters from Touhou Project.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint --fix .",
+    "lint": "eslint .",
+    "lint-fix": "eslint --fix .",
     "test": "eslint . && nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -34,7 +35,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm test",
+      "pre-commit": "npm run lint",
       "pre-push": "npm test"
     }
   },
