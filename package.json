@@ -1,0 +1,42 @@
+{
+  "name": "touhou-card-game-nodejs",
+  "version": "1.0.0",
+  "description": "Touhou Card Game is a web-based online card game platform which uses characters from Touhou Project.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --fix **/*.js",
+    "test": "eslint **/*.js && mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DotLab/touhou-card-game-nodejs.git"
+  },
+  "keywords": [
+    "touhou",
+    "card",
+    "game",
+    "nodejs"
+  ],
+  "author": "Kailang Fu",
+  "license": "CC-BY-NC-SA-4.0",
+  "bugs": {
+    "url": "https://github.com/DotLab/touhou-card-game-nodejs/issues"
+  },
+  "homepage": "https://github.com/DotLab/touhou-card-game-nodejs#readme",
+  "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-google": "^0.11.0",
+    "husky": "^1.3.1",
+    "mocha": "^5.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "express": "^4.16.4"
+  }
+}
