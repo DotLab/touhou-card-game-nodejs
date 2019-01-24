@@ -2,12 +2,16 @@
   "name": "touhou-card-game-nodejs",
   "version": "1.0.0",
   "description": "Touhou Card Game is a web-based online card game platform which uses characters from Touhou Project.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "lint": "eslint .",
     "lint-fix": "eslint --fix .",
-    "test": "eslint . && nyc --reporter=html --reporter=text mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "test": "eslint . && nyc --all --reporter=html --reporter=text mocha",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "jsdoc": "jsdoc src -r -d docs",
+    "serve-coverage": "http-server coverage -c-1",
+    "serve-docs": "http-server docs -c-1",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -29,13 +33,15 @@
     "coveralls": "^3.0.2",
     "eslint": "^5.12.1",
     "eslint-config-google": "^0.11.0",
+    "http-server": "^0.11.1",
     "husky": "^1.3.1",
+    "jsdoc": "^3.5.5",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint",
+      "pre-commit": "npm run lint && npm run jsdoc",
       "pre-push": "npm test"
     }
   },
@@ -44,6 +50,11 @@
     "express": "^4.16.4"
   },
   "nyc": {
-    "include": ["src/**"]
+    "include": [
+      "src/**"
+    ],
+    "exclude": [
+      "src/index.js"
+    ]
   }
 }

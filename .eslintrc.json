@@ -6,6 +6,9 @@
     "es6": true,
     "mocha": true
   },
+  "parserOptions": {
+    "sourceType": "module"
+},
   "rules": {
     "linebreak-style": "off"
   }
