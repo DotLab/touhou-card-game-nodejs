@@ -19,6 +19,11 @@
         <button type="submit">Register</button>
       </form>
       <div id="message"></div>
+      <form id="room-form">
+        <input type="text" id="room-name" value="optional room name" >
+        <button type="submit">Create Room</button>
+      </form>
+      <div id="room-message"></div>
     </div>
 
     <script id="messageTmpl" type="text/x-jsrender">
@@ -45,6 +50,16 @@
         }, function(res) {
           if (res.err) return error(res.err);
           $('#message').html(messageTmpl.render({message: 'Registered!'}));
+        });
+      });
+
+      $("#room-form").on('submit', function(e) {
+        e.preventDefault();
+        socket.emit('cl_create_room', {
+          name: $('#room-name').val(),
+        }, function(res) {
+          if (res.err) return error(res.err);
+          $('#message').html(messageTmpl.render({message: 'Room created!'}));
         });
       });
       </script>
