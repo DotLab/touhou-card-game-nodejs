@@ -13,22 +13,40 @@
   </head>
   <body>
     <div>
-      <div id="login"></div>
+      <form id="login-form">
+        <input type="text" id="login-form-name">
+        <input type="password" id="login-form-password">
+        <button type="submit">Register</button>
+      </form>
+      <div id="message"></div>
     </div>
 
-    <script id="loginTmpl" type="text/x-jsrender">
-      Name: {{:name}}
+    <script id="messageTmpl" type="text/x-jsrender">
+      Message: {{:message}}
     </script>
 
     <script>
-      var loginTmpl = $.templates('#loginTmpl');
-      var loginConfig = {name: "Kai"};
-      $('#login').html(loginTmpl.render(loginConfig));
-
+      var messageTmpl = $.templates('#messageTmpl');
+      
+      var error = function(err) {
+        alert(JSON.stringify(err));
+      }
+      
       var socket = io();
       socket.on('handshake', function() {
         console.log('handshake');
       });
-    </script>
+      
+      $("#login-form").on('submit', function(e) {
+        e.preventDefault();
+        socket.emit('cl_register', {
+          name: $('#login-form-name').val(),
+          password: $('#login-form-password').val(),
+        }, function(res) {
+          if (res.err) return error(res.err);
+          $('#message').html(messageTmpl.render({message: 'Registered!'}));
+        });
+      });
+      </script>
   </body>
-</html>
+  </html>
