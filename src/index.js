@@ -51,7 +51,7 @@ io.on('connection', function(socket) {
     debug('cl_login', name, password);
 
     const doc = await User.findOne({name});
-    if (!doc) return done(error('Wrong username/password'));
+    if (!doc) return done(error('wrong username/password'));
 
     const hasher = crypto.createHash('sha512');
     hasher.update(password);
@@ -62,6 +62,7 @@ io.on('connection', function(socket) {
       user = doc;
       return done(success({name: user.name}));
     }
-    return done(error('Wrong username/password'));
+
+    return done(error('wrong username/password'));
   });
 });
