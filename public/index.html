@@ -6,10 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>Touhou Card Game</title>
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.1/jsrender.min.js" integrity="sha256-21dXJfiOXB1D/8kEXbDI0NB5qcUVUnkS3qgyOya/M6k=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div>
+      <div id="login"></div>
+    </div>
+
+    <script id="loginTmpl" type="text/x-jsrender">
+      Name: {{:name}}
+    </script>
+
+    <script>
+      var loginTmpl = $.templates('#loginTmpl');
+      var loginConfig = {name: "Kai"};
+      $('#login').html(loginTmpl.render(loginConfig));
+    </script>
   </body>
 </html>
