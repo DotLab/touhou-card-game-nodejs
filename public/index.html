@@ -13,10 +13,15 @@
   </head>
   <body>
     <div>
+      <form id="register-form">
+        <input type="text" id="register-form-name">
+        <input type="password" id="register-form-password">
+        <button type="submit">Register</button>
+      </form>
       <form id="login-form">
         <input type="text" id="login-form-name">
         <input type="password" id="login-form-password">
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
       </form>
       <div id="message"></div>
       <form id="room-form">
@@ -32,24 +37,35 @@
 
     <script>
       var messageTmpl = $.templates('#messageTmpl');
-      
+
       var error = function(err) {
         alert(JSON.stringify(err));
       }
-      
+
       var socket = io();
       socket.on('handshake', function() {
         console.log('handshake');
       });
-      
-      $("#login-form").on('submit', function(e) {
+
+      $("#register-form").on('submit', function(e) {
         e.preventDefault();
         socket.emit('cl_register', {
+          name: $('#register-form-name').val(),
+          password: $('#register-form-password').val(),
+        }, function(res) {
+          if (res.err) return error(res.err);
+          $('#message').html(messageTmpl.render({message: 'Registered!'}));
+        });
+      });
+
+      $("#login-form").on('submit', function(e) {
+        e.preventDefault();
+        socket.emit('cl_login', {
           name: $('#login-form-name').val(),
           password: $('#login-form-password').val(),
         }, function(res) {
           if (res.err) return error(res.err);
-          $('#message').html(messageTmpl.render({message: 'Registered!'}));
+          $('#message').html(messageTmpl.render({message: `Welcome ${res.data.name}!`}));
         });
       });
 

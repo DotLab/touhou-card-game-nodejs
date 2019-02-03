@@ -28,17 +28,17 @@ const crypto = require('crypto');
 /**
  *  Lobby
  */
-// const rooms = {};
+const rooms = {};
 
-// function generateId(length =256) {
-//   return crypto.randomBytes(length).toString('base64');
-// }
+function generateId(length =256) {
+  return crypto.randomBytes(length).toString('base64');
+}
 
-// function createRoom(userId, name) {
-//   const id = generateId();
-//   rooms[id] = {ownerId: userId, name, members: {}};
-//   return id;
-// }
+function createRoom(userId, name) {
+  const id = generateId();
+  rooms[id] = {ownerId: userId, name, members: {}};
+  return id;
+}
 
 // function joinRoom(roomId, userId) {
 //   rooms[roomId].members[userId] = true;
@@ -59,6 +59,7 @@ const crypto = require('crypto');
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
   debug('a user connected');
+  let user = null;
 
   socket.on('cl_register', async ({name, password}, done) => {
     debug('cl_register', name, password);
@@ -77,10 +78,29 @@ io.on('connection', function(socket) {
     done(success());
   });
 
+  socket.on('cl_login', async ({name, password}, done) => {
+    debug('cl_login', name, password);
+
+    const doc = await User.findOne({name});
+    if (!doc) return done(error('wrong username/password'));
+
+    const hasher = crypto.createHash('sha512');
+    hasher.update(password);
+    hasher.update(doc.salt);
+    const hash = hasher.digest('base64');
+
+    if (hash === doc.hash) {
+      user = doc;
+      return done(success({name: user.name}));
+    }
+
+    return done(error('wrong username/password'));
+  });
+
   socket.on('cl_create_room', async ({name}, done) => {
     debug('cl_create_room', name);
-
-    // createRoom(userId, name);
+    if (!user) return done(error('forbidden'));
+    createRoom(user.id, name);
 
     done(success());
   });
