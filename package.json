@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint-fix": "eslint --fix .",
-    "test": "eslint . && nyc --all --reporter=html --reporter=text mocha",
+    "test": "eslint . && nyc --all --reporter=html --reporter=text mocha --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "jsdoc": "jsdoc src -r -d docs",
     "serve-coverage": "http-server coverage -c-1",
@@ -46,8 +46,11 @@
     }
   },
   "dependencies": {
+    "chai": "^4.2.0",
     "debug": "^4.1.1",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "mongoose": "^5.4.9",
+    "socket.io": "^2.2.0"
   },
   "nyc": {
     "include": [
