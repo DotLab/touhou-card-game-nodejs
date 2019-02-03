@@ -3,13 +3,15 @@
   "env": {
     "browser": true,
     "node": true,
-    "es6": true,
     "mocha": true
   },
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaVersion": 9
 },
   "rules": {
-    "linebreak-style": "off"
+    "linebreak-style": "off",
+    "max-len": "off",
+    "require-jsdoc": "off"
   }
 }
