@@ -10,7 +10,7 @@ describe('models', () => {
       await models.User.create({name: 'abc', salt: 'qwe', hash: 'ret'});
       const doc = await models.User.findOne({name: 'abc'});
       assert.isNotNull(doc);
-      // assert.strictEqual(doc.name, 'abc');
+      assert.strictEqual(doc.name, 'abc');
       assert.strictEqual(doc.salt, 'qwe');
       assert.strictEqual(doc.hash, 'ret');
     });
