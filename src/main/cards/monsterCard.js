@@ -1,4 +1,4 @@
-import {Card} from './Card.js';
+const Card = require('./Cards/Card.js');
 
 class MonsterCard extends Card {
   /**
