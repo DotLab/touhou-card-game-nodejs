@@ -51,7 +51,6 @@
     "debug": "^4.1.1",
     "express": "^4.16.4",
     "mongoose": "^5.4.9",
-    "nodemon": "^1.18.9",
     "socket.io": "^2.2.0"
   },
   "nyc": {
