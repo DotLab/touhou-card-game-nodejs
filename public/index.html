@@ -27,16 +27,36 @@
       <form id="room-form">
         <input type="text" id="room-name" value="optional room name" >
         <button type="submit">Create Room</button>
+        <div id="room-message"></div>
       </form>
-      <div id="room-message"></div>
+      <form id="room-list-form">
+        <button type="submit">Refresh Rooms</button>
+        <div id="room-list"></div>
+      </form>
+
     </div>
 
     <script id="messageTmpl" type="text/x-jsrender">
       Message: {{:message}}
     </script>
 
+    <script id="roomListTmpl" type="text/html">
+      Room List:
+      <ul>
+        {{for roomList}}
+        <li>
+          {{:name}}
+          <i>Host: {{:ownerName}}
+          Members:
+          </i>
+        </li>
+        {{/for}}
+      </ul>
+    </script>
+
     <script>
       var messageTmpl = $.templates('#messageTmpl');
+      var roomListTmpl = $.templates('#roomListTmpl');
 
       var error = function(err) {
         alert(JSON.stringify(err));
@@ -45,6 +65,11 @@
       var socket = io();
       socket.on('handshake', function() {
         console.log('handshake');
+      });
+
+      socket.on('sv_refresh_rooms', function(rooms) {
+        console.log('roomList');
+        $('#room-list').html(roomListTmpl.render({roomList: rooms}));
       });
 
       $("#register-form").on('submit', function(e) {
@@ -75,7 +100,16 @@
           name: $('#room-name').val(),
         }, function(res) {
           if (res.err) return error(res.err);
-          $('#message').html(messageTmpl.render({message: 'Room created!'}));
+          $('#room-message').html(messageTmpl.render({message: 'Room created!'}));
+        });
+      });
+
+      $("#room-list-form").on('submit', function(e) {
+        e.preventDefault();
+        socket.emit('cl_refresh_room', res => {
+          if (res.err) return error(res.err);
+          $('#room-list').html(roomListTmpl.render({roomList: res.data}));
+          console.log('refresh');
         });
       });
       </script>

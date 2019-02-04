@@ -34,9 +34,9 @@ function generateId(length =256) {
   return crypto.randomBytes(length).toString('base64');
 }
 
-function createRoom(userId, name) {
+function createRoom(userId, userName, name) {
   const id = generateId();
-  rooms[id] = {ownerId: userId, name, members: {}};
+  rooms[id] = {ownerId: userId, ownerName: userName, name, members: {}};
   return id;
 }
 
@@ -100,8 +100,22 @@ io.on('connection', function(socket) {
   socket.on('cl_create_room', async ({name}, done) => {
     debug('cl_create_room', name);
     if (!user) return done(error('forbidden'));
-    createRoom(user.id, name);
+    createRoom(user.id, user.name, name);
+
+    socket.broadcast.emit('sv_refresh_rooms', Object.keys(rooms).map((key) => ({
+      ...rooms[key],
+      id: key,
+    })));
 
     done(success());
+  });
+
+  socket.on('cl_refresh_room', async (done) => {
+    debug('cl_refresh_room');
+
+    done(success(Object.keys(rooms).map((key) => ({
+      ...rooms[key],
+      id: key,
+    }))));
   });
 });
