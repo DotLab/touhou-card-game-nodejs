@@ -41,8 +41,9 @@ io.on('connection', function(socket) {
     hasher.update(password);
     hasher.update(salt);
     const hash = hasher.digest('base64');
+    const bio = 'CS428 is my favorite class of all time!';
 
-    doc = await User.create({name, salt, hash});
+    doc = await User.create({name, salt, hash, bio});
 
     done(success());
   });
@@ -60,9 +61,24 @@ io.on('connection', function(socket) {
 
     if (hash === doc.hash) {
       user = doc;
-      return done(success({name: user.name}));
+      return done(success({name: user.name, bio: user.bio}));
     }
 
     return done(error('wrong username/password'));
+  });
+
+  socket.on('cl_update', async ({name, newName, newBio}, done) => {
+    debug('cl_update', name, newName, newBio);
+
+    const doc = await User.findOne({name});
+    if (!doc) return done(error('user does not exist'));
+    doc.name = newName ? newName : doc.name;
+    doc.bio = newBio ? newBio : doc.bio;
+    try {
+      await doc.save();
+      return done(success({name: doc.name, bio: doc.bio}));
+    } catch (e) {
+      return done(error('update failed'));
+    }
   });
 });

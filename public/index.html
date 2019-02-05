@@ -13,6 +13,24 @@
   </head>
   <body>
     <div>
+      <div id="account"></div>
+      <div id="message"></div>
+    </div>
+
+    <script id="accountTmpl" type="text/x-jsrender">
+      {{if isLoggedIn}}
+       <ul>
+        <li>Name: {{:data.name}}</li>
+        <li>Bio: {{:data.bio}}</li>
+       </ul>
+       <form id="update-form">
+        <label for='update-form-name'>New name:</label>
+        <input type="text" id="update-form-name">
+        <label for='update-form-bio'>New bio:</label>
+        <input type="text" id="update-form-bio">
+        <button type="submit">Update</button>
+       </form>
+      {{else}}
       <form id="register-form">
         <input type="text" id="register-form-name">
         <input type="password" id="register-form-password">
@@ -23,16 +41,17 @@
         <input type="password" id="login-form-password">
         <button type="submit">Login</button>
       </form>
-      <div id="message"></div>
-    </div>
+      {{/if}}
+    </script>
 
     <script id="messageTmpl" type="text/x-jsrender">
       Message: {{:message}}
     </script>
 
     <script>
+      var accountTmpl = $.templates('#accountTmpl');
       var messageTmpl = $.templates('#messageTmpl');
-
+      $('#account').html(accountTmpl.render({isLoggedIn: false}));
       var error = function(err) {
         alert(JSON.stringify(err));
       }
@@ -60,9 +79,35 @@
           password: $('#login-form-password').val(),
         }, function(res) {
           if (res.err) return error(res.err);
-          $('#message').html(messageTmpl.render({message: `Welcome ${res.data.name}!`}));
+          $('#account').html(accountTmpl.render({
+            data: res.data,
+            isLoggedIn: true
+          }));
+          $('#message').html(messageTmpl.render({
+            message: `Welcome ${res.data.name}!`,
+          }));
+          $("#update-form").on('submit', function(e) {
+            e.preventDefault();
+            socket.emit('cl_update', {
+              name: res.data.name,
+              newName: $('#update-form-name').val(),
+              newBio: $('#update-form-bio').val(),
+            }, renderAM('Account updated successfully!'));
+          });
         });
       });
+
+      renderAM = function(message) {
+        return function(res){
+          if (res.err) return error(res.err);
+          $('#account').html(accountTmpl.render({
+            data: res.data,
+            isLoggedIn: true
+          }));
+          $('#message').html(messageTmpl.render({message}));
+        };
+      };
+
       </script>
   </body>
   </html>
