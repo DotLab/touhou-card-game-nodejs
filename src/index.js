@@ -25,6 +25,37 @@ function error(err) {
 
 const crypto = require('crypto');
 
+/**
+ *  Lobby
+ */
+const rooms = {};
+
+function generateId(length =256) {
+  return crypto.randomBytes(length).toString('base64');
+}
+
+function createRoom(userId, userName, name) {
+  const id = generateId();
+  rooms[id] = {ownerId: userId, ownerName: userName, name, members: {}};
+  return id;
+}
+
+// function joinRoom(roomId, userId) {
+//   rooms[roomId].members[userId] = true;
+// }
+
+// function leaveRoom(roomId, userId) {
+//   if (userId == rooms[roomId].ownerId) { // owner leaves
+//     if (rooms[roomId].members.isEmptyObject()) { // delete when no  members
+//       delete rooms[roomId];
+//     } else { // promote member
+//       rooms[roomId].ownerId = Object.keys(rooms[roomId].members)[0];
+//     }
+//   } else { // member leaves
+//     delete rooms[roomId].members[userId];
+//   }
+// }
+
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
   debug('a user connected');
@@ -64,5 +95,27 @@ io.on('connection', function(socket) {
     }
 
     return done(error('wrong username/password'));
+  });
+
+  socket.on('cl_create_room', async ({name}, done) => {
+    debug('cl_create_room', name);
+    if (!user) return done(error('forbidden'));
+    createRoom(user.id, user.name, name);
+
+    socket.broadcast.emit('sv_refresh_rooms', Object.keys(rooms).map((key) => ({
+      ...rooms[key],
+      id: key,
+    })));
+
+    done(success());
+  });
+
+  socket.on('cl_refresh_room', async (done) => {
+    debug('cl_refresh_room');
+
+    done(success(Object.keys(rooms).map((key) => ({
+      ...rooms[key],
+      id: key,
+    }))));
   });
 });

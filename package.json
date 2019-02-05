@@ -11,7 +11,8 @@
     "jsdoc": "jsdoc src -r -d docs",
     "serve-coverage": "http-server coverage -c-1",
     "serve-docs": "http-server docs -c-1",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "debug": "nodemon src/index.js"
   },
   "repository": {
     "type": "git",
