@@ -92,22 +92,17 @@
               name: res.data.name,
               newName: $('#update-form-name').val(),
               newBio: $('#update-form-bio').val(),
-            }, renderAM('Account updated successfully!'));
+            }, function(res){
+              if (res.err) return error(res.err);
+              $('#account').html(accountTmpl.render({
+                data: res.data,
+                isLoggedIn: true
+              }));
+              $('#message').html(messageTmpl.render({message: 'Account updated successfully!'}));
+            });
           });
         });
       });
-
-      renderAM = function(message) {
-        return function(res){
-          if (res.err) return error(res.err);
-          $('#account').html(accountTmpl.render({
-            data: res.data,
-            isLoggedIn: true
-          }));
-          $('#message').html(messageTmpl.render({message}));
-        };
-      };
-
       </script>
   </body>
   </html>

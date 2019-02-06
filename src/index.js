@@ -67,15 +67,15 @@ io.on('connection', function(socket) {
     return done(error('wrong username/password'));
   });
 
-  socket.on('cl_update', async ({name, newName, newBio}, done) => {
-    debug('cl_update', name, newName, newBio);
+  socket.on('cl_update', async ({newName, newBio}, done) => {
+    debug('cl_update', newName, newBio);
 
-    const doc = await User.findOne({name});
+    const doc = user;
     if (!doc) return done(error('user does not exist'));
     doc.name = newName ? newName : doc.name;
     doc.bio = newBio ? newBio : doc.bio;
     try {
-      await doc.save();
+      await User.findByIdAndUpdate(doc.id, doc);
       return done(success({name: doc.name, bio: doc.bio}));
     } catch (e) {
       return done(error('update failed'));
