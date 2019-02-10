@@ -116,24 +116,12 @@ class Player {
     return {
       name: this.username,
       life: this.hp,
-      hand: [
-        {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-      ],
+      hand: this.hand.map((card)=>card.takeSnapShot()),
       field: {
-        environment: {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-        graveyard: {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-        monster: [
-          {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-          {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-          {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-          {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-        ],
-        magic: [
-          {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-          {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-          {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-          {imgUrl: 'http://duellinks.gamea.co/file/imgbank/umi92hxs/23ld5p7q/016ad202fddfa966750c91b708aca31d2e1784d0_600.jpg'},
-        ],
+        environment: this.field.environmentSlot.takeSnapShot(),
+        graveyard: this.field.graveyard.map((card)=>card.takeSnapShot()),
+        monster: this.field.monsterSlots.map((card)=>card.takeSnapShot()),
+        magic: this.field.spellSlots.map((card)=>card.takeSnapShot()),
       },
     };
   }

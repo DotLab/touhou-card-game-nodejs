@@ -10,6 +10,12 @@ class Card {
     this.name = name;
     this.path = path;
   }
+
+  takeSnapShot() {
+    return {
+      imgUrl: this.path,
+    };
+  }
 }
 
 module.exports = Card;

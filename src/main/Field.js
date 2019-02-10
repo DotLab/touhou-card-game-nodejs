@@ -10,9 +10,9 @@ class Field {
        */
   constructor() {
     this.environmentSlot = null;
-    this.monsterSlots = new MonsterCard(4);
-    this.spellSlots = new SpellCard(4);
-    this.Graveyard = [];
+    this.monsterSlots = [new MonsterCard(4)];
+    this.spellSlots = [new SpellCard(4)];
+    this.graveyard = [];
   }
   /**
     * initialize the field;
