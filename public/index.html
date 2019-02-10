@@ -17,19 +17,19 @@
       <div id="message"></div>
     </div>
 
-    <script id="accountTmpl" type="text/x-jsrender">
+    <script id="accountTmpl" type="text/html">
       {{if isLoggedIn}}
-       <ul>
+      <ul>
         <li>Name: {{:name}}</li>
         <li>Bio: {{:bio}}</li>
-       </ul>
-       <form id="update-form">
+      </ul>
+      <form id="update-form">
         <label for='update-form-name'>New name:</label>
         <input type="text" id="update-form-name">
         <label for='update-form-bio'>New bio:</label>
         <input type="text" id="update-form-bio">
         <button type="submit">Update</button>
-       </form>
+      </form>
       {{else}}
       <form id="register-form">
         <input type="text" id="register-form-name">
