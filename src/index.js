@@ -30,12 +30,12 @@ const crypto = require('crypto');
  */
 const rooms = {};
 
-function generateId(length =256) {
+function generateId(length = 256) {
   return crypto.randomBytes(length).toString('base64');
 }
 
 function createRoom(userId, userName, name) {
-  const id = generateId();
+  const id = generateId(64);
   rooms[id] = {ownerId: userId, ownerName: userName, name, members: {}};
   return id;
 }
@@ -56,6 +56,13 @@ function joinRoom(roomId, userId, userName) {
 //     delete rooms[roomId].members[userId];
 //   }
 // }
+
+function serializeRoomList() {
+  return Object.keys(rooms).map((key) => ({
+    ...rooms[key],
+    id: key,
+  }));
+}
 
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
@@ -118,10 +125,7 @@ io.on('connection', function(socket) {
     if (!user) return done(error('forbidden'));
     createRoom(user.id, user.name, name);
 
-    socket.broadcast.emit('sv_refresh_rooms', Object.keys(rooms).map((key) => ({
-      ...rooms[key],
-      id: key,
-    })));
+    socket.broadcast.emit('sv_refresh_rooms', serializeRoomList());
 
     done(success());
   });
@@ -129,10 +133,7 @@ io.on('connection', function(socket) {
   socket.on('cl_refresh_room', async (done) => {
     debug('cl_refresh_room');
 
-    done(success(Object.keys(rooms).map((key) => ({
-      ...rooms[key],
-      id: key,
-    }))));
+    done(success(serializeRoomList()));
   });
 
   socket.on('cl_join_room', async ({roomId}, done) => {
@@ -140,10 +141,7 @@ io.on('connection', function(socket) {
     if (!user) return done(error('forbidden'));
     joinRoom(roomId, user.id, user.name);
 
-    socket.broadcast.emit('sv_refresh_rooms', Object.keys(rooms).map((key) => ({
-      ...rooms[key],
-      id: key,
-    })));
+    socket.broadcast.emit('sv_refresh_rooms', serializeRoomList());
 
     done(success());
   });

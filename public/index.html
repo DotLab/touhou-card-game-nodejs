@@ -59,20 +59,20 @@
         <button type="submit">Refresh Rooms</button>
         <div id="room-list"></div>
       </form>
-      <form id="room-join-form">
+      <div id="room-join-form">
         {{if roomList}}
         Room List:
         <ul>
           {{for roomList}}
           <li>
-            {{:name}} <button type="submit" id="join-button" value="{{:id}}">Join Room</button>
+            {{:name}} <button class="room-join-form-button" value="{{:id}}">Join Room</button>
             <br/>
             Host: {{:ownerName}} Members: {{props members}} {{>prop.memberName}}, {{/props}}
           </li>
           {{/for}}
         </ul>
         {{/if}}
-    </form>
+      </div>
     </script>
 
     <script>
@@ -91,7 +91,7 @@
       });
       
       socket.on('sv_refresh_rooms', function(rooms) {
-        console.log('roomList');
+        console.log('sv_refresh_rooms', rooms);
         $('#room-list').html(roomListTmpl.render({roomList: rooms}));
       });
       
@@ -172,15 +172,16 @@
           });
         });
 
-        $("#room-join-form").on('submit', function(e) {
+        $('.room-join-form-button').on('click', function(e) {
           e.preventDefault();
+          console.log('cl_join_room', $(this).attr('value'));
+
           socket.emit('cl_join_room', {
-            roomId: $('#join-button').val(),
+            roomId: $(this).attr('value'),
           }, function(res) {
             if (res.err) return error(res.err);
-            console.log("You joined ", $('#join-button').val());
           });
-        });
+        })
       }
       </script>
   </body>
