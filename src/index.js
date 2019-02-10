@@ -139,6 +139,7 @@ io.on('connection', function(socket) {
   socket.on('cl_join_room', async ({roomId}, done) => {
     debug('cl_join_room', roomId);
     if (!user) return done(error('forbidden'));
+    // if (rooms[roomId].ownerId == user.id) return done(error('forbidden'));
     joinRoom(roomId, user.id, user.name);
 
     socket.broadcast.emit('sv_refresh_rooms', serializeRoomList());

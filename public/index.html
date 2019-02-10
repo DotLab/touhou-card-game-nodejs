@@ -60,17 +60,27 @@
         <div id="room-list"></div>
       </form>
       <div id="room-join-form">
-        {{if roomList}}
-        Room List:
+        {{if isInRoom}} Hello
         <ul>
           {{for roomList}}
           <li>
-            {{:name}} <button class="room-join-form-button" value="{{:id}}">Join Room</button>
-            <br/>
             Host: {{:ownerName}} Members: {{props members}} {{>prop.memberName}}, {{/props}}
           </li>
           {{/for}}
         </ul>
+        {{else}}
+          {{if roomList}}
+          Room List:
+          <ul>
+            {{for roomList}}
+            <li>
+              {{:name}} <button class="room-join-form-button" value="{{:id}}">Join Room</button>
+              <br/>
+              Host: {{:ownerName}} Members: {{props members}} {{>prop.memberName}}, {{/props}}
+            </li>
+            {{/for}}
+          </ul>
+          {{/if}}
         {{/if}}
       </div>
     </script>
@@ -96,6 +106,7 @@
       });
       
       renderAccount({isLoggedIn: false});
+      // renderRoomList({isInRoom: false});
       
       function renderMessage(props) {
         $('#message').html(messageTmpl.render(props));
@@ -161,6 +172,7 @@
           }, function(res) {
             if (res.err) return error(res.err);
             renderMessage({message: 'Room created!'});
+            renderRoomList({isInRoom: true});
           });
         });
 
@@ -180,6 +192,7 @@
             roomId: $(this).attr('value'),
           }, function(res) {
             if (res.err) return error(res.err);
+            renderRoomList({isInRoom: true});
           });
         })
       }
