@@ -13,21 +13,69 @@
   </head>
   <body>
     <div>
+      <div id="account"></div>
+      <div id="message"></div>
+      <form id="room-form">
+        <input type="text" id="room-name" value="optional room name" >
+        <button type="submit">Create Room</button>
+        <div id="room-message"></div>
+      </form>
+      <form id="room-list-form">
+        <button type="submit">Refresh Rooms</button>
+        <div id="room-list"></div>
+      </form>
+    </div>
+
+    <script id="accountTmpl" type="text/html">
+      {{if isLoggedIn}}
+      <ul>
+        <li>Name: {{:name}}</li>
+        <li>Bio: {{:bio}}</li>
+      </ul>
+      <form id="update-form">
+        <label for='update-form-name'>New name:</label>
+        <input type="text" id="update-form-name">
+        <label for='update-form-bio'>New bio:</label>
+        <input type="text" id="update-form-bio">
+        <button type="submit">Update</button>
+      </form>
+      {{else}}
+      <form id="register-form">
+        <input type="text" id="register-form-name">
+        <input type="password" id="register-form-password">
+        <button type="submit">Register</button>
+      </form>
       <form id="login-form">
         <input type="text" id="login-form-name">
         <input type="password" id="login-form-password">
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
       </form>
-      <div id="message"></div>
-    </div>
+      {{/if}}
+    </script>
 
     <script id="messageTmpl" type="text/x-jsrender">
       Message: {{:message}}
     </script>
 
+    <script id="roomListTmpl" type="text/html">
+      Room List:
+      <ul>
+        {{for roomList}}
+        <li>
+          {{:name}}
+          <i>Host: {{:ownerName}}
+          Members:
+          </i>
+        </li>
+        {{/for}}
+      </ul>
+    </script>
+
     <script>
+      var accountTmpl = $.templates('#accountTmpl');
       var messageTmpl = $.templates('#messageTmpl');
-      
+      var roomListTmpl = $.templates('#roomListTmpl');
+
       var error = function(err) {
         alert(JSON.stringify(err));
       }
@@ -37,14 +85,80 @@
         console.log('handshake');
       });
       
-      $("#login-form").on('submit', function(e) {
+      renderAccount({isLoggedIn: false});
+      
+      function renderMessage(props) {
+        $('#message').html(messageTmpl.render(props));
+      }
+
+      function renderAccount(props) {
+        $('#account').html(accountTmpl.render(props));
+        
+        $("#register-form").on('submit', function(e) {
+          e.preventDefault();
+          socket.emit('cl_register', {
+            name: $('#register-form-name').val(),
+            password: $('#register-form-password').val(),
+          }, function(res) {
+            if (res.err) return error(res.err);
+            renderMessage({message: 'Registered!'});
+          });
+        });
+
+        $("#login-form").on('submit', function(e) {
+          e.preventDefault();
+          socket.emit('cl_login', {
+            name: $('#login-form-name').val(),
+            password: $('#login-form-password').val(),
+          }, function(res) {
+            if (res.err) return error(res.err);
+            renderAccount({
+              name: res.data.name,
+              bio: res.data.bio,
+              isLoggedIn: true
+            });
+            renderMessage({message: `Welcome ${res.data.name}!`});
+          });
+        });
+
+        $("#update-form").on('submit', function(e) {
+          e.preventDefault();
+          socket.emit('cl_update', {
+            newName: $('#update-form-name').val(),
+            newBio: $('#update-form-bio').val(),
+          }, function(res){
+            if (res.err) return error(res.err);
+            renderAccount({
+              name: res.data.name,
+              bio: res.data.bio,
+              isLoggedIn: true
+            });
+            renderMessage({message: 'Account updated successfully!'});
+          });
+        });
+      }
+
+      socket.on('sv_refresh_rooms', function(rooms) {
+        console.log('roomList');
+        $('#room-list').html(roomListTmpl.render({roomList: rooms}));
+      });
+
+      $("#room-form").on('submit', function(e) {
         e.preventDefault();
-        socket.emit('cl_register', {
-          name: $('#login-form-name').val(),
-          password: $('#login-form-password').val(),
+        socket.emit('cl_create_room', {
+          name: $('#room-name').val(),
         }, function(res) {
           if (res.err) return error(res.err);
-          $('#message').html(messageTmpl.render({message: 'Registered!'}));
+          $('#room-message').html(messageTmpl.render({message: 'Room created!'}));
+        });
+      });
+
+      $("#room-list-form").on('submit', function(e) {
+        e.preventDefault();
+        socket.emit('cl_refresh_room', res => {
+          if (res.err) return error(res.err);
+          $('#room-list').html(roomListTmpl.render({roomList: res.data}));
+          console.log('refresh');
         });
       });
       </script>
