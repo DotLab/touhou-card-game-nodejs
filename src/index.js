@@ -72,8 +72,9 @@ io.on('connection', function(socket) {
     hasher.update(password);
     hasher.update(salt);
     const hash = hasher.digest('base64');
+    const bio = 'CS428 is my favorite class of all time!';
 
-    doc = await User.create({name, salt, hash});
+    doc = await User.create({name, salt, hash, bio});
 
     done(success());
   });
@@ -91,10 +92,24 @@ io.on('connection', function(socket) {
 
     if (hash === doc.hash) {
       user = doc;
-      return done(success({name: user.name}));
+      return done(success({name: user.name, bio: user.bio}));
     }
 
     return done(error('wrong username/password'));
+  });
+
+  socket.on('cl_update', async ({newName, newBio}, done) => {
+    debug('cl_update', newName, newBio);
+
+    if (!user) return done(error('forbidden'));
+    user.name = newName ? newName : user.name;
+    user.bio = newBio ? newBio : user.bio;
+    try {
+      await User.findByIdAndUpdate(user.id, user);
+      return done(success({name: user.name, bio: user.bio}));
+    } catch (e) {
+      return done(error('update failed'));
+    }
   });
 
   socket.on('cl_create_room', async ({name}, done) => {
