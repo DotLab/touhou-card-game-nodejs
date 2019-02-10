@@ -59,19 +59,20 @@
         <button type="submit">Refresh Rooms</button>
         <div id="room-list"></div>
       </form>
-      {{if roomList}}
-      Room List:
-      <ul>
-        {{for roomList}}
-        <li>
-          {{:name}}
-          <i>Host: {{:ownerName}}
-          Members:
-          </i>
-        </li>
-        {{/for}}
-      </ul>
-      {{/if}}
+      <form id="room-join-form">
+        {{if roomList}}
+        Room List:
+        <ul>
+          {{for roomList}}
+          <li>
+            {{:name}} <button type="submit" id="join-button" value="{{:id}}">Join Room</button>
+            <br/>
+            Host: {{:ownerName}} Members: {{props members}} {{>prop.memberName}}, {{/props}}
+          </li>
+          {{/for}}
+        </ul>
+        {{/if}}
+    </form>
     </script>
 
     <script>
@@ -168,6 +169,16 @@
           socket.emit('cl_refresh_room', res => {
             if (res.err) return error(res.err);
             renderRoomList({roomList: res.data});
+          });
+        });
+
+        $("#room-join-form").on('submit', function(e) {
+          e.preventDefault();
+          socket.emit('cl_join_room', {
+            roomId: $('#join-button').val(),
+          }, function(res) {
+            if (res.err) return error(res.err);
+            console.log("You joined ", $('#join-button').val());
           });
         });
       }
