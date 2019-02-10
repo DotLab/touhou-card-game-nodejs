@@ -40,9 +40,10 @@ function createRoom(userId, userName, name) {
   return id;
 }
 
-// function joinRoom(roomId, userId) {
-//   rooms[roomId].members[userId] = true;
-// }
+function joinRoom(roomId, userId, userName) {
+  rooms[roomId].members[userId] = {memberId: userId, memberName: userName};
+  debug('    joinRoom', rooms[roomId].members[userId].memberName);
+}
 
 // function leaveRoom(roomId, userId) {
 //   if (userId == rooms[roomId].ownerId) { // owner leaves
@@ -117,5 +118,18 @@ io.on('connection', function(socket) {
       ...rooms[key],
       id: key,
     }))));
+  });
+
+  socket.on('cl_join_room', async ({roomId}, done) => {
+    debug('cl_join_room', roomId);
+    if (!user) return done(error('forbidden'));
+    joinRoom(roomId, user.id, user.name);
+
+    socket.broadcast.emit('sv_refresh_rooms', Object.keys(rooms).map((key) => ({
+      ...rooms[key],
+      id: key,
+    })));
+
+    done(success());
   });
 });
