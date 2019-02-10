@@ -6,12 +6,12 @@ class Game {
      * @constructor
      * @param {Player[]} players players of a game
      * @param {Number} round 0-index round
-     * @param {Number} currentPlayer index of the current player
+     * @param {Number} currentPlayerIndex index of the current player
      */
   constructor(players) {
     this.players = players;
     this.round = 0;
-    this.currentPlayer = 0;
+    this.currentPlayerIndex = 0;
   }
 
   moveToNextRound() {
@@ -24,9 +24,9 @@ class Game {
     return boolean success of action
    */
   act(obj) {
-    /* name: draw, attack, place
+    /* name: draw, attack, place, endPhase
     * param(draw): empty
-    * param(place): slot, indexOfHands
+    * param(place): slot, indexOfHands, tributeSlot1, tributeSlot2, reveal, mode
     * param(attack): slot(own), slot(enemy), enemyIndex
     */
     const input = {
@@ -34,21 +34,29 @@ class Game {
       param: obj.param,
     };
 
-    const success = this.players[this.currentPlayer].act(input);
-
-    return success;
+    const res = this.players[this.currentPlayerIndex].act(input);
+    this.phaseComplete();
+    return res;
   }
 
   /*
     void
    */
-  phaseOneComplete() {
-    if (this.players[this.currentPlayer].isDone()) {
-      this.currentPlayer++;
+  phaseComplete() {
+    if (this.players[this.currentPlayerIndex].isDone()) {
+      this.currentPlayerIndex++;
     }
-    if (this.currentPlayer > this.players.length) {
-      this.currentPlayer = 0;
+    if (this.currentPlayerIndex > this.players.length) {
+      this.currentPlayerIndex = 0;
     }
+  }
+
+  /* return the game
+   */
+  takeSnapShot() {
+    const res = this.players[this.currentPlayerIndex].takeSnapShot();
+    res.opponent = this.players.map((player) => player.takeSnapShot());
+    return res;
   }
 }
 

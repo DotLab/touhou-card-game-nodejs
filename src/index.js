@@ -60,6 +60,7 @@ const io = require('socket.io')(http);
 io.on('connection', function(socket) {
   debug('a user connected');
   let user = null;
+  const room = null;
 
   socket.on('cl_register', async ({name, password}, done) => {
     debug('cl_register', name, password);
@@ -132,5 +133,15 @@ io.on('connection', function(socket) {
       ...rooms[key],
       id: key,
     }))));
+  });
+
+  socket.on('cl_game_action', async (obj, done) => {
+    debug('cl_draw_card');
+    const res = room.game.act(obj);
+    if (res) {
+      done(success(room.game.takeSnapshot()));
+    } else {
+      done(error(res));
+    }
   });
 });
