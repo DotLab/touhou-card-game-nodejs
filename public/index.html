@@ -20,8 +20,8 @@
     <script id="accountTmpl" type="text/x-jsrender">
       {{if isLoggedIn}}
        <ul>
-        <li>Name: {{:data.name}}</li>
-        <li>Bio: {{:data.bio}}</li>
+        <li>Name: {{:name}}</li>
+        <li>Bio: {{:bio}}</li>
        </ul>
        <form id="update-form">
         <label for='update-form-name'>New name:</label>
@@ -80,7 +80,8 @@
         }, function(res) {
           if (res.err) return error(res.err);
           $('#account').html(accountTmpl.render({
-            data: res.data,
+            name: res.data.name,
+            bio: res.data.bio,
             isLoggedIn: true
           }));
           $('#message').html(messageTmpl.render({
@@ -95,7 +96,8 @@
             }, function(res){
               if (res.err) return error(res.err);
               $('#account').html(accountTmpl.render({
-                data: res.data,
+                name: res.data.name,
+                bio: res.data.bio,
                 isLoggedIn: true
               }));
               $('#message').html(messageTmpl.render({message: 'Account updated successfully!'}));
