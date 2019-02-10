@@ -21,17 +21,19 @@ class Game {
   }
 
   /*
-    return boolean success of action
+   * @param {Object} obj players of a game
+   *return boolean success of action
    */
   act(obj) {
     /* name: draw, attack, place, endPhase
     * param(draw): empty
     * param(place): slot, indexOfHands, tributeSlot1, tributeSlot2, reveal, mode
-    * param(attack): slot(own), slot(enemy), enemyIndex
+    * param(attack): currenIndex, slot(own), slot(enemy), enemyIndex, enemyPlayer
     */
     const input = {
       name: obj.name,
       param: obj.param,
+      enemyPlayer: this.players[obj.param.enemyIndex],
     };
 
     const res = this.players[this.currentPlayerIndex].act(input);

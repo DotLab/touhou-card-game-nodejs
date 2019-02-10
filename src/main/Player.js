@@ -74,16 +74,45 @@ class Player {
   placeCard(param) {
     if (this.hand(param.indexOfHands) instanceof MonsterCard) {
       if (this.hand(param.indexOfHands).level <= 4) {
-        this.summonMonster(this.hand(param.indexOfHands), param.slot, param.reveal, param.mode);
+        this.normalSummon(this.hand(param.indexOfHands), param.slot, param.reveal, param.mode);
       }
       if (this.hand(param.indexOfHands).level > 4 && this.hand(param.indexOfHands).level < 7) {
-        this.summonMonster(this.hand(param.indexOfHands), param.slot, param.tributeSlot1, param.reveal, param.mode);
+        this.tributeSummon1(this.hand(param.indexOfHands), param.slot, param.tributeSlot1, param.reveal, param.mode);
       }
       if (this.hand(param.indexOfHands).level >= 7) {
-        this.summonMonster(this.hand(param.indexOfHands), param.slot, param.tributeSlot1, param.tributeSlot2, param.reveal, param.mode);
+        this.tributeSummon2(this.hand(param.indexOfHands), param.slot, param.tributeSlot1, param.tributeSlot2, param.reveal, param.mode);
       }
       return true;
     }
+  }
+
+  /**
+   * attack from one player towards another one
+   * @param {Object} param index of card to discard(0 based)
+   * @return {boolean}
+   */
+  attack(param) {
+    const ownMonsterIndex = param.ownMonsterIndex;
+    const enemyMonsterIndex = param.enemyMonsterIndex;
+    const enemyPlayer = param.enemyPlayer;
+
+    if (enemyMonsterIndex === -1) {
+      if (!enemyPlayer.field.monsterSlots.some((card) => card !== null)) {
+        enemyPlayer.hp -= this.field.monsterSlots[ownMonsterIndex].att;
+      }
+    }
+
+    const diff = this.field.monsterSlots[ownMonsterIndex].attack(enemyPlayer.field.monsterSlots[enemyMonsterIndex]);
+
+
+    if (diff > 0) {
+      enemyPlayer.hp -= diff;
+      enemyPlayer.field.monsterSlots[enemyMonsterIndex] = null;
+    } else {
+      this.hp -= diff;
+      this.field.monsterSlots[ownMonsterIndex] = null;
+    }
+    return true;
   }
 
   /**
