@@ -23,6 +23,21 @@ class Player {
     }
   }
 
+  isDone() {
+    if (this.phase === 4) {
+      this.phase = 1;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   *
+   * @return {boolean} true if action successful
+   */
+  act() {
+    return true;
+  }
   /**
      * draw a card from the desk
      * @return {undefined}
