@@ -61,7 +61,7 @@ class Player {
       this.hand.push(this.deck.pop());
       return true;
     } else {
-      document.write('The deck is empty!');
+      // document.write('The deck is empty!');
       return false;
     }
   }
@@ -104,13 +104,45 @@ class Player {
      * @return {Number} -1 if fail, 1 if succeed to summon.
      */
   normalSummon(monster, n, revealed, mode) {
-    if (monster.level <= 4) { // normal summon 
-      if(this.field.monsterSlots[n] != null) //slot must be empty
-      {
-         return -1;
+    if (this.hasSummoned == true) {
+      return -1;
+    }
+    if (monster.level <= 4) { // normal summon
+      // slot must be empty
+      if (this.field.monsterSlots[n] != null) {
+        return -1;
       }
-      if((revealed == false && mode == "DEF") || (revealed == true && mode == "ATT"))// must be Hidden Defense Mode or Revealed Attack Mode
-      {
+      if ((revealed == false && mode == 'DEF') || (revealed == true && mode == 'ATT')) {// must be Hidden Defense Mode or Revealed Attack Mode
+        monster.revealed = revealed;
+        monster.mode = mode;
+        this.field.monsterSlots[n] = monster;
+        this.hasSummoned = true;
+        return 1;
+      }
+      return -1;
+    }
+    return -1;
+  }
+  /**
+     * tributeSummon1 from hand
+     * @param {MonsterCard} monster the monster to be summoned from hand
+     * @param {Number} n the index of monsterSlot in the filed(0 based)
+     * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
+     * @param {Boolean} revealed True if Revealed
+     * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
+     * @return {Number} 1 on sucess, -1 on fail
+     */
+  tributeSummon1(monster, n, n1, revealed, mode) {
+    if (monster.level > 4 && monster.level <= 6) {
+      if (this.field.monsterSlots[n1] == null) {// nothing to tribute
+        return -1;
+      }
+      if (this.field.monsterSlots[n] != null && n != n1) {// n has been occupied and cannot be emptied after tribute
+        return -1;
+      }
+      if (revealed == true) {// must be in Revealed Defense Mode or Revealed Attack Mode
+        this.field.graveyard.push(this.field.monsterSlots[n1]);
+        this.field.monsterSlots[n1] = null;
         monster.revealed = revealed;
         monster.mode = mode;
         this.field.monsterSlots[n] = monster;
@@ -119,54 +151,32 @@ class Player {
       return -1;
     }
     return -1;
-   
-  }
-  /**
-     * tributeSummon1 from hand
-     * @param {Number} n the index of monsterSlot in the filed(0 based) 
-     * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
-     * @param {Boolean} revealed True if Revealed
-     * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
-     * @return {Number} 1 on sucess, -1 on fail
-     */
-  tributeSummon1(monster, n, n1, revealed, mode){
-    if (monster.level > 4 && monster.level <= 6){
-      if(this.field.monsterSlots[n1] == null) //nothing to tribute
-        return -1;
-      if(this.field.monsterSlots[n] != null && n != n1)// n has been occupied and cannot be emptied after tribute
-        return -1;
-      if(revealed == true)//must be in Revealed Defense Mode or Revealed Attack Mode
-      {
-        discardCard(n1);
-        monster.revealed = revealed;
-        monster.mode = mode;
-        this.field.monsterSlots[n] = monster;
-        return 1; 
-      }
-      return -1;    
-    }
-    return -1;
   }
   /**
      * tributeSummon2 from hand
-     * @param {Number} n the index of monsterSlot in the filed(0 based) 
+     * @param {MonsterCard} monster the monster to be summoned from hand
+     * @param {Number} n the index of monsterSlot in the filed(0 based)
      * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
      * @param {Number } n2 the index of monsterSlot in the filed(0 based) to tribute
      * @param {Boolean} revealed True if Revealed
      * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
      * @return {Number} 1 on sucess, -1 on fail
      */
-  tributeSummon2(monster, n, n1, n2, revealed, mode){
-    if(monster.level < 7)
+  tributeSummon2(monster, n, n1, n2, revealed, mode) {
+    if (monster.level < 7) {
       return -1;
-    if(n1 == n2 || this.field.monsterSlots[n1] == null || this.field.monsterSlots[n2] == null)//nothing to tribute
+    }
+    if (n1 == n2 || this.field.monsterSlots[n1] == null || this.field.monsterSlots[n2] == null) {// nothing to tribute
       return -1;
-    if(this.field.monsterSlots[n] != null && n != n1 && n != n2)// n has been occupied and cannot be emptied after tribute
+    }
+    if (this.field.monsterSlots[n] != null && n != n1 && n != n2) {// n has been occupied and cannot be emptied after tribute
       return -1;
-    if(revealed == true)//must be in Revealed Defense Mode or Revealed Attack Mode
-    {
-      discardCard(n1);
-      discardCard(n2);
+    }
+    if (revealed == true) { // must be in Revealed Defense Mode or Revealed Attack Mode
+      this.field.graveyard.push(this.field.monsterSlots[n1]);
+      this.field.monsterSlots[n1] = null;
+      this.field.graveyard.push(this.field.monsterSlots[n2]);
+      this.field.monsterSlots[n2] = null;
       monster.revealed = revealed;
       monster.mode = mode;
       this.field.monsterSlots[n] = monster;
