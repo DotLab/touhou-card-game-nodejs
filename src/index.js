@@ -70,13 +70,12 @@ io.on('connection', function(socket) {
   socket.on('cl_update', async ({newName, newBio}, done) => {
     debug('cl_update', newName, newBio);
 
-    const doc = user;
-    if (!doc) return done(error('user does not exist'));
-    doc.name = newName ? newName : doc.name;
-    doc.bio = newBio ? newBio : doc.bio;
+    if (!user) return done(error('forbidden'));
+    user.name = newName ? newName : user.name;
+    user.bio = newBio ? newBio : user.bio;
     try {
-      await User.findByIdAndUpdate(doc.id, doc);
-      return done(success({name: doc.name, bio: doc.bio}));
+      await User.findByIdAndUpdate(user.id, user);
+      return done(success({name: user.name, bio: user.bio}));
     } catch (e) {
       return done(error('update failed'));
     }

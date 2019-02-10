@@ -51,60 +51,68 @@
     <script>
       var accountTmpl = $.templates('#accountTmpl');
       var messageTmpl = $.templates('#messageTmpl');
-      $('#account').html(accountTmpl.render({isLoggedIn: false}));
+      
       var error = function(err) {
         alert(JSON.stringify(err));
       }
-
+      
       var socket = io();
       socket.on('handshake', function() {
         console.log('handshake');
       });
+      
+      renderAccount({isLoggedIn: false});
+      
+      function renderMessage(props) {
+        $('#message').html(messageTmpl.render(props));
+      }
 
-      $("#register-form").on('submit', function(e) {
-        e.preventDefault();
-        socket.emit('cl_register', {
-          name: $('#register-form-name').val(),
-          password: $('#register-form-password').val(),
-        }, function(res) {
-          if (res.err) return error(res.err);
-          $('#message').html(messageTmpl.render({message: 'Registered!'}));
-        });
-      });
-
-      $("#login-form").on('submit', function(e) {
-        e.preventDefault();
-        socket.emit('cl_login', {
-          name: $('#login-form-name').val(),
-          password: $('#login-form-password').val(),
-        }, function(res) {
-          if (res.err) return error(res.err);
-          $('#account').html(accountTmpl.render({
-            name: res.data.name,
-            bio: res.data.bio,
-            isLoggedIn: true
-          }));
-          $('#message').html(messageTmpl.render({
-            message: `Welcome ${res.data.name}!`,
-          }));
-          $("#update-form").on('submit', function(e) {
-            e.preventDefault();
-            socket.emit('cl_update', {
-              name: res.data.name,
-              newName: $('#update-form-name').val(),
-              newBio: $('#update-form-bio').val(),
-            }, function(res){
-              if (res.err) return error(res.err);
-              $('#account').html(accountTmpl.render({
-                name: res.data.name,
-                bio: res.data.bio,
-                isLoggedIn: true
-              }));
-              $('#message').html(messageTmpl.render({message: 'Account updated successfully!'}));
-            });
+      function renderAccount(props) {
+        $('#account').html(accountTmpl.render(props));
+        
+        $("#register-form").on('submit', function(e) {
+          e.preventDefault();
+          socket.emit('cl_register', {
+            name: $('#register-form-name').val(),
+            password: $('#register-form-password').val(),
+          }, function(res) {
+            if (res.err) return error(res.err);
+            renderMessage({message: 'Registered!'});
           });
         });
-      });
+
+        $("#login-form").on('submit', function(e) {
+          e.preventDefault();
+          socket.emit('cl_login', {
+            name: $('#login-form-name').val(),
+            password: $('#login-form-password').val(),
+          }, function(res) {
+            if (res.err) return error(res.err);
+            renderAccount({
+              name: res.data.name,
+              bio: res.data.bio,
+              isLoggedIn: true
+            });
+            renderMessage({message: `Welcome ${res.data.name}!`});
+          });
+        });
+
+        $("#update-form").on('submit', function(e) {
+          e.preventDefault();
+          socket.emit('cl_update', {
+            newName: $('#update-form-name').val(),
+            newBio: $('#update-form-bio').val(),
+          }, function(res){
+            if (res.err) return error(res.err);
+            renderAccount({
+              name: res.data.name,
+              bio: res.data.bio,
+              isLoggedIn: true
+            });
+            renderMessage({message: 'Account updated successfully!'});
+          });
+        });
+      }
       </script>
   </body>
   </html>
