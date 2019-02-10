@@ -56,7 +56,9 @@
         <div id="room-message"></div>
       </form>
       <form id="room-list-form">
+        {{if !isInRoom}}
         <button type="submit">Refresh Rooms</button>
+        {{/if}}
         <div id="room-list"></div>
       </form>
       <div id="room-join-form">
@@ -106,7 +108,6 @@
       });
       
       renderAccount({isLoggedIn: false});
-      // renderRoomList({isInRoom: false});
       
       function renderMessage(props) {
         $('#message').html(messageTmpl.render(props));
@@ -172,7 +173,10 @@
           }, function(res) {
             if (res.err) return error(res.err);
             renderMessage({message: 'Room created!'});
-            renderRoomList({isInRoom: true});
+            renderRoomList({
+              roomList: res.data,
+              isInRoom: true
+            });
           });
         });
 

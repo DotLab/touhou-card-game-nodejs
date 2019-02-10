@@ -123,11 +123,11 @@ io.on('connection', function(socket) {
   socket.on('cl_create_room', async ({name}, done) => {
     debug('cl_create_room', name);
     if (!user) return done(error('forbidden'));
-    createRoom(user.id, user.name, name);
+    const thisRoomId = createRoom(user.id, user.name, name);
 
     socket.broadcast.emit('sv_refresh_rooms', serializeRoomList());
 
-    done(success());
+    done(success(rooms[thisRoomId]));
   });
 
   socket.on('cl_refresh_room', async (done) => {
@@ -142,8 +142,8 @@ io.on('connection', function(socket) {
     // if (rooms[roomId].ownerId == user.id) return done(error('forbidden'));
     joinRoom(roomId, user.id, user.name);
 
-    socket.broadcast.emit('sv_refresh_rooms', serializeRoomList());
+    // socket.broadcast.emit('sv_refresh_rooms', serializeRoomList());
 
-    done(success());
+    done(success(rooms[roomId]));
   });
 });
