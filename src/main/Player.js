@@ -203,8 +203,8 @@ class Player {
     };
   }
 
-  findCardInHand(name) {
-    for (var i = 0; i < this.hand.length; i++) {
+  findCardInHandByName(name) {
+    for (let i = 0; i < this.hand.length; i++) {
       if (this.hand[i].name === name) {
         return i;
       }
@@ -215,6 +215,24 @@ class Player {
   removeCardInHand(index) {
     const removed = this.hand.splice(index, 1);
     return removed[0];
+  }
+
+  findCardOnFieldById(id) {
+    for (let i = 0; i < this.field.length; i++) {
+      if (this.field.monsterSlots[i].id === id) {
+        return i;
+      }
+    }
+    return -1; // not likely to happen
+  }
+
+  killMonsterCardOnField(index) {
+    const removed = this.field.monsterSlots.splice(index, 1);
+    this.field.graveyard.push(removed);
+  }
+
+  placeCardOnField(index, card) {
+    this.field.monsterSlots[index] = card;
   }
 }
 

@@ -64,7 +64,6 @@ class MonsterCard extends Card {
     }
     this.revealed == true;
   }
-
 }
 
 module.exports = MonsterCard;
