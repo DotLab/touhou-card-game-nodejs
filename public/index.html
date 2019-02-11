@@ -79,22 +79,19 @@
     </script>
 
     <script id="roomPrepTmpl" type="text/html">
-      <!-- <form id="room-form">
-        <button type="submit">Refresh Room</button>
-      </form> -->
       <div id="room-prep-form">
         {{if roomList}}
           {{if isHost}}
             {{for roomList}}
             {{:name}} <br/>
-            Host: {{:ownerName}} <button>Propose</button> 
-            <span class="hostStatus">Host Status</span> 
-            <button>Start</button> <br/>
+            Host: {{:ownerName}} <button id="propose-room-button">Propose</button> 
+            <span class="hostStatus">(Host Status)</span> 
+            <button id="start-room-button">Start</button> <br/>
             Members: 
             <ul>
               <li>
                 {{props members}} 
-                {{>prop.memberName}} <span class="guestStatus">Guest Status</span>
+                {{>prop.memberName}} <span class="guestStatus">(Guest Status)</span>
                 {{/props}}
               </li>
             </ul>
@@ -102,14 +99,14 @@
           {{else}}
             {{for roomList}}
             {{:name}} <br/>
-            Host: {{:ownerName}} <span class="hostStatus"></span> <br/>
-            <button>Agree</button> 
+            Host: {{:ownerName}} <span class="hostStatus">(Host Status)</span> <br/>
+            <button id="agree-room-button">Agree</button> 
             <button id="leave-room-button" value="{{:id}}">Leave</button> <br/>
             Members: 
             <ul>
               <li>
                 {{props members}} 
-                {{>prop.memberName}}  <span class="guestStatus">Guest Status</span>
+                {{>prop.memberName}}  <span class="guestStatus">(Guest Status)</span>
                 {{/props}}
               </li>
             </ul>
@@ -231,7 +228,7 @@
             renderRoomList({isInLobby: false});
             renderRoomPrep({roomList: res.data, isHost: false});
           });
-        })
+        });
       }
 
       function renderRoomPrep(props) {
@@ -247,7 +244,40 @@
             if (res.err) return error(res.err);
             renderRoomList({roomList: res.data, isInLobby: true});
           });
-        })
+        });
+
+        $("#propose-room-button").on('click', function(e) {
+          e.preventDefault();
+          console.log('cl_propose_room');
+          socket.emit('cl_propose_room', {
+             roomId: $(this).attr('value'), // TODO: get the correct roomId
+          }, function(res) {
+            if (res.err) return error(res.err);
+            renderRoomPrep({roomList: res.data, isHost: true});
+          });
+        });
+        
+        $("#agree-room-button").on('click', function(e) {
+          e.preventDefault();
+          console.log('cl_agree_room');
+          socket.emit('cl_agree_room', {
+             roomId: $(this).attr('value'), // TODO: get the correct roomId
+          }, function(res) {
+            if (res.err) return error(res.err);
+            renderRoomPrep({roomList: res.data, isHost: false});
+          });
+        });
+
+        $("#start-room-button").on('click', function(e) {
+          e.preventDefault();
+          console.log('cl_start_room');
+          socket.emit('cl_start_room', {
+             roomId: $(this).attr('value'), // TODO: get the correct roomId
+          }, function(res) {
+            if (res.err) return error(res.err);
+            // TODO: start the game
+          });
+        });
       }
       </script>
   </body>

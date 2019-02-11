@@ -154,4 +154,25 @@ io.on('connection', function(socket) {
 
     done(success(serializeRoomList()));
   });
+
+  socket.on('cl_propose_room', async ({roomId}, done) => {
+    debug('cl_propose_room', roomId);
+    // propose
+
+    done(success(rooms[roomId]));
+  });
+
+  socket.on('cl_agree_room', async ({roomId}, done) => {
+    debug('cl_agree_room', roomId);
+    // agree
+
+    done(success(rooms[roomId]));
+  });
+
+  socket.on('cl_start_room', async ({roomId}, done) => {
+    debug('cl_start_room', roomId);
+    // start game
+
+    done();
+  });
 });
