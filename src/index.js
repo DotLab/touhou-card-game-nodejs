@@ -45,18 +45,18 @@ function joinRoom(roomId, userId, userName) {
   debug('    joinRoom', rooms[roomId].members[userId].memberName);
 }
 
-// function leaveRoom(roomId, userId) {
-//   if (userId == rooms[roomId].ownerId) { // owner leaves
-//     if (rooms[roomId].members.isEmptyObject()) { // delete when no  members
-//       delete rooms[roomId];
-//     } else { // promote member
-//       rooms[roomId].ownerId = Object.keys(rooms[roomId].members)[0];
-//       delete rooms[roomId].members[ownerId];
-//     }
-//   } else { // member leaves
-//     delete rooms[roomId].members[userId];
-//   }
-// }
+function leaveRoom(roomId, userId) {
+  if (userId == rooms[roomId].ownerId) { // owner leaves
+    if (rooms[roomId].members.isEmptyObject()) { // delete when no  members
+      delete rooms[roomId];
+    } else { // promote member
+      rooms[roomId].ownerId = Object.keys(rooms[roomId].members)[0];
+      delete rooms[roomId].members[Object.keys(rooms[roomId].members)[0]];
+    }
+  } else { // member leaves
+    delete rooms[roomId].members[userId];
+  }
+}
 
 function serializeRoomList() {
   return Object.keys(rooms).map((key) => ({
@@ -131,8 +131,8 @@ io.on('connection', function(socket) {
     done(success(rooms[thisRoomId]));
   });
 
-  socket.on('cl_refresh_room', async (done) => {
-    debug('cl_refresh_room');
+  socket.on('cl_refresh_rooms', async (done) => {
+    debug('cl_refresh_rooms');
 
     done(success(serializeRoomList()));
   });
@@ -142,8 +142,16 @@ io.on('connection', function(socket) {
     if (!user) return done(error('forbidden'));
     joinRoom(roomId, user.id, user.name);
 
-    // socket emit to host and other guests!
+    // TODO: socket emit to host and other guests!
+    // socket.to().emit('sv_join_room', rooms[roomId]);
 
     done(success(rooms[roomId]));
+  });
+
+  socket.on('cl_leave_room', async ({roomId}, done) => {
+    debug('cl_leave_room', roomId);
+    leaveRoom(roomId, user.id);
+
+    done(success(serializeRoomList()));
   });
 });

@@ -102,9 +102,10 @@
           {{else}}
             {{for roomList}}
             {{:name}} <br/>
-            Host: {{:ownerName}} <span class="hostStatus"></span>  <br/>
+            Host: {{:ownerName}} <span class="hostStatus"></span> <br/>
+            <button>Agree</button> 
+            <button id="leave-room-button" value="{{:id}}">Leave</button> <br/>
             Members: 
-            <button>Agree</button>
             <ul>
               <li>
                 {{props members}} 
@@ -112,6 +113,7 @@
                 {{/props}}
               </li>
             </ul>
+            <div id="leave-room-id" value="{{:id}}"></div>
             {{/for}}
           {{/if}}
         {{/if}}
@@ -212,7 +214,7 @@
 
         $("#room-list-form").on('submit', function(e) {
           e.preventDefault();
-          socket.emit('cl_refresh_room', res => {
+          socket.emit('cl_refresh_rooms', res => {
             if (res.err) return error(res.err);
             renderRoomList({roomList: res.data, isInLobby: true});
           });
@@ -236,39 +238,16 @@
         console.log('renderRoomPrep', props);
         $('#room-prep').html(roomPrepTmpl.render(props));
 
-        // $("#room-form").on('submit', function(e) {
-        //   e.preventDefault();
-        //   socket.emit('cl_create_room', {
-        //     name: $('#room-name').val(),
-        //   }, function(res) {
-        //     if (res.err) return error(res.err);
-        //     renderMessage({message: 'Room created!'});
-        //     renderRoomList({
-        //       roomList: res.data,
-        //       isInLobby: false
-        //     });
-        //   });
-        // });
-
-        // $("#room-list-form").on('submit', function(e) {
-        //   e.preventDefault();
-        //   socket.emit('cl_refresh_room', res => {
-        //     if (res.err) return error(res.err);
-        //     renderRoomList({roomList: res.data});
-        //   });
-        // });
-
-        // $('.room-join-form-button').on('click', function(e) {
-        //   e.preventDefault();
-        //   console.log('cl_join_room', $(this).attr('value'));
-
-        //   socket.emit('cl_join_room', {
-        //     roomId: $(this).attr('value'),
-        //   }, function(res) {
-        //     if (res.err) return error(res.err);
-        //     renderRoomList({isInLobby: false});
-        //   });
-        // })
+        $("#leave-room-button").on('click', function(e) {
+          e.preventDefault();
+          console.log('cl_leave_room');
+          socket.emit('cl_leave_room', {
+             roomId: $(this).attr('value'), // TODO: get the correct roomId
+          }, function(res) {
+            if (res.err) return error(res.err);
+            renderRoomList({roomList: res.data, isInLobby: true});
+          });
+        })
       }
       </script>
   </body>
