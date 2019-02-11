@@ -58,7 +58,7 @@ class Player {
   discardCard(n) {
     this.field.graveyard.push((this.hand.slice(n, 1)));
   }
-
+  
   /**
      * normalSummon from hand
      * @param {MonsterCard} monster the monster to be summoned from hand
@@ -146,10 +146,48 @@ class Player {
   /**
     * @param {Number} n the index of monsterSlot in the filed(0 based) 
     * @param {SpellCard} spellcard to placed
-    * 
-    * 
+    * @param {Boolean} revealed true if revealed
+    * @return {Number} 1 on sucess, -1 on fail
     */
-  addSpell()
+  addSpell(n, spellcard, revealed){
+    if(this.field.spellSlots[n] != null)
+      return -1;
+    spellcard.revealed = revealed;
+    this.field.spellSlots[n] = spellcard;
+    return 1;
+  }
+  /**
+    * @param {Number} n the index of monsterSlot in the filed(0 based) 
+    * @return {Number} 1 on sucess, -1 on fail
+    */
+   removeSpell(n){
+    if(this.field.spellSlots[n] == null)
+      return -1;
+    this.field.graveyard.push(this.field.spellSlots[n])
+    this.field.spellSlots[n]= null;
+    return 1;
+  }
+  /**
+    * @param {EnvCard} env the index of monsterSlot in the filed(0 based) 
+    * @return {Number} 1 on sucess, -1 on fail
+    */
+   setEnv(env) {
+    if(this.environmentSlot != null)
+      return -1;
+    this.environmentSlot = env;
+    return 1;
+   }
+  /**
+    * @return {Number} 1 on sucess, -1 on fail
+  */
+  removeEnv(){
+    if(this.environmentSlot == null)
+      return -1;
+    this.field.graveyard.push(this.field.environmentSlot);
+    this.field.environmentSlot = null;
+    return 1;
+  }
+
 }
 
 module.exports = Player;
