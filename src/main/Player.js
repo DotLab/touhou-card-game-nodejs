@@ -202,6 +202,20 @@ class Player {
       },
     };
   }
+
+  findCardInHand(name) {
+    for (var i = 0; i < this.hand.length; i++) {
+      if (this.hand[i].name === name) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  removeCardInHand(index) {
+    const removed = this.hand.splice(index, 1);
+    return removed[0];
+  }
 }
 
 module.exports = Player;

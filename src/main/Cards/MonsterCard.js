@@ -3,7 +3,6 @@ const Card = require('./Cards/Card.js');
 class MonsterCard extends Card {
   /**
     * @constructor
-    * @param {String} id for backend database access
     * @param {String} name Each Card has its own name
     * @param {String} path Path to img of the card
     * @param {Boolean} revealed True if Revealed
@@ -13,16 +12,14 @@ class MonsterCard extends Card {
     * @param {Number} def Defense
     * @param {function} effect a callback function
     */
-  constructor(id, name, path, revealed, mode, level, att, def, effect) {
+  constructor(name, path, revealed, mode, level, att, def) {
     // calls parent constructor
-    super(id, name, path);
+    super(name, path, revealed);
     // initialize own vars
-    this.revealed = revealed;
     this.mode = mode;
     this.level = level;
     this.att = att;
     this.def = def;
-    this.effect = effect;
   }
 
   /**
@@ -68,12 +65,6 @@ class MonsterCard extends Card {
     this.revealed == true;
   }
 
-  /**
-    * Use the effect
-    */
-  useEffect() {
-    this.effect.use();
-  }
 }
 
 module.exports = MonsterCard;
