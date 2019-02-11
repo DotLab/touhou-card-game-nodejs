@@ -51,6 +51,7 @@ function joinRoom(roomId, userId, userName) {
 //       delete rooms[roomId];
 //     } else { // promote member
 //       rooms[roomId].ownerId = Object.keys(rooms[roomId].members)[0];
+//       delete rooms[roomId].members[ownerId];
 //     }
 //   } else { // member leaves
 //     delete rooms[roomId].members[userId];
@@ -139,10 +140,9 @@ io.on('connection', function(socket) {
   socket.on('cl_join_room', async ({roomId}, done) => {
     debug('cl_join_room', roomId);
     if (!user) return done(error('forbidden'));
-    // if (rooms[roomId].ownerId == user.id) return done(error('forbidden'));
     joinRoom(roomId, user.id, user.name);
 
-    // socket.broadcast.emit('sv_refresh_rooms', serializeRoomList());
+    // socket emit to host and other guests!
 
     done(success(rooms[roomId]));
   });

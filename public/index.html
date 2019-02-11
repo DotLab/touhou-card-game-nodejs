@@ -16,6 +16,7 @@
       <div id="account"></div>
       <div id="message"></div>
       <div id="room-list"></div>
+      <div id="room-prep"></div>
     </div>
 
     <script id="accountTmpl" type="text/html">
@@ -50,38 +51,68 @@
     </script>
 
     <script id="roomListTmpl" type="text/html">
+      {{if isInLobby}}
       <form id="room-form">
         <input type="text" id="room-name" value="optional room name" >
         <button type="submit">Create Room</button>
         <div id="room-message"></div>
       </form>
       <form id="room-list-form">
-        {{if !isInRoom}}
         <button type="submit">Refresh Rooms</button>
-        {{/if}}
         <div id="room-list"></div>
       </form>
       <div id="room-join-form">
-        {{if isInRoom}} Hello
+        {{if roomList}}
+        Room List:
         <ul>
           {{for roomList}}
           <li>
+            {{:name}} <button class="room-join-form-button" value="{{:id}}">Join Room</button>
+            <br/>
             Host: {{:ownerName}} Members: {{props members}} {{>prop.memberName}}, {{/props}}
           </li>
           {{/for}}
         </ul>
-        {{else}}
-          {{if roomList}}
-          Room List:
-          <ul>
+        {{/if}}
+      </div>
+      {{/if}}
+    </script>
+
+    <script id="roomPrepTmpl" type="text/html">
+      <!-- <form id="room-form">
+        <button type="submit">Refresh Room</button>
+      </form> -->
+      <div id="room-prep-form">
+        {{if roomList}}
+          {{if isHost}}
             {{for roomList}}
-            <li>
-              {{:name}} <button class="room-join-form-button" value="{{:id}}">Join Room</button>
-              <br/>
-              Host: {{:ownerName}} Members: {{props members}} {{>prop.memberName}}, {{/props}}
-            </li>
+            {{:name}} <br/>
+            Host: {{:ownerName}} <button>Propose</button> 
+            <span class="hostStatus">Host Status</span> 
+            <button>Start</button> <br/>
+            Members: 
+            <ul>
+              <li>
+                {{props members}} 
+                {{>prop.memberName}} <span class="guestStatus">Guest Status</span>
+                {{/props}}
+              </li>
+            </ul>
             {{/for}}
-          </ul>
+          {{else}}
+            {{for roomList}}
+            {{:name}} <br/>
+            Host: {{:ownerName}} <span class="hostStatus"></span>  <br/>
+            Members: 
+            <button>Agree</button>
+            <ul>
+              <li>
+                {{props members}} 
+                {{>prop.memberName}}  <span class="guestStatus">Guest Status</span>
+                {{/props}}
+              </li>
+            </ul>
+            {{/for}}
           {{/if}}
         {{/if}}
       </div>
@@ -91,6 +122,7 @@
       var accountTmpl = $.templates('#accountTmpl');
       var messageTmpl = $.templates('#messageTmpl');
       var roomListTmpl = $.templates('#roomListTmpl');
+      var roomPrepTmpl = $.templates('#roomPrepTmpl');
 
       var error = function(err) {
         alert(JSON.stringify(err));
@@ -140,7 +172,7 @@
               bio: res.data.bio,
               isLoggedIn: true
             });
-            renderRoomList({});
+            renderRoomList({isInLobby: true});
             renderMessage({message: `Welcome ${res.data.name}!`});
           });
         });
@@ -173,10 +205,8 @@
           }, function(res) {
             if (res.err) return error(res.err);
             renderMessage({message: 'Room created!'});
-            renderRoomList({
-              roomList: res.data,
-              isInRoom: true
-            });
+            renderRoomList({isInLobby: false});
+            renderRoomPrep({roomList: res.data, isHost: true});
           });
         });
 
@@ -184,7 +214,7 @@
           e.preventDefault();
           socket.emit('cl_refresh_room', res => {
             if (res.err) return error(res.err);
-            renderRoomList({roomList: res.data});
+            renderRoomList({roomList: res.data, isInLobby: true});
           });
         });
 
@@ -196,9 +226,49 @@
             roomId: $(this).attr('value'),
           }, function(res) {
             if (res.err) return error(res.err);
-            renderRoomList({isInRoom: true});
+            renderRoomList({isInLobby: false});
+            renderRoomPrep({roomList: res.data, isHost: false});
           });
         })
+      }
+
+      function renderRoomPrep(props) {
+        console.log('renderRoomPrep', props);
+        $('#room-prep').html(roomPrepTmpl.render(props));
+
+        // $("#room-form").on('submit', function(e) {
+        //   e.preventDefault();
+        //   socket.emit('cl_create_room', {
+        //     name: $('#room-name').val(),
+        //   }, function(res) {
+        //     if (res.err) return error(res.err);
+        //     renderMessage({message: 'Room created!'});
+        //     renderRoomList({
+        //       roomList: res.data,
+        //       isInLobby: false
+        //     });
+        //   });
+        // });
+
+        // $("#room-list-form").on('submit', function(e) {
+        //   e.preventDefault();
+        //   socket.emit('cl_refresh_room', res => {
+        //     if (res.err) return error(res.err);
+        //     renderRoomList({roomList: res.data});
+        //   });
+        // });
+
+        // $('.room-join-form-button').on('click', function(e) {
+        //   e.preventDefault();
+        //   console.log('cl_join_room', $(this).attr('value'));
+
+        //   socket.emit('cl_join_room', {
+        //     roomId: $(this).attr('value'),
+        //   }, function(res) {
+        //     if (res.err) return error(res.err);
+        //     renderRoomList({isInLobby: false});
+        //   });
+        // })
       }
       </script>
   </body>
