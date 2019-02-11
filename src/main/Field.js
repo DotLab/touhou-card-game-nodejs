@@ -1,5 +1,4 @@
-const MonsterCard = require('./Cards/MonsterCard');
-const SpellCard = require('./Cards/SpellCard');
+
 
 /**
  * Field class
@@ -10,20 +9,9 @@ class Field {
        */
   constructor() {
     this.environmentSlot = null;
-    this.monsterSlots = [new MonsterCard(4)];
-    this.spellSlots = [new SpellCard(4)];
+    this.monsterSlots = [null, null, null, null];
+    this.spellSlots = [null, null, null, null];
     this.graveyard = [];
-  }
-  /**
-    * initialize the field;
-    */
-  initialize() {
-    for (let i = 0; i < 4; i++) {
-      this.monsterSlots[i] = null;
-    }
-    for (let i = 0; i < 4; i++) {
-      this.spellSlots[i] = null;
-    }
   }
 }
 

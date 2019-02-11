@@ -4,21 +4,24 @@
 /**
  * Player class
  */
-const MonsterCard = require('./Cards/MonsterCard');
 
+
+const Card = require('./Cards/Card');
+const Kaibaman = require('./Cards/KaibamanCard');
+const MonsterCard = require('./Cards/MonsterCard');
+const Field = require('./Field');
 class Player {
   /**
      * @constructor
      * @param {Card[]} deck randomly shuffled
      * @param {Number} hp
-     * @param {Field} field
      * @param {String} username
      */
-  constructor(deck, hp, field, username) {
+  constructor(deck, hp, username) {
     this.deck = deck;
     this.hp = hp || 5000;
     this.hand = [];
-    this.field = field;
+    this.field = new Field();
     this.username = username;
     this.phase = 1;
     for (let i = 0; i < 5; i++) {
@@ -34,6 +37,16 @@ class Player {
       return true;
     }
     return false;
+  }
+
+  createDeck() {
+    let i;
+    let createdDeck = new Card(40);
+    for (i = 0; i < 40; i++) {
+      createdDeck.push(Kaibaman);
+    }
+    createdDeck = this.shuffle(createdDeck);
+    return createdDeck;
   }
 
   /**

@@ -1,7 +1,28 @@
 /**
  * Game class
  */
+
+const Card = require('./Cards/Card');
+const Kaibaman = require('./Cards/KaibamanCard');
 class Game {
+  static shuffle(array) {
+    let currentIndex = array.length; let temporaryValue; let randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  }
+
   /**
      * @constructor
      * @param {Player[]} players players of a game
@@ -10,15 +31,23 @@ class Game {
      */
   constructor(players) {
     this.players = players;
+    this.gameOver = false;
     this.round = 0;
     this.currentPlayerIndex = 0;
   }
 
-  moveToNextRound() {
+  createDeck() {
+    let i;
+    const createdDeck = new Card(40);
+    for (i = 0; i < 40; i++) {
+      createdDeck.push(Kaibaman);
+    }
+  }
+  /* moveToNextRound() {
     if (this.players[this.players.length-1].phase === 4) {
       this.round++;
     }
-  }
+  } */
 
   /*
    * @param {Object} obj players of a game
@@ -38,6 +67,8 @@ class Game {
 
     const res = this.players[this.currentPlayerIndex].act(input);
     this.phaseComplete();
+    this.playerLoseCheck();
+    this.gameOver = this.gameOverCheck();
     return res;
   }
 
@@ -50,6 +81,33 @@ class Game {
     }
     if (this.currentPlayerIndex > this.players.length) {
       this.currentPlayerIndex = 0;
+      this.round ++;
+    }
+  }
+
+  playerLoseCheck() {
+    let i;
+    for (i = 0; i < this.players.length; i++) {
+      if (this.players[i] != null) {
+        if (this.players[i].hp <= 0) {
+          this.players[i] = null;
+        }
+      }
+    }
+  }
+
+  gameOverCheck() {
+    let i;
+    let count = 0;
+    for (i = 0; i < this.players.length; i++) {
+      if (this.players[i] != null) {
+        count ++;
+      }
+    }
+    if (count === 1) {
+      return true;
+    } else {
+      return false;
     }
   }
 
