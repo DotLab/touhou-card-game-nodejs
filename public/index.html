@@ -15,8 +15,6 @@
     <div>
       <div id="account"></div>
       <div id="message"></div>
-      <div id="room-list"></div>
-      <div id="room-prep"></div>
       <div id="lobby"></div>
     </div>
 
@@ -49,73 +47,6 @@
 
     <script id="messageTmpl" type="text/x-jsrender">
       Message: {{:message}}
-    </script>
-
-    <script id="roomListTmpl" type="text/html">
-      {{if isInLobby}}
-      <form id="room-form">
-        <input type="text" id="room-name" value="optional room name" >
-        <button type="submit">Create Room</button>
-        <div id="room-message"></div>
-      </form>
-      <form id="room-list-form">
-        <button type="submit">Refresh Rooms</button>
-        <div id="room-list"></div>
-      </form>
-      <div id="room-join-form">
-        {{if roomList}}
-        Room List:
-        <ul>
-          {{for roomList}}
-          <li>
-            {{:name}} <button class="room-join-form-button" value="{{:id}}">Join Room</button>
-            <br/>
-            Host: {{:ownerName}} Members: {{props members}} {{>prop.memberName}}, {{/props}}
-          </li>
-          {{/for}}
-        </ul>
-        {{/if}}
-      </div>
-      {{/if}}
-    </script>
-
-    <script id="roomPrepTmpl" type="text/html">
-      <div id="room-prep-form">
-        {{if roomList}}
-          {{if isHost}}
-            {{for roomList}}
-            {{:name}} <br/>
-            Host: {{:ownerName}} <button id="propose-room-button">Propose</button> 
-            <span class="hostStatus">(Host Status)</span> 
-            <button id="start-room-button">Start</button> <br/>
-            Members: 
-            <ul>
-              <li>
-                {{props members}} 
-                {{>prop.memberName}} <span class="guestStatus">(Guest Status)</span>
-                {{/props}}
-              </li>
-            </ul>
-            {{/for}}
-          {{else}}
-            {{for roomList}}
-            {{:name}} <br/>
-            Host: {{:ownerName}} <span class="hostStatus">(Host Status)</span> <br/>
-            <button id="agree-room-button">Agree</button> 
-            <button id="leave-room-button" value="{{:id}}">Leave</button> <br/>
-            Members: 
-            <ul>
-              <li>
-                {{props members}} 
-                {{>prop.memberName}}  <span class="guestStatus">(Guest Status)</span>
-                {{/props}}
-              </li>
-            </ul>
-            <div id="leave-room-id" value="{{:id}}"></div>
-            {{/for}}
-          {{/if}}
-        {{/if}}
-      </div>
     </script>
 
     <script id="lobbyTmpl" type="text/html">
@@ -200,8 +131,6 @@
     <script>
       var accountTmpl = $.templates('#accountTmpl');
       var messageTmpl = $.templates('#messageTmpl');
-      var roomListTmpl = $.templates('#roomListTmpl');
-      var roomPrepTmpl = $.templates('#roomPrepTmpl');
 
       var error = function(err) {
         alert(JSON.stringify(err));
@@ -258,7 +187,6 @@
               bio: res.data.bio,
               isLoggedIn: true
             });
-            renderRoomList({isInLobby: true});
             renderMessage({message: `Welcome ${res.data.name}!`});
           });
         });
@@ -276,93 +204,6 @@
               isLoggedIn: true
             });
             renderMessage({message: 'Account updated successfully!'});
-          });
-        });
-      }
-
-      function renderRoomList(props) {
-        console.log('renderRoomList', props);
-        $('#room-list').html(roomListTmpl.render(props));
-
-        $("#room-form").on('submit', function(e) {
-          e.preventDefault();
-          socket.emit('cl_create_room', {
-            name: $('#room-name').val(),
-          }, function(res) {
-            if (res.err) return error(res.err);
-            renderMessage({message: 'Room created!'});
-            renderRoomList({isInLobby: false});
-            renderRoomPrep({roomList: res.data, isHost: true});
-          });
-        });
-
-        $("#room-list-form").on('submit', function(e) {
-          e.preventDefault();
-          socket.emit('cl_refresh_rooms', res => {
-            if (res.err) return error(res.err);
-            renderRoomList({roomList: res.data, isInLobby: true});
-          });
-        });
-
-        $('.room-join-form-button').on('click', function(e) {
-          e.preventDefault();
-          console.log('cl_join_room', $(this).attr('value'));
-
-          socket.emit('cl_join_room', {
-            roomId: $(this).attr('value'),
-          }, function(res) {
-            if (res.err) return error(res.err);
-            renderRoomList({isInLobby: false});
-            renderRoomPrep({roomList: res.data, isHost: false});
-          });
-        });
-      }
-
-      function renderRoomPrep(props) {
-        console.log('renderRoomPrep', props);
-        $('#room-prep').html(roomPrepTmpl.render(props));
-
-        $("#leave-room-button").on('click', function(e) {
-          e.preventDefault();
-          console.log('cl_leave_room');
-          socket.emit('cl_leave_room', {
-             roomId: $(this).attr('value'), // TODO: get the correct roomId
-          }, function(res) {
-            if (res.err) return error(res.err);
-            renderRoomList({roomList: res.data, isInLobby: true});
-          });
-        });
-
-        $("#propose-room-button").on('click', function(e) {
-          e.preventDefault();
-          console.log('cl_propose_room');
-          socket.emit('cl_propose_room', {
-             roomId: $(this).attr('value'), // TODO: get the correct roomId
-          }, function(res) {
-            if (res.err) return error(res.err);
-            renderRoomPrep({roomList: res.data, isHost: true});
-          });
-        });
-        
-        $("#agree-room-button").on('click', function(e) {
-          e.preventDefault();
-          console.log('cl_agree_room');
-          socket.emit('cl_agree_room', {
-             roomId: $(this).attr('value'), // TODO: get the correct roomId
-          }, function(res) {
-            if (res.err) return error(res.err);
-            renderRoomPrep({roomList: res.data, isHost: false});
-          });
-        });
-
-        $("#start-room-button").on('click', function(e) {
-          e.preventDefault();
-          console.log('cl_start_room');
-          socket.emit('cl_start_room', {
-             roomId: $(this).attr('value'), // TODO: get the correct roomId
-          }, function(res) {
-            if (res.err) return error(res.err);
-            // TODO: start the game
           });
         });
       }
