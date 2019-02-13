@@ -228,7 +228,7 @@ io.on('connection', function(socket) {
 
     if (!user) return done(error('forbidden'));
     if (!room) return done(error('not in any room'));
-    if (!room.members[user.id]) return done(error('not a member'));
+    if (!room.ownerId === user.id && !room.members[user.id]) return done(error('not a member'));
 
     leaveRoom(room.id, user.id);
     socket.leave(room.id);
