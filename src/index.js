@@ -28,6 +28,20 @@ const crypto = require('crypto');
 /**
  *  Lobby
  */
+const online = {};
+
+const LOBBY = 'LOBBY';
+const SV_UPDATE_LOBBY = 'sv_update_lobby';
+const lobby = {};
+
+function joinLobby(userId, userName) {
+  lobby[userId] = {id: userId, name: userName};
+}
+
+function leaveLobby(userId) {
+  delete lobby[userId];
+}
+
 const rooms = {};
 
 function generateId(length = 256) {
@@ -35,40 +49,78 @@ function generateId(length = 256) {
 }
 
 function createRoom(userId, userName, name) {
-  const id = generateId(64);
-  rooms[id] = {ownerId: userId, ownerName: userName, name, members: {}};
-  return id;
+  debug('    createRoom', userId, userName, name);
+  const id = generateId(16);
+  rooms[id] = {id, name, ownerId: userId, ownerName: userName, members: {}};
+  return rooms[id];
 }
 
 function joinRoom(roomId, userId, userName) {
-  rooms[roomId].members[userId] = {memberId: userId, memberName: userName};
-  debug('    joinRoom', rooms[roomId].members[userId].memberName);
+  debug('    joinRoom', roomId, userId, userName);
+  rooms[roomId].members[userId] = {id: userId, name: userName};
+  return rooms[roomId];
 }
 
 function leaveRoom(roomId, userId) {
-  if (userId == rooms[roomId].ownerId) { // owner leaves
-    if (rooms[roomId].members.isEmptyObject()) { // delete when no  members
+  debug('    leaveRoom', roomId, userId);
+  const room = rooms[roomId];
+
+  if (userId == room.ownerId) { // owner leaves
+    const memberIds = Object.keys(room.members);
+    if (memberIds.length === 0) { // delete when no members
       delete rooms[roomId];
-    } else { // promote member
-      rooms[roomId].ownerId = Object.keys(rooms[roomId].members)[0];
-      delete rooms[roomId].members[Object.keys(rooms[roomId].members)[0]];
+    } else { // promote first member to be owner
+      const newOwner = room.members[memberIds[0]];
+      room.ownerId = newOwner.id;
+      room.ownerName = newOwner.name;
+      delete room.members[memberIds[0]];
     }
   } else { // member leaves
-    delete rooms[roomId].members[userId];
+    delete room.members[userId];
   }
 }
 
-function serializeRoomList() {
-  return Object.keys(rooms).map((key) => ({
-    ...rooms[key],
-    id: key,
-  }));
+function serializeRoom(room) {
+  return {
+    ...room,
+    members: Object.keys(room.members).map((userId) => room.members[userId]),
+  };
+}
+
+function serializeRooms() {
+  return Object.keys(rooms).map((roomId) => serializeRoom(rooms[roomId]));
+}
+
+function serializeLobby() {
+  return {
+    lobby: Object.keys(lobby).map((userId) => lobby[userId]),
+    rooms: serializeRooms(),
+  };
 }
 
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
-  debug('a user connected');
+  debug('connection', socket.id);
   let user = null;
+  let room = null;
+
+  socket.on('disconnect', async () => {
+    debug('disconnect', socket.id);
+
+    if (user) {
+      if (lobby[user.id]) {
+        leaveLobby(user.id);
+      }
+
+      if (room) {
+        leaveRoom(room.id, user.id);
+      }
+
+      io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+
+      delete online[user.id];
+    }
+  });
 
   socket.on('cl_register', async ({name, password}, done) => {
     debug('cl_register', name, password);
@@ -100,11 +152,21 @@ io.on('connection', function(socket) {
     const hash = hasher.digest('base64');
 
     if (hash === doc.hash) {
-      user = doc;
-      return done(success({name: user.name, bio: user.bio}));
-    }
+      if (online[doc.id]) {
+        return done(error('already logged in'));
+      }
 
-    return done(error('wrong username/password'));
+      user = doc;
+      online[user.id] = true;
+
+      joinLobby(user.id, user.name);
+      socket.join(LOBBY);
+      io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+
+      done(success({name: user.name, bio: user.bio}));
+    } else {
+      done(error('wrong username/password'));
+    }
   });
 
   socket.on('cl_update', async ({newName, newBio}, done) => {
@@ -123,36 +185,50 @@ io.on('connection', function(socket) {
 
   socket.on('cl_create_room', async ({name}, done) => {
     debug('cl_create_room', name);
+
     if (!user) return done(error('forbidden'));
-    const thisRoomId = createRoom(user.id, user.name, name);
+    if (room) return done(error('already in a room'));
 
-    socket.broadcast.emit('sv_refresh_rooms', serializeRoomList());
+    room = createRoom(user.id, user.name, name);
+    debug(room);
 
-    done(success(rooms[thisRoomId]));
-  });
+    leaveLobby(user.id);
+    socket.leave(LOBBY);
+    io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
-  socket.on('cl_refresh_rooms', async (done) => {
-    debug('cl_refresh_rooms');
-
-    done(success(serializeRoomList()));
+    done(success(serializeRoom(room)));
   });
 
   socket.on('cl_join_room', async ({roomId}, done) => {
     debug('cl_join_room', roomId);
+
     if (!user) return done(error('forbidden'));
-    joinRoom(roomId, user.id, user.name);
+    if (room) return done(error('already in a room'));
 
-    // TODO: socket emit to host and other guests!
-    // socket.to().emit('sv_join_room', rooms[roomId]);
+    room = joinRoom(roomId, user.id, user.name);
 
-    done(success(rooms[roomId]));
+    leaveLobby(user.id);
+    socket.leave(LOBBY);
+    io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+
+    done(success(serializeRoom(room)));
   });
 
   socket.on('cl_leave_room', async ({roomId}, done) => {
     debug('cl_leave_room', roomId);
-    leaveRoom(roomId, user.id);
 
-    done(success(serializeRoomList()));
+    if (!user) return done(error('forbidden'));
+    if (!room) return done(error('not in any room'));
+    if (room.id !== roomId) return done(error('not in the room'));
+
+    leaveRoom(roomId, user.id);
+    room = null;
+
+    joinLobby(user.id, user.name);
+    socket.join(LOBBY);
+    io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+
+    done(success());
   });
 
   socket.on('cl_propose_room', async ({roomId}, done) => {

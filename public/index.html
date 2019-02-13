@@ -17,6 +17,7 @@
       <div id="message"></div>
       <div id="room-list"></div>
       <div id="room-prep"></div>
+      <div id="lobby"></div>
     </div>
 
     <script id="accountTmpl" type="text/html">
@@ -117,6 +118,42 @@
       </div>
     </script>
 
+    <script id="lobbyTmpl" type="text/html">
+      {{if !room}}
+      {{if lobby}}
+      <div>
+        <strong>{{: lobby.length}} users in lobby:</strong> {{for lobby}}<em>{{: name}}, </em>{{/for}}
+      </div>
+      {{/if}}
+      <form class="createRoom">
+        <input class="roomName" type="text" value="Untitled Room"/>
+        <button type="submit">Create Room</button>
+      </form>
+      {{if rooms}}
+      <ul>
+        {{for rooms}}
+        <li>
+          {{include #view tmpl="#lobbyRoomListItemTmpl"/}}
+          <button class="joinRoom" value="{{: id}}">Join</button>
+        </li>
+        {{/for}}
+      </ul>
+      {{/if}}
+      {{else}}
+      <div>
+        Joined room: {{include room tmpl="#lobbyRoomListItemTmpl"/}}
+        <button class="leaveRoom">Leave Room</button>
+      </div>
+      {{/if}}
+    </script>
+
+    <script id="lobbyRoomListItemTmpl" type="text/html">
+      <strong>{{: name}}</strong> (owned by <em>{{: ownerName}}</em>)
+      {{if members.length}}
+      <strong>{{: members.length}} members:</strong> {{for members}}<em>{{: name}}, </em>{{/for}}
+      {{/if}}
+    </script>
+
     <script>
       var accountTmpl = $.templates('#accountTmpl');
       var messageTmpl = $.templates('#messageTmpl');
@@ -126,16 +163,21 @@
       var error = function(err) {
         alert(JSON.stringify(err));
       }
+
+      function createHandler(resolve, reject) {
+        return function(res) {
+          if (res.err) {
+            if (reject) reject(res.err);
+          } else {
+            resolve(res.data);
+          }
+        }
+      }
       
       var socket = io();
 
       socket.on('handshake', function() {
         console.log('handshake');
-      });
-      
-      socket.on('sv_refresh_rooms', function(rooms) {
-        console.log('sv_refresh_rooms', rooms);
-        $('#room-list').html(roomListTmpl.render({roomList: rooms}));
       });
       
       renderAccount({isLoggedIn: false});
@@ -279,6 +321,47 @@
           });
         });
       }
-      </script>
+
+      var lobby = new (function Lobby(selector, tmpl, props) {
+        this.state = props;
+
+        var self = this;
+        
+        self.setState = function(state) {
+          Object.assign(self.state, state);
+          console.log('lobby.render', self.state);
+          $(selector).html(tmpl.render(self.state));
+
+          $(selector + ' .createRoom').on('submit', function(e) {
+            e.preventDefault();
+            socket.emit('cl_create_room', {
+              name: $(selector + ' .roomName').val(),
+            }, createHandler(function(room) {
+              self.setState({room: room});
+            }, error));
+          });
+
+          $(selector + ' .leaveRoom').on('click', function() {
+            socket.emit('cl_leave_room', {
+              roomId: self.state.room.id
+            }, createHandler(function() {
+              self.setState({room: null});
+            }, error));
+          });
+
+          $(selector + ' .joinRoom').on('click', function() {
+            socket.emit('cl_join_room', {
+              roomId: $(this).attr('value')
+            }, createHandler(function(room) {
+              self.setState({room: room});
+            }, error));
+          })
+        }
+      })('#lobby', $.templates('#lobbyTmpl'), {});
+
+      socket.on('sv_update_lobby', function(res) {
+        lobby.setState(res);
+      });
+    </script>
   </body>
   </html>
