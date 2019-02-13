@@ -12,7 +12,7 @@ const http = new Server(app);
 
 app.use(express.static('public'));
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 http.listen(port, () => debug('listening on port %d', port));
 
 function success(data) {
