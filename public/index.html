@@ -102,6 +102,7 @@
                 {{else}}
                   {{if !hasAgreed}}
                     <button class="agree">Agree to Start the Game</button>
+                    <button class="refuse">Refuse to Start the Game</button>
                   {{else}}
                     <div>Waiting for the host to Start the Game</div>
                   {{/if}}
@@ -247,6 +248,12 @@
 
           $(selector + ' .agree').on('click', function() {
             socket.emit('cl_room_agree', createHandler(null, error));
+          });
+
+          $(selector + ' .refuse').on('click', function() {
+            socket.emit('cl_leave_room', createHandler(function() {
+              self.setState({room: null, isHosting: null});
+            }, error));
           });
 
           $(selector + ' .start').on('click', function() {
