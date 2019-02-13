@@ -43,6 +43,7 @@ function leaveLobby(userId) {
 }
 
 const rooms = {};
+const SV_UPDATE_ROOM = 'sv_update_room';
 
 function generateId(length = 256) {
   return crypto.randomBytes(length).toString('base64');
@@ -50,7 +51,7 @@ function generateId(length = 256) {
 
 function createRoom(userId, userName, name) {
   debug('    createRoom', userId, userName, name);
-  const id = generateId(16);
+  const id = generateId(32);
   rooms[id] = {id, name, ownerId: userId, ownerName: userName, members: {}};
   return rooms[id];
 }
@@ -108,12 +109,13 @@ io.on('connection', function(socket) {
     debug('disconnect', socket.id);
 
     if (user) {
-      if (lobby[user.id]) {
-        leaveLobby(user.id);
-      }
-
       if (room) {
         leaveRoom(room.id, user.id);
+        io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+      }
+
+      if (lobby[user.id]) {
+        leaveLobby(user.id);
       }
 
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
@@ -190,7 +192,7 @@ io.on('connection', function(socket) {
     if (room) return done(error('already in a room'));
 
     room = createRoom(user.id, user.name, name);
-    debug(room);
+    socket.join(room.id);
 
     leaveLobby(user.id);
     socket.leave(LOBBY);
@@ -206,6 +208,8 @@ io.on('connection', function(socket) {
     if (room) return done(error('already in a room'));
 
     room = joinRoom(roomId, user.id, user.name);
+    socket.join(room.id);
+    io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
 
     leaveLobby(user.id);
     socket.leave(LOBBY);
@@ -222,6 +226,9 @@ io.on('connection', function(socket) {
     if (room.id !== roomId) return done(error('not in the room'));
 
     leaveRoom(roomId, user.id);
+    socket.leave(room.id);
+    io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+
     room = null;
 
     joinLobby(user.id, user.name);

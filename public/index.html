@@ -362,6 +362,10 @@
       socket.on('sv_update_lobby', function(res) {
         lobby.setState(res);
       });
+
+      socket.on('sv_update_room', function(room) {
+        lobby.setState({room: room});
+      });
     </script>
   </body>
   </html>
