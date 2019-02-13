@@ -70,7 +70,12 @@ function leaveRoom(roomId, userId) {
     const memberIds = Object.keys(room.members);
     if (memberIds.length === 0) { // delete when no members
       delete rooms[roomId];
-    } else { // promote first member to be owner
+    } else {
+      // clear the proposal
+      room.hasProposed = false;
+      memberIds.forEach((x) => room.members[x].hasAgreed = false);
+
+      // promote first member to be owner
       const newOwner = room.members[memberIds[0]];
       room.ownerId = newOwner.id;
       room.ownerName = newOwner.name;
