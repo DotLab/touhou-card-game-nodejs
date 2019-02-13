@@ -120,30 +120,73 @@
 
     <script id="lobbyTmpl" type="text/html">
       {{if !room}}
-      {{if lobby}}
-      <div>
-        <strong>{{: lobby.length}} users in lobby:</strong> {{for lobby}}<em>{{: name}}, </em>{{/for}}
-      </div>
-      {{/if}}
-      <form class="createRoom">
-        <input class="roomName" type="text" value="Untitled Room"/>
-        <button type="submit">Create Room</button>
-      </form>
-      {{if rooms}}
-      <ul>
-        {{for rooms}}
-        <li>
-          {{include #view tmpl="#lobbyRoomListItemTmpl"/}}
-          <button class="joinRoom" value="{{: id}}">Join</button>
-        </li>
-        {{/for}}
-      </ul>
-      {{/if}}
+        {{if lobby}}
+          <div>
+            <strong>{{: lobby.length}} users in lobby:</strong> {{for lobby}}<em>{{: name}}, </em>{{/for}}
+          </div>
+        {{/if}}
+        <form class="createRoom">
+          <input class="roomName" type="text" value="Untitled Room"/>
+          <button type="submit">Create Room</button>
+        </form>
+        {{if rooms}}
+          <ul>
+            {{for rooms}}
+            <li>
+              {{include #view tmpl="#lobbyRoomListItemTmpl"/}}
+              <button class="joinRoom" value="{{: id}}">Join</button>
+            </li>
+            {{/for}}
+          </ul>
+        {{/if}}
       {{else}}
-      <div>
-        Joined room: {{include room tmpl="#lobbyRoomListItemTmpl"/}}
-        <button class="leaveRoom">Leave Room</button>
-      </div>
+        <div>
+          Joined room: {{include room tmpl="#lobbyRoomListItemTmpl"/}}
+          <button class="leaveRoom">Leave Room</button>
+        </div>
+        {{if room.hasStarted}}
+          <div>Enjoy the game!</div>
+        {{else}}
+          <div>
+            {{if room.members.length > 0}}
+              {{if room.hasProposed}}
+                <ul>
+                  {{for room.members}}
+                    <li>
+                      <strong>{{: name}}</strong>
+                      {{if hasAgreed}}
+                        Agreed to start
+                      {{else}}
+                        Waiting for agreement
+                      {{/if}}
+                    </li>
+                  {{/for}}
+                </ul>
+                {{if isHosting}}
+                  {{if hasAnyAgreed}}
+                    <button class="start"> Start the Game</button>
+                  {{else}}
+                    <div>Waiting for members to agree.</div>
+                  {{/if}}
+                {{else}}
+                  {{if !hasAgreed}}
+                    <button class="agree">Agree to Start the Game</button>
+                  {{else}}
+                    <div>Waiting for the host to Start the Game</div>
+                  {{/if}}
+                {{/if}}
+              {{else}}
+                {{if isHosting}}
+                  You are the host! <button class="propose">Propose to Start a Game</button>
+                {{else}}
+                  Waiting for the host to start a game.
+                {{/if}}
+              {{/if}}
+            {{else}}
+              Not enough members.
+            {{/if}}
+          </div>
+        {{/if}}
       {{/if}}
     </script>
 
@@ -169,12 +212,13 @@
           if (res.err) {
             if (reject) reject(res.err);
           } else {
-            resolve(res.data);
+            if (resolve) resolve(res.data);
           }
         }
       }
       
       var socket = io();
+      var user = null;
 
       socket.on('handshake', function() {
         console.log('handshake');
@@ -208,6 +252,7 @@
             password: $('#login-form-password').val(),
           }, function(res) {
             if (res.err) return error(res.err);
+            user = res.data;
             renderAccount({
               name: res.data.name,
               bio: res.data.bio,
@@ -337,15 +382,13 @@
             socket.emit('cl_create_room', {
               name: $(selector + ' .roomName').val(),
             }, createHandler(function(room) {
-              self.setState({room: room});
+              self.setState({room: room, isHosting: true});
             }, error));
           });
 
           $(selector + ' .leaveRoom').on('click', function() {
-            socket.emit('cl_leave_room', {
-              roomId: self.state.room.id
-            }, createHandler(function() {
-              self.setState({room: null});
+            socket.emit('cl_leave_room', createHandler(function() {
+              self.setState({room: null, isHosting: null});
             }, error));
           });
 
@@ -353,9 +396,21 @@
             socket.emit('cl_join_room', {
               roomId: $(this).attr('value')
             }, createHandler(function(room) {
-              self.setState({room: room});
+              self.setState({room: room, isHosting: false});
             }, error));
-          })
+          });
+
+          $(selector + ' .propose').on('click', function() {
+            socket.emit('cl_room_propose', createHandler(null, error));
+          });
+
+          $(selector + ' .agree').on('click', function() {
+            socket.emit('cl_room_agree', createHandler(null, error));
+          });
+
+          $(selector + ' .start').on('click', function() {
+            socket.emit('cl_room_start', createHandler(null, error));
+          });
         }
       })('#lobby', $.templates('#lobbyTmpl'), {});
 
@@ -364,7 +419,20 @@
       });
 
       socket.on('sv_update_room', function(room) {
-        lobby.setState({room: room});
+        console.log('sv_update_room', room);
+        var hasAgreed = false;
+        for (var i = 0; i < room.members.length; i += 1) {
+          if (room.members[i].id === user.id) {
+            hasAgreed = room.members[i].hasAgreed;
+            break;
+          }
+        }
+        lobby.setState({
+          room: room, 
+          isHosting: user.id === room.ownerId, // ownership may transfer
+          hasAgreed: hasAgreed,
+          hasAnyAgreed: room.members.filter(x => x.hasAgreed).length > 0
+        }); 
       });
     </script>
   </body>

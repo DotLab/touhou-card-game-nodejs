@@ -52,13 +52,13 @@ function generateId(length = 256) {
 function createRoom(userId, userName, name) {
   debug('    createRoom', userId, userName, name);
   const id = generateId(32);
-  rooms[id] = {id, name, ownerId: userId, ownerName: userName, members: {}};
+  rooms[id] = {id, name, ownerId: userId, ownerName: userName, hasProposed: false, hasStarted: false, members: {}};
   return rooms[id];
 }
 
 function joinRoom(roomId, userId, userName) {
   debug('    joinRoom', roomId, userId, userName);
-  rooms[roomId].members[userId] = {id: userId, name: userName};
+  rooms[roomId].members[userId] = {id: userId, name: userName, hasAgreed: false};
   return rooms[roomId];
 }
 
@@ -165,7 +165,7 @@ io.on('connection', function(socket) {
       socket.join(LOBBY);
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
-      done(success({name: user.name, bio: user.bio}));
+      done(success({id: user.id, name: user.name, bio: user.bio}));
     } else {
       done(error('wrong username/password'));
     }
@@ -218,14 +218,14 @@ io.on('connection', function(socket) {
     done(success(serializeRoom(room)));
   });
 
-  socket.on('cl_leave_room', async ({roomId}, done) => {
-    debug('cl_leave_room', roomId);
+  socket.on('cl_leave_room', async (done) => {
+    debug('cl_leave_room');
 
     if (!user) return done(error('forbidden'));
     if (!room) return done(error('not in any room'));
-    if (room.id !== roomId) return done(error('not in the room'));
+    if (!room.members[user.id]) return done(error('not a member'));
 
-    leaveRoom(roomId, user.id);
+    leaveRoom(room.id, user.id);
     socket.leave(room.id);
     io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
 
@@ -238,24 +238,42 @@ io.on('connection', function(socket) {
     done(success());
   });
 
-  socket.on('cl_propose_room', async ({roomId}, done) => {
-    debug('cl_propose_room', roomId);
-    // propose
+  socket.on('cl_room_propose', async (done) => {
+    debug('cl_room_propose');
 
-    done(success(rooms[roomId]));
+    if (!user) return done(error('forbidden'));
+    if (!room) return done(error('not in any room'));
+    if (room.ownerId !== user.id) return done(error('not the host'));
+
+    room.hasProposed = true;
+    io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+
+    done(success());
   });
 
-  socket.on('cl_agree_room', async ({roomId}, done) => {
-    debug('cl_agree_room', roomId);
-    // agree
+  socket.on('cl_room_agree', async (done) => {
+    debug('cl_room_agree');
 
-    done(success(rooms[roomId]));
+    if (!user) return done(error('forbidden'));
+    if (!room) return done(error('not in any room'));
+    if (!room.members[user.id]) return done(error('not a member'));
+
+    room.members[user.id].hasAgreed = true;
+    io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+
+    done(success());
   });
 
-  socket.on('cl_start_room', async ({roomId}, done) => {
-    debug('cl_start_room', roomId);
-    // start game
+  socket.on('cl_room_start', async (done) => {
+    debug('cl_room_start');
 
-    done();
+    if (!user) return done(error('forbidden'));
+    if (!room) return done(error('not in any room'));
+    if (room.ownerId !== user.id) return done(error('not the host'));
+
+    room.hasStarted = true;
+    io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+
+    done(success());
   });
 });
