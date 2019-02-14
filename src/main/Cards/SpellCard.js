@@ -1,5 +1,9 @@
 import {Card} from './Card.js';
 
+/**
+ * Spell Card
+ * @extends Card
+ */
 class SpellCard extends Card {
   /**
    * @constructor

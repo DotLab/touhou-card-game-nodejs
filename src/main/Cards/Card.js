@@ -1,3 +1,6 @@
+/**
+ * Card
+ */
 class Card {
   static generateId(len) {
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

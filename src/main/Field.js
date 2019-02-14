@@ -3,8 +3,8 @@
  */
 class Field {
   /**
-       * @constructor
-       */
+   * @constructor
+   */
   constructor() {
     this.environmentSlot = null;
     this.monsterSlots = [null, null, null, null];

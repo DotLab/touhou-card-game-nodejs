@@ -1,5 +1,9 @@
 const Card = require('./Cards/Card.js');
 
+/**
+ * Monster Card
+ * @extends Card
+ */
 class MonsterCard extends Card {
   /**
    * @constructor

@@ -1,6 +1,10 @@
 const MonsterCard = require('./MonsterCard');
 const BlueEyesWhiteDragon = require('./BlueEyesWhiteDragon');
 
+/**
+ * Kaibaman Card
+ * @extends MonsterCard
+ */
 class KaibamanCard extends MonsterCard {
   constructor() {
     super(KaibamanCard.Name, '/imgs/KaibaMan.jpg', false, 'ATT', 3, 200, 700);
