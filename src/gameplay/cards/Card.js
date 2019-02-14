@@ -25,9 +25,7 @@ class Card {
     this.display = null;
   }
 
-  canSummon() {
-    return false;
-  }
+  endTurn() {}
 
   takeSnapShot() {
     return {

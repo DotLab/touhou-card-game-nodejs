@@ -99,27 +99,27 @@ describe('Game', () => {
     assert.equal(card2, game.players[0].field.monsterSlots[1]);
   });
 
-  // it('U016: The Gamer can order the Marionettes to Attack other Gamers\' Marionettes and, when there is no Marionette on Ground, other Gamers themselves in Phase 2 every round', () => {
-  //   const game = new Game(mockUsers);
-  //   assert.isUndefined(game.draw());
-  //   const card1 = game.players[0].hand[0];
-  //   assert.isUndefined(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
-  //   const life = game.players[1].life;
-  //   assert.isUndefined(game.act(Game.ATTACK, 0, 1, -1));
-  //   assert.equal(game.players[1].life, life - card1.atk);
-  //   assert.isString(game.act(Game.ATTACK, 0, 1, -1)); // cannot attack twice
+  it('U016: The Gamer can order the Marionettes to Attack other Gamers\' Marionettes and, when there is no Marionette on Ground, other Gamers themselves in Phase 2 every round', () => {
+    const game = new Game(mockUsers);
+    assert.isUndefined(game.draw());
+    const card1 = game.players[0].hand[0];
+    assert.isUndefined(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    const life = game.players[1].life;
+    assert.isUndefined(game.attack(0, 1, -1));
+    assert.equal(game.players[1].life, life - card1.atk);
+    assert.isString(game.attack(0, 1, -1)); // cannot attack twice
 
-  //   assert.isUndefined(game.endTurn());
-  //   assert.isUndefined(game.endTurn());
+    assert.isUndefined(game.endTurn());
+    assert.isUndefined(game.endTurn());
 
-  //   assert.isUndefined(game.draw());
-  //   const card2 = game.players[0].hand[0];
-  //   assert.isUndefined(game.summon(0, 1, Card.REVEALED, Card.ATTACK));
-  //   assert.isUndefined(game.act(Game.ATTACK, 0, 1, -1));
-  //   assert.equal(game.players[1].life, life - card1.atk - card1.atk);
-  //   assert.isUndefined(game.act(Game.ATTACK, 1, 1, -1));
-  //   assert.equal(game.players[1].life, life - card1.atk - card1.atk - card2.atk);
-  //   assert.isString(game.act(Game.ATTACK, 0, 1, -1)); // cannot attack twice
-  //   assert.isString(game.act(Game.ATTACK, 1, 1, -1)); // cannot attack twice
-  // });
+    assert.isUndefined(game.draw());
+    const card2 = game.players[0].hand[0];
+    assert.isUndefined(game.summon(0, 1, Card.REVEALED, Card.ATTACK));
+    assert.isUndefined(game.attack(0, 1, -1));
+    assert.equal(game.players[1].life, life - card1.atk - card1.atk);
+    assert.isUndefined(game.attack(1, 1, -1));
+    assert.equal(game.players[1].life, life - card1.atk - card1.atk - card2.atk);
+    assert.isString(game.attack(0, 1, -1)); // cannot attack twice
+    assert.isString(game.attack(1, 1, -1)); // cannot attack twice
+  });
 });

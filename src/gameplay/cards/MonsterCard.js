@@ -19,6 +19,8 @@ class MonsterCard extends Card {
     this.lv = lv;
     this.atk = atk;
     this.dfs = dfs;
+    this.pose = null;
+    this.hasAttacked = false;
   }
 
   canSummon() {
@@ -28,6 +30,18 @@ class MonsterCard extends Card {
   summon(display, pose) {
     this.display = display;
     this.pose = pose;
+  }
+
+  canAttack() {
+    return this.pose === Card.ATTACK && !this.hasAttacked;
+  }
+
+  attack() {
+    this.hasAttacked = true;
+  }
+
+  endTurn() {
+    this.hasAttacked = false;
   }
 }
 
