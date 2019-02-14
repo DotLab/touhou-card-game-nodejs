@@ -32,21 +32,17 @@ class Game {
     return this.players[this.turn].userId === userId;
   }
 
-  /* moveToNextRound() {
-    if (this.players[this.players.length-1].phase === 4) {
-      this.round++;
-    }
-  } */
-
   /**
-   * Act on Game.
-   * END_PHASE: end my phase
-   * END_TURN: end my turn
-   * SUMMON: normal summon from hand arg1 to monsterSlots arg2
+   * Act on Game. \
+   * END_PHASE: end my phase \
+   * END_TURN: end my turn \
+   * SUMMON: normal summon from <arg1> hand to <arg2> monsterSlots \
+   * ATTACK: use <arg1> monsterSlots to attack <arg2> player's <arg3> monsterSlots
    * @param {String} intent Intent
    * @param {undefined|Number} arg1 Argument 1
    * @param {undefined|Number} arg2 Argument 2
-  //  * @return {undefined|String} if successful
+   * @param {undefined|Number} arg3 Argument 3
+   * @return {undefined|String} if successful
    */
   act(intent, arg1, arg2) {
     /* name: draw, attack, place, endPhase

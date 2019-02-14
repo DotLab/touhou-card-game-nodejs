@@ -13,15 +13,16 @@ class Player {
    * @param {Number} hp
    * @param {String} username
    */
-  constructor(deck, hp, username) {
-    this.deck = deck;
-    this.hp = hp || 5000;
-    this.hand = [];
+  constructor(user) {
+    this.userId = user.id;
+    this.userName = user.name;
+    this.deck = user.deck;
+
     this.field = new Field();
-    this.username = username;
-    this.phase = 1;
-    for (let i = 0; i < 5; i++) {
-      this.hand.push(deck.pop());
+    this.life = 5000;
+    this.hand = [];
+    for (let i = 0; i < 5; i += 1) {
+      this.hand.push(this.deck.pop());
     }
   }
 

@@ -8,34 +8,37 @@ describe('Game', () => {
     assert.lengthOf(deck, 20);
   });
 
-  // const mockUsers = [{id: 'abc', name: 'F'}, {id: 'def', name: 'K'}];
+  const mockUsers = [
+    {id: 'abc', name: 'F', deck: Game.createDeck(20)},
+    {id: 'def', name: 'K', deck: Game.createDeck(20)},
+  ];
 
-  // it('#constructor', () => {
-  //   const game = new Game(mockUsers);
-  //   assert.lengthOf(game.players, 2);
-  // });
+  it('#constructor', () => {
+    const game = new Game(mockUsers);
+    assert.lengthOf(game.players, 2);
+  });
 
-  // it('U010: The Gamer is dealt 5 random cards at the beginning of the Game.', () => {
-  //   const game = new Game(mockUsers);
-  //   game.players.forEach((player) => {
-  //     assert.lengthOf(player.hand, 5);
-  //   });
-  // });
+  it('U010: The Gamer is dealt 5 random cards at the beginning of the Game.', () => {
+    const game = new Game(mockUsers);
+    game.players.forEach((player) => {
+      assert.lengthOf(player.hand, 5);
+    });
+  });
 
-  // it('U011: The Gamer has 5000 Life initially.', () => {
-  //   const game = new Game(mockUsers);
-  //   game.players.forEach((player) => {
-  //     assert.equal(player.life, 5000);
-  //   });
-  // });
+  it('U011: The Gamer has 5000 Life initially.', () => {
+    const game = new Game(mockUsers);
+    game.players.forEach((player) => {
+      assert.equal(player.life, 5000);
+    });
+  });
 
-  // it('U012: The Gamer can see other Players in the Game with their Name and icons indicating their cards in hands.', () => {
-  //   const game = new Game(mockUsers);
-  //   game.players.forEach((player, i) => { // check id and name
-  //     assert.equal(player.userId, mockUsers[i].id);
-  //     assert.equal(player.userName, mockUsers[i].name);
-  //   });
-  // });
+  it('U012: The Gamer can see other Players in the Game with their Name and icons indicating their cards in hands.', () => {
+    const game = new Game(mockUsers);
+    game.players.forEach((player, i) => { // check id and name
+      assert.equal(player.userId, mockUsers[i].id);
+      assert.equal(player.userName, mockUsers[i].name);
+    });
+  });
 
   // it('U013: The Gamer can play in his/her turn every round and the order of turns is based on how early the Gamer originally joined the Room.', () => {
   //   const game = new Game(mockUsers);
