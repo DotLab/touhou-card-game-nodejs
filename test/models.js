@@ -1,4 +1,5 @@
 const assert = require('chai').assert;
+
 const mongoose = require('mongoose');
 const {User} = require('../src/models');
 
@@ -16,7 +17,7 @@ describe('models', () => {
       await User.deleteMany({});
     });
 
-    it('create', async () => {
+    it('.create', async () => {
       await User.create({name: 'abc', salt: 'qwe', hash: 'ret', bio: 'ffe'});
       const doc = await User.findOne({name: 'abc'});
       assert.isNotNull(doc);
