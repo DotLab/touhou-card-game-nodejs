@@ -9,21 +9,40 @@ const Field = require('./Field');
 class Player {
   /**
    * @constructor
-   * @param {Card[]} deck randomly shuffled
-   * @param {Number} hp
-   * @param {String} username
+   * @param {User} user the user
    */
   constructor(user) {
     this.userId = user.id;
     this.userName = user.name;
+    /** @type {Card[]} */
     this.deck = user.deck;
-
-    this.field = new Field();
-    this.life = 5000;
+    /** @type {Card[]} */
     this.hand = [];
+    this.field = new Field();
+
+    this.life = 5000;
+    this.hasDrawn = false;
     for (let i = 0; i < 5; i += 1) {
       this.hand.push(this.deck.pop());
     }
+  }
+
+  /**
+   * Draw a card.
+   * @return {undefined|String} message
+   */
+  draw() {
+    if (this.hasDrawn) return 'already drawn';
+    this.hasDrawn = true;
+    this.hand.push(this.deck.pop());
+    return undefined;
+  }
+
+  /**
+   * End turn
+   */
+  endTurn() {
+    this.hasDrawn = false;
   }
 
   isDone() {

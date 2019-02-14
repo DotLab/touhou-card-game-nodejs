@@ -26,10 +26,14 @@ class Game {
     this.players = users.map((x) => new Player(x));
     this.round = 0;
     this.turn = 0;
+    this.playerTurnById = this.players.reduce((acc, cur, i) => {
+      acc[cur.userId] = i;
+      return acc;
+    }, {});
   }
 
   isMyTurn(userId) {
-    return this.players[this.turn].userId === userId;
+    return this.turn === this.playerTurnById[userId];
   }
 
   /**
@@ -44,23 +48,22 @@ class Game {
    * @param {undefined|Number} arg3 Argument 3
    * @return {undefined|String} if successful
    */
-  act(intent, arg1, arg2) {
-    /* name: draw, attack, place, endPhase
-    * param(draw): empty
-    * param(place): slot, indexOfHands, tributeSlot1, tributeSlot2, reveal, mode
-    * param(attack): currenIndex, slot(own), slot(enemy), enemyIndex, enemyPlayer
-    */
-    // const input = {
-    //   name: obj.name,
-    //   param: obj.param,
-    //   enemyPlayer: this.players[obj.param.enemyIndex],
-    // };
-
-    // const res = this.players[this.currentPlayerIndex].act(input);
-    // this.phaseComplete();
-    // this.playerLoseCheck();
-    // this.gameOver = this.gameOverCheck();
-    // return res;
+  act(intent, arg1, arg2, arg3) {
+    switch (intent) {
+      case Game.DRAW: {
+        return this.players[this.turn].draw();
+      }
+      case Game.END_TURN: {
+        this.players[this.turn].endTurn();
+        this.turn += 1;
+        if (this.turn >= this.players.length) {
+          this.round += 1;
+          this.turn = 0;
+        }
+        return undefined;
+      }
+    }
+    return undefined;
   }
 
   /**
