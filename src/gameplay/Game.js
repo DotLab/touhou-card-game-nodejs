@@ -12,14 +12,14 @@ class Game {
     this.players = users.map((user) => new Player(user));
     this.round = 0;
     this.turn = 0;
-    this.playerTurnById = this.players.reduce((acc, cur, i) => {
+    this.playerIndexById = this.players.reduce((acc, cur, i) => {
       acc[cur.userId] = i;
       return acc;
     }, {});
   }
 
   isMyTurn(userId) {
-    return this.turn === this.playerTurnById[userId];
+    return this.turn === this.playerIndexById[userId];
   }
 
   /**
@@ -73,7 +73,7 @@ class Game {
       if (!targetMonster) return 'invalid target card index';
       if (!targetMonster.canBeTargeted()) return 'cannot be targeted';
 
-      player.attack(monster, targetPlayer, targetMonster);
+      player.attack(monster, monsterIdx, targetPlayer, targetMonster, targetMonsterIdx);
     }
   }
 
@@ -89,55 +89,6 @@ class Game {
       this.turn = 0;
     }
     return undefined;
-  }
-
-  /**
-   * void
-   */
-  phaseComplete() {
-    if (this.players[this.currentPlayerIndex].isDone()) {
-      this.currentPlayerIndex++;
-    }
-    if (this.currentPlayerIndex > this.players.length) {
-      this.currentPlayerIndex = 0;
-      this.round ++;
-    }
-  }
-
-  playerLoseCheck() {
-    let i;
-    for (i = 0; i < this.players.length; i++) {
-      if (this.players[i] != null) {
-        if (this.players[i].hp <= 0) {
-          this.players[i] = null;
-        }
-      }
-    }
-  }
-
-  gameOverCheck() {
-    let i;
-    let count = 0;
-    for (i = 0; i < this.players.length; i++) {
-      if (this.players[i] != null) {
-        count ++;
-      }
-    }
-    if (count === 1) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Serialization for front end
-   * @return {Object} the representation of the game
-   */
-  takeSnapShot() {
-    const res = this.players[this.currentPlayerIndex].takeSnapShot();
-    res.opponent = this.players.map((player) => player.takeSnapShot());
-    return res;
   }
 }
 

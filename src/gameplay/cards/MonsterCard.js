@@ -41,6 +41,7 @@ class MonsterCard extends Card {
   }
 
   endTurn() {
+    super.endTurn();
     this.hasAttacked = false;
   }
 }

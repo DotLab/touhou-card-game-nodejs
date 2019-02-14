@@ -23,15 +23,15 @@ class Card {
     this.desc = desc;
     this.imgUrl = imgUrl;
     this.display = null;
+    this.hasChangedDisplay = false;
   }
 
-  endTurn() {}
+  endTurn() {
+    this.hasChangedDisplay = false;
+  }
 
-  takeSnapShot() {
-    return {
-      id: this.id,
-      imgUrl: this.imgUrl,
-    };
+  canBeTargeted() {
+    return true;
   }
 }
 

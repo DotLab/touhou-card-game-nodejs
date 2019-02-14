@@ -1,7 +1,5 @@
-const Card = require('./cards/Card');
-const Kaibaman = require('./cards/KaibamanCard');
-const MonsterCard = require('./cards/MonsterCard');
 const Field = require('./Field');
+const Card = require('./cards/Card');
 
 /**
  * Player class
@@ -52,20 +50,28 @@ class Player {
 
   directAttack(monster, targetUser) {
     monster.attack();
-    targetUser.receiveDirectAttack(monster.atk);
+    targetUser.receiveDamage(monster.atk);
   }
 
-  receiveDirectAttack(attack) {
-    this.life -= attack;
-  }
-
-  findCardInHandByName(name) {
-    for (let i = 0; i < this.hand.length; i++) {
-      if (this.hand[i].name === name) {
-        return i;
+  attack(monster, monsterIdx, targetUser, targetMonster, targetMonsterIdx) {
+    if (targetMonster.pose === Card.ATTACK) {
+      if (monster.atk > targetMonster.atk) {
+        const damage = monster.atk - targetMonster.atk;
+        targetUser.killMonsterOnField(targetMonsterIdx);
+        targetUser.receiveDamage(damage);
+      } else if (monster.atk < targetMonster.atk) {
+        const damage = targetMonster.atk - monster.atk;
+        this.killMonsterOnField(monsterIdx);
+        this.receiveDamage(damage);
+      } else {
+        this.killMonsterOnField(monsterIdx);
+        targetUser.killMonsterOnField(targetMonsterIdx);
       }
     }
-    return -1;
+  }
+
+  receiveDamage(attack) {
+    this.life -= attack;
   }
 
   /**
@@ -78,22 +84,10 @@ class Player {
     return removed[0];
   }
 
-  findCardOnFieldById(id) {
-    for (let i = 0; i < this.field.length; i++) {
-      if (this.field.monsterSlots[i].id === id) {
-        return i;
-      }
-    }
-    return -1; // not likely to happen
-  }
-
-  killMonsterCardOnField(index) {
-    const removed = this.field.monsterSlots.splice(index, 1);
-    this.field.graveyard.push(removed);
-  }
-
-  placeCardOnField(index, card) {
-    this.field.monsterSlots[index] = card;
+  killMonsterOnField(index) {
+    const card = this.field.monsterSlots[index];
+    this.field.monsterSlots[index] = null;
+    this.field.graveyard.push(card);
   }
 }
 

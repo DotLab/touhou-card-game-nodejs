@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
 
+const MonsterCard = require('../../src/gameplay/cards/MonsterCard');
 const KaibamanCard = require('../../src/gameplay/cards/KaibamanCard');
 const BlueEyesWhiteDragonCard = require('../../src/gameplay/cards/BlueEyesWhiteDragonCard');
 const Card = require('../../src/gameplay/cards/Card');
@@ -121,5 +122,71 @@ describe('Game', () => {
     assert.equal(game.players[1].life, life - card1.atk - card1.atk - card2.atk);
     assert.isString(game.attack(0, 1, -1)); // cannot attack twice
     assert.isString(game.attack(1, 1, -1)); // cannot attack twice
+  });
+
+  it('U016: The Gamer can order the Marionettes to Attack other Gamers\' Marionettes (300 ATK -> 300 ATK)', () => {
+    const game = new Game([
+      {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 1, 300, 300)]},
+      {id: 'def', name: 'K', deck: [new MonsterCard('', '', '', 1, 300, 300)]},
+    ]);
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+
+    const life = game.players[0].life;
+    assert.isObject(game.players[0].field.monsterSlots[0]);
+    assert.isObject(game.players[1].field.monsterSlots[0]);
+
+    game.attack(0, 1, 0);
+
+    assert.equal(game.players[0].life, life);
+    assert.equal(game.players[1].life, life);
+    assert.isNull(game.players[0].field.monsterSlots[0]);
+    assert.isNull(game.players[1].field.monsterSlots[0]);
+  });
+
+  it('U016: The Gamer can order the Marionettes to Attack other Gamers\' Marionettes (200 ATK -> 300 ATK)', () => {
+    const game = new Game([
+      {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 1, 200, 300)]},
+      {id: 'def', name: 'K', deck: [new MonsterCard('', '', '', 1, 300, 300)]},
+    ]);
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+
+    const life = game.players[0].life;
+    assert.isObject(game.players[0].field.monsterSlots[0]);
+    assert.isObject(game.players[1].field.monsterSlots[0]);
+
+    game.attack(0, 1, 0);
+
+    assert.equal(game.players[0].life, life - 100);
+    assert.equal(game.players[1].life, life);
+    assert.isNull(game.players[0].field.monsterSlots[0]);
+    assert.isObject(game.players[1].field.monsterSlots[0]);
+  });
+
+  it('U016: The Gamer can order the Marionettes to Attack other Gamers\' Marionettes (300 ATK -> 200 ATK)', () => {
+    const game = new Game([
+      {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 1, 300, 300)]},
+      {id: 'def', name: 'K', deck: [new MonsterCard('', '', '', 1, 200, 300)]},
+    ]);
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+
+    const life = game.players[0].life;
+    assert.isObject(game.players[0].field.monsterSlots[0]);
+    assert.isObject(game.players[1].field.monsterSlots[0]);
+
+    game.attack(0, 1, 0);
+
+    assert.equal(game.players[0].life, life);
+    assert.equal(game.players[1].life, life - 100);
+    assert.isObject(game.players[0].field.monsterSlots[0]);
+    assert.isNull(game.players[1].field.monsterSlots[0]);
   });
 });
