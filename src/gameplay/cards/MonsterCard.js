@@ -23,7 +23,8 @@ class MonsterCard extends Card {
     this.hasAttacked = false;
   }
 
-  canSummon() {
+  canSummon(display, pose) {
+    if (display === Card.HIDDEN && pose === Card.ATTACK) return false;
     return true;
   }
 

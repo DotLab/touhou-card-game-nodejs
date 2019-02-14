@@ -41,8 +41,8 @@ class Game {
   summon(handIdx, monsterIdx, display, pose) {
     const player = this.players[this.turn];
     if (handIdx >= player.hand.length) return 'invalid card index';
-    if (!player.hand[handIdx].canSummon(Game.HAND, display, pose)) return 'cannot summon';
-    if (player.field.monsterSlots[monsterIdx]) return 'monster grid occupied';
+    if (!player.hand[handIdx].canSummon(display, pose)) return 'cannot summon';
+    if (player.field.monsterSlots[monsterIdx] !== null) return 'monster grid occupied';
 
     const card = player.removeCardInHand(handIdx);
     player.field.monsterSlots[monsterIdx] = card;
@@ -63,7 +63,7 @@ class Game {
     const monster = player.field.monsterSlots[monsterIdx];
     if (!monster) return 'invalid card index';
     if (!monster.canAttack()) return 'cannot attack';
-    if (targetPlayerIdx > this.players.length) return 'invalid player index';
+    if (targetPlayerIdx >= this.players.length) return 'invalid player index';
 
     const targetPlayer = this.players[targetPlayerIdx];
     if (targetPlayer.canBeDirectlyAttacked()) {

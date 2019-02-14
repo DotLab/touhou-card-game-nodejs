@@ -30,6 +30,24 @@ describe('Game', () => {
     assert.lengthOf(game.players, 2);
   });
 
+  it('#summon', () => {
+    const game = new Game(mockUsers);
+    assert.isString(game.summon(5, 0, Card.REVEALED, Card.ATTACK));
+    assert.isString(game.summon(0, 1, Card.HIDDEN, Card.ATTACK));
+    assert.isString(game.summon(0, 9, Card.REVEALED, Card.ATTACK));
+  });
+
+  it('#attack', () => {
+    const game = new Game(mockUsers);
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+    assert.isString(game.attack(1, 0, 0));
+    assert.isString(game.attack(0, 2, 0));
+    assert.isString(game.attack(0, 0, 1));
+  });
+
   it('U010: The Gamer is dealt 5 random cards at the beginning of the Game', () => {
     const game = new Game(mockUsers);
     game.players.forEach((player) => {

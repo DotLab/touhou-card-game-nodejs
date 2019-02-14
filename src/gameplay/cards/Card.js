@@ -35,7 +35,7 @@ class Card {
   }
 }
 
-Card.SHOWN = 'SHOWN';
+Card.HIDDEN = 'HIDDEN';
 Card.REVEALED = 'REVEALED';
 Card.ATTACK = 'ATTACK';
 Card.DEFENSE = 'DEFENSE';
