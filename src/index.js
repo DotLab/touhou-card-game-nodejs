@@ -281,4 +281,14 @@ io.on('connection', function(socket) {
 
     done(success());
   });
+
+  socket.on('cl_game_action', async (obj, done) => {
+    debug('cl_draw_card');
+    const res = room.game.act(obj);
+    if (res) {
+      done(success(room.game.takeSnapshot()));
+    } else {
+      done(error(res));
+    }
+  });
 });

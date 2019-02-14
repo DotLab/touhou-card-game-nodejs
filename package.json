@@ -6,13 +6,16 @@
   "scripts": {
     "lint": "eslint .",
     "lint-fix": "eslint --fix .",
-    "test": "eslint . && nyc --all --reporter=html --reporter=text mocha --exit",
+    "test": "eslint . && nyc --all --reporter=html --reporter=text mocha --recursive",
+    "mocha": "nyc --all --reporter=html --reporter=text mocha --recursive",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "jsdoc": "jsdoc src -r -d docs",
     "serve-coverage": "http-server coverage -c-1",
     "serve-docs": "http-server docs -c-1",
     "start": "node src/index.js",
-    "debug": "nodemon src/index.js"
+    "debug": "nodemon src/index.js",
+    "debug-be": "nodemon -w ./src -w ./test --exec \"npm run mocha && npm run serve-coverage\"",
+    "debug-docs": "nodemon -w ./src --exec \"npm run jsdoc && npm run serve-docs\""
   },
   "repository": {
     "type": "git",
