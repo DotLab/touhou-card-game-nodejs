@@ -1,17 +1,28 @@
 const assert = require('chai').assert;
 
+const KaibamanCard = require('../../src/gameplay/cards/KaibamanCard');
+const BlueEyesWhiteDragonCard = require('../../src/gameplay/cards/BlueEyesWhiteDragonCard');
+const Card = require('../../src/gameplay/cards/Card');
 const Game = require('../../src/gameplay/Game');
 
 describe('Game', () => {
-  it('.createDeck', () => {
-    const deck = Game.createDeck(20);
-    assert.lengthOf(deck, 20);
-  });
+  function createMockDeck() {
+    const res = [];
+    for (let i = 0; i < 10; i += 1) {
+      res.push(new KaibamanCard());
+      res.push(new BlueEyesWhiteDragonCard());
+    }
+    return res;
+  }
 
-  const mockUsers = [
-    {id: 'abc', name: 'F', deck: Game.createDeck(20)},
-    {id: 'def', name: 'K', deck: Game.createDeck(20)},
-  ];
+  let mockUsers;
+
+  beforeEach(() => {
+    mockUsers = [
+      {id: 'abc', name: 'F', deck: createMockDeck()},
+      {id: 'def', name: 'K', deck: createMockDeck()},
+    ];
+  });
 
   it('#constructor', () => {
     const game = new Game(mockUsers);
@@ -22,6 +33,7 @@ describe('Game', () => {
     const game = new Game(mockUsers);
     game.players.forEach((player) => {
       assert.lengthOf(player.hand, 5);
+      player.hand.forEach((card) => assert.isObject(card));
     });
   });
 
@@ -44,11 +56,11 @@ describe('Game', () => {
     const game = new Game(mockUsers);
     assert.isTrue(game.isMyTurn(mockUsers[0].id));
     assert.isFalse(game.isMyTurn(mockUsers[1].id));
-    assert.isUndefined(game.act(Game.END_TURN));
+    assert.isUndefined(game.endTurn());
 
     assert.isFalse(game.isMyTurn(mockUsers[0].id));
     assert.isTrue(game.isMyTurn(mockUsers[1].id));
-    assert.isUndefined(game.act(Game.END_TURN));
+    assert.isUndefined(game.endTurn());
 
     assert.isTrue(game.isMyTurn(mockUsers[0].id));
     assert.isFalse(game.isMyTurn(mockUsers[1].id));
@@ -56,53 +68,53 @@ describe('Game', () => {
 
   it('U014: The Gamer is dealt 1 random card in Phase 1 every round', () => {
     const game = new Game(mockUsers);
-    assert.isUndefined(game.act(Game.DRAW));
-    assert.isString(game.act(Game.DRAW)); // cannot draw more than one
+    assert.isUndefined(game.draw());
+    assert.isString(game.draw()); // cannot draw more than one
     assert.lengthOf(game.players[0].hand, 6); // one more card
 
-    assert.isUndefined(game.act(Game.END_TURN));
-    assert.isUndefined(game.act(Game.END_TURN));
+    assert.isUndefined(game.endTurn());
+    assert.isUndefined(game.endTurn());
 
-    assert.isUndefined(game.act(Game.DRAW));
-    assert.isString(game.act(Game.DRAW)); // cannot draw more than one
+    assert.isUndefined(game.draw());
+    assert.isString(game.draw()); // cannot draw more than one
     assert.lengthOf(game.players[0].hand, 7); // one more card
   });
 
-  // it('U015: The Gamer can Summon a Marionette using a Character Card in hand in Phase 2 every round. ', () => {
-  //   const game = new Game(mockUsers);
-  //   assert.isUndefined(game.act(Game.DRAW));
-  //   const card1 = game.players[0].hand[0];
-  //   assert.isUndefined(game.act(Game.SUMMON, 0, 0));
-  //   assert.notEqual(card1, game.players[0].hand[0]);
-  //   assert.equal(card1, game.players[0].field.monsterSlots[0]);
-  //   assert.isString(game.act(Game.SUMMON, 0, 0)); // cannot summon twice
+  it('U015: The Gamer can Summon a Marionette using a Character Card in hand in Phase 2 every round. ', () => {
+    const game = new Game(mockUsers);
+    assert.isUndefined(game.draw());
+    const card1 = game.players[0].hand[0];
+    assert.isUndefined(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assert.notEqual(card1, game.players[0].hand[0]);
+    assert.equal(card1, game.players[0].field.monsterSlots[0]);
+    assert.isString(game.summon(0, 0, Card.REVEALED, Card.ATTACK)); // cannot summon twice
 
-  //   assert.isUndefined(game.act(Game.END_TURN));
-  //   assert.isUndefined(game.act(Game.END_TURN));
+    assert.isUndefined(game.endTurn());
+    assert.isUndefined(game.endTurn());
 
-  //   const card2 = game.players[0].hand[0];
-  //   assert.isString(game.act(Game.SUMMON, 0, 0)); // cannot overlay
-  //   assert.isUndefined(game.act(Game.SUMMON, 0, 1));
-  //   assert.notEqual(card2, game.players[0].hand[0]);
-  //   assert.equal(card2, game.players[0].field.monsterSlots[1]);
-  // });
+    const card2 = game.players[0].hand[0];
+    assert.isString(game.summon(0, 0, Card.REVEALED, Card.ATTACK)); // cannot overlay
+    assert.isUndefined(game.summon(0, 1, Card.REVEALED, Card.ATTACK));
+    assert.notEqual(card2, game.players[0].hand[0]);
+    assert.equal(card2, game.players[0].field.monsterSlots[1]);
+  });
 
   // it('U016: The Gamer can order the Marionettes to Attack other Gamers\' Marionettes and, when there is no Marionette on Ground, other Gamers themselves in Phase 2 every round', () => {
   //   const game = new Game(mockUsers);
-  //   assert.isUndefined(game.act(Game.DRAW));
+  //   assert.isUndefined(game.draw());
   //   const card1 = game.players[0].hand[0];
-  //   assert.isUndefined(game.act(Game.SUMMON, 0, 0));
+  //   assert.isUndefined(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
   //   const life = game.players[1].life;
   //   assert.isUndefined(game.act(Game.ATTACK, 0, 1, -1));
   //   assert.equal(game.players[1].life, life - card1.atk);
   //   assert.isString(game.act(Game.ATTACK, 0, 1, -1)); // cannot attack twice
 
-  //   assert.isUndefined(game.act(Game.END_TURN));
-  //   assert.isUndefined(game.act(Game.END_TURN));
+  //   assert.isUndefined(game.endTurn());
+  //   assert.isUndefined(game.endTurn());
 
-  //   assert.isUndefined(game.act(Game.DRAW));
+  //   assert.isUndefined(game.draw());
   //   const card2 = game.players[0].hand[0];
-  //   assert.isUndefined(game.act(Game.SUMMON, 0, 1));
+  //   assert.isUndefined(game.summon(0, 1, Card.REVEALED, Card.ATTACK));
   //   assert.isUndefined(game.act(Game.ATTACK, 0, 1, -1));
   //   assert.equal(game.players[1].life, life - card1.atk - card1.atk);
   //   assert.isUndefined(game.act(Game.ATTACK, 1, 1, -1));

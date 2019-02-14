@@ -1,5 +1,5 @@
 const MonsterCard = require('./MonsterCard');
-const BlueEyesWhiteDragon = require('./BlueEyesWhiteDragonCard');
+const BlueEyesWhiteDragonCard = require('./BlueEyesWhiteDragonCard');
 
 /**
  * Kaibaman Card
@@ -7,7 +7,7 @@ const BlueEyesWhiteDragon = require('./BlueEyesWhiteDragonCard');
  */
 class KaibamanCard extends MonsterCard {
   constructor() {
-    super(KaibamanCard.Name, '/imgs/Kaibaman.jpg', false, 'ATT', 3, 200, 700);
+    super(KaibamanCard.Name, '', '/imgs/Kaibaman.jpg', 3, 200, 700);
   }
 
   /**
@@ -17,7 +17,7 @@ class KaibamanCard extends MonsterCard {
    * @return {string|undefined}
    */
   effect(owner, target) {
-    const index = owner.findCardInHandByName(BlueEyesWhiteDragon.Name);
+    const index = owner.findCardInHandByName(BlueEyesWhiteDragonCard.Name);
     if (index === -1) {
       return 'card not in hand';
     }
@@ -26,11 +26,12 @@ class KaibamanCard extends MonsterCard {
     // tribute kaibaman
     const kbIndex = owner.findCardOnFieldById(KaibamanCard.id);
     owner.killMonsterCardOnField(kbIndex);
-    // Summon BlueEyesWhiteDragon
+    // Summon BlueEyesWhiteDragonCard
     card.mode = this.mode;
     owner.placeCardOnField(kbIndex, card);
   }
 }
 
-KaibamanCard.Name = 'KaibaMan';
+KaibamanCard.Name = 'Kaibaman';
+
 module.exports = KaibamanCard;

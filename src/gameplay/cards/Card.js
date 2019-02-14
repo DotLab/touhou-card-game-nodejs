@@ -3,37 +3,43 @@
  */
 class Card {
   static generateId(len) {
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let text = '';
     for (let i = 0; i < len; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
+      text += dict.charAt(Math.floor(Math.random() * dict.length));
     }
     return text;
   }
 
   /**
    * @constructor
-   * @param {String} name Each Card has its own name
-   * @param {String} path Path to img of the card
-   * @param {Boolean} revealed Path to img of the card
+   * @param {String} name unique name
+   * @param {String} desc description
+   * @param {String} imgUrl url to img of the card
    */
-  constructor(name, path, revealed) {
+  constructor(name, desc, imgUrl) {
     this.id = Card.generateId(32);
     this.name = name;
-    this.path = path;
-    this.revealed = revealed;
+    this.desc = desc;
+    this.imgUrl = imgUrl;
+    this.display = null;
   }
 
-  effect(owner, target) {
-
+  canSummon() {
+    return false;
   }
 
   takeSnapShot() {
     return {
       id: this.id,
-      imgUrl: this.path,
+      imgUrl: this.imgUrl,
     };
   }
 }
+
+Card.SHOWN = 'SHOWN';
+Card.REVEALED = 'REVEALED';
+Card.ATTACK = 'ATTACK';
+Card.DEFENSE = 'DEFENSE';
 
 module.exports = Card;

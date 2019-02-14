@@ -287,6 +287,11 @@ class Player {
     return -1;
   }
 
+  /**
+   * Remove a card from hand
+   * @param {Number} index card index in hand
+   * @return {Card} card
+   */
   removeCardInHand(index) {
     const removed = this.hand.splice(index, 1);
     return removed[0];

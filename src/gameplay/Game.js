@@ -1,4 +1,3 @@
-const Kaibaman = require('./cards/KaibamanCard');
 const Player = require('./Player');
 
 /**
@@ -6,24 +5,11 @@ const Player = require('./Player');
  */
 class Game {
   /**
-   * Create a deck randomly
-   * @param {Number} cardCount Number of cards
-   * @return {Card[]} Array of cards
-   */
-  static createDeck(cardCount) {
-    const deck = [];
-    for (let i = 0; i < cardCount; i++) {
-      deck.push(Kaibaman);
-    }
-    return deck;
-  }
-
-  /**
    * @constructor
    * @param {User[]} users users of a game
    */
   constructor(users) {
-    this.players = users.map((x) => new Player(x));
+    this.players = users.map((user) => new Player(user));
     this.round = 0;
     this.turn = 0;
     this.playerTurnById = this.players.reduce((acc, cur, i) => {
@@ -37,31 +23,44 @@ class Game {
   }
 
   /**
-   * Act on Game. \
-   * END_PHASE: end my phase \
-   * END_TURN: end my turn \
-   * SUMMON: normal summon from <arg1> hand to <arg2> monsterSlots \
-   * ATTACK: use <arg1> monsterSlots to attack <arg2> player's <arg3> monsterSlots
-   * @param {String} intent Intent
-   * @param {undefined|Number} arg1 Argument 1
-   * @param {undefined|Number} arg2 Argument 2
-   * @param {undefined|Number} arg3 Argument 3
-   * @return {undefined|String} if successful
+   * draw a card
+   * @return {undefined|String} error message
    */
-  act(intent, arg1, arg2, arg3) {
-    switch (intent) {
-      case Game.DRAW: {
-        return this.players[this.turn].draw();
-      }
-      case Game.END_TURN: {
-        this.players[this.turn].endTurn();
-        this.turn += 1;
-        if (this.turn >= this.players.length) {
-          this.round += 1;
-          this.turn = 0;
-        }
-        return undefined;
-      }
+  draw() {
+    return this.players[this.turn].draw();
+  }
+
+  /**
+   * normal summon a monster
+   * @param {Number} handIdx card index in hand
+   * @param {Number} monsterSlotIdx card index in monsterSlots
+   * @param {String} display card display
+   * @param {String} pose card pose
+   * @return {undefined|String} error message
+   */
+  summon(handIdx, monsterSlotIdx, display, pose) {
+    const player = this.players[this.turn];
+    if (handIdx >= player.hand.length) return 'invalid card index';
+    if (!player.hand[handIdx].canSummon(Game.HAND, display, pose)) return 'cannot summon';
+    if (player.field.monsterSlots[monsterSlotIdx]) return 'monster grid occupied';
+
+    const card = player.removeCardInHand(handIdx);
+    player.field.monsterSlots[monsterSlotIdx] = card;
+    card.summon(display, pose);
+
+    return undefined;
+  }
+
+  /**
+   * end turn
+   * @return {undefined|String} error message
+   */
+  endTurn() {
+    this.players[this.turn].endTurn();
+    this.turn += 1;
+    if (this.turn >= this.players.length) {
+      this.round += 1;
+      this.turn = 0;
     }
     return undefined;
   }
@@ -115,10 +114,5 @@ class Game {
     return res;
   }
 }
-
-Game.DRAW = 'DRAW';
-Game.SUMMON = 'SUMMON';
-Game.ATTACK = 'ATTACK';
-Game.END_TURN = 'END_TURN';
 
 module.exports = Game;
