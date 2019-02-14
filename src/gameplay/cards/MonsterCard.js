@@ -1,4 +1,4 @@
-const Card = require('./Cards/Card.js');
+const Card = require('./Card.js');
 
 /**
  * Monster Card

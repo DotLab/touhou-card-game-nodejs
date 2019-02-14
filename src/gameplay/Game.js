@@ -1,48 +1,37 @@
-const Card = require('./Cards/Card');
-const Kaibaman = require('./Cards/KaibamanCard');
+const Kaibaman = require('./cards/KaibamanCard');
+const Player = require('./Player');
 
 /**
  * The Game
  */
 class Game {
-  static shuffle(array) {
-    let currentIndex = array.length; let temporaryValue; let randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+  /**
+   * Create a deck randomly
+   * @param {Number} cardCount Number of cards
+   * @return {Card[]} Array of cards
+   */
+  static createDeck(cardCount) {
+    const deck = [];
+    for (let i = 0; i < cardCount; i++) {
+      deck.push(Kaibaman);
     }
-
-    return array;
+    return deck;
   }
 
   /**
    * @constructor
-   * @param {Player[]} players players of a game
-   * @param {Number} round 0-index round
-   * @param {Number} currentPlayerIndex index of the current player
+   * @param {User[]} users users of a game
    */
-  constructor(players) {
-    this.players = players;
-    this.gameOver = false;
+  constructor(users) {
+    this.players = users.map((x) => new Player(x));
     this.round = 0;
-    this.currentPlayerIndex = 0;
+    this.turn = 0;
   }
 
-  createDeck() {
-    let i;
-    const createdDeck = new Card(40);
-    for (i = 0; i < 40; i++) {
-      createdDeck.push(Kaibaman);
-    }
+  isMyTurn(userId) {
+    return this.players[this.turn].userId === userId;
   }
+
   /* moveToNextRound() {
     if (this.players[this.players.length-1].phase === 4) {
       this.round++;
@@ -50,26 +39,32 @@ class Game {
   } */
 
   /**
-   * @param {Object} obj players of a game
-   * @return {boolean} success of action
+   * Act on Game.
+   * END_PHASE: end my phase
+   * END_TURN: end my turn
+   * SUMMON: normal summon from hand arg1 to monsterSlots arg2
+   * @param {String} intent Intent
+   * @param {undefined|Number} arg1 Argument 1
+   * @param {undefined|Number} arg2 Argument 2
+  //  * @return {undefined|String} if successful
    */
-  act(obj) {
+  act(intent, arg1, arg2) {
     /* name: draw, attack, place, endPhase
     * param(draw): empty
     * param(place): slot, indexOfHands, tributeSlot1, tributeSlot2, reveal, mode
     * param(attack): currenIndex, slot(own), slot(enemy), enemyIndex, enemyPlayer
     */
-    const input = {
-      name: obj.name,
-      param: obj.param,
-      enemyPlayer: this.players[obj.param.enemyIndex],
-    };
+    // const input = {
+    //   name: obj.name,
+    //   param: obj.param,
+    //   enemyPlayer: this.players[obj.param.enemyIndex],
+    // };
 
-    const res = this.players[this.currentPlayerIndex].act(input);
-    this.phaseComplete();
-    this.playerLoseCheck();
-    this.gameOver = this.gameOverCheck();
-    return res;
+    // const res = this.players[this.currentPlayerIndex].act(input);
+    // this.phaseComplete();
+    // this.playerLoseCheck();
+    // this.gameOver = this.gameOverCheck();
+    // return res;
   }
 
   /**
@@ -112,7 +107,8 @@ class Game {
   }
 
   /**
-   * @return {object} the game
+   * Serialization for front end
+   * @return {Object} the representation of the game
    */
   takeSnapShot() {
     const res = this.players[this.currentPlayerIndex].takeSnapShot();
@@ -120,5 +116,10 @@ class Game {
     return res;
   }
 }
+
+Game.DRAW = 'DRAW';
+Game.SUMMON = 'SUMMON';
+Game.ATTACK = 'ATTACK';
+Game.END_TURN = 'END_TURN';
 
 module.exports = Game;

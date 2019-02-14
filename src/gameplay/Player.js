@@ -1,6 +1,6 @@
-const Card = require('./Cards/Card');
-const Kaibaman = require('./Cards/KaibamanCard');
-const MonsterCard = require('./Cards/MonsterCard');
+const Card = require('./cards/Card');
+const Kaibaman = require('./cards/KaibamanCard');
+const MonsterCard = require('./cards/MonsterCard');
 const Field = require('./Field');
 
 /**

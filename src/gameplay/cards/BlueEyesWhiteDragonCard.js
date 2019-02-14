@@ -1,4 +1,4 @@
-const MonsterCard = require('./Cards/MonsterCard.js');
+const MonsterCard = require('./MonsterCard.js');
 
 /**
  * Blue-Eyes White Dragon Card
