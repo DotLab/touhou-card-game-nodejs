@@ -1,7 +1,5 @@
-
-
 /**
- * Field class
+ * The field
  */
 class Field {
   /**

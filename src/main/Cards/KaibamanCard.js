@@ -1,9 +1,9 @@
 const MonsterCard = require('./MonsterCard');
 const BlueEyesWhiteDragon = require('./BlueEyesWhiteDragon');
 
-class KaibaManCard extends MonsterCard {
+class KaibamanCard extends MonsterCard {
   constructor() {
-    super(KaibaManCard.Name, '/imgs/KaibaMan.jpg', false, 'ATT', 3, 200, 700);
+    super(KaibamanCard.Name, '/imgs/KaibaMan.jpg', false, 'ATT', 3, 200, 700);
   }
 
   /**
@@ -20,13 +20,13 @@ class KaibaManCard extends MonsterCard {
 
     const card = owner.removeCardInHand(index);
     // tribute kaibaman
-    const kbIndex = owner.findCardOnFieldById(KaibaManCard.id);
+    const kbIndex = owner.findCardOnFieldById(KaibamanCard.id);
     owner.killMonsterCardOnField(kbIndex);
-    // Summon BEWD
+    // Summon BlueEyesWhiteDragon
     card.mode = this.mode;
     owner.placeCardOnField(kbIndex, card);
   }
 }
 
-KaibaManCard.Name = 'KaibaMan';
-module.exports = KaibaManCard;
+KaibamanCard.Name = 'KaibaMan';
+module.exports = KaibamanCard;

@@ -9,11 +9,11 @@ class Card {
   }
 
   /**
-    * @constructor
-    * @param {String} name Each Card has its own name
-    * @param {String} path Path to img of the card
-    * @param {Boolean} revealed Path to img of the card
-    */
+   * @constructor
+   * @param {String} name Each Card has its own name
+   * @param {String} path Path to img of the card
+   * @param {Boolean} revealed Path to img of the card
+   */
   constructor(name, path, revealed) {
     this.id = Card.generateId(32);
     this.name = name;

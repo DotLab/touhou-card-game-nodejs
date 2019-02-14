@@ -1,9 +1,9 @@
-/**
- * Game class
- */
-
 const Card = require('./Cards/Card');
 const Kaibaman = require('./Cards/KaibamanCard');
+
+/**
+ * The Game
+ */
 class Game {
   static shuffle(array) {
     let currentIndex = array.length; let temporaryValue; let randomIndex;
@@ -24,11 +24,11 @@ class Game {
   }
 
   /**
-     * @constructor
-     * @param {Player[]} players players of a game
-     * @param {Number} round 0-index round
-     * @param {Number} currentPlayerIndex index of the current player
-     */
+   * @constructor
+   * @param {Player[]} players players of a game
+   * @param {Number} round 0-index round
+   * @param {Number} currentPlayerIndex index of the current player
+   */
   constructor(players) {
     this.players = players;
     this.gameOver = false;
@@ -49,9 +49,9 @@ class Game {
     }
   } */
 
-  /*
+  /**
    * @param {Object} obj players of a game
-   *return boolean success of action
+   * @return {boolean} success of action
    */
   act(obj) {
     /* name: draw, attack, place, endPhase
@@ -72,8 +72,8 @@ class Game {
     return res;
   }
 
-  /*
-    void
+  /**
+   * void
    */
   phaseComplete() {
     if (this.players[this.currentPlayerIndex].isDone()) {
@@ -111,7 +111,8 @@ class Game {
     }
   }
 
-  /* return the game
+  /**
+   * @return {object} the game
    */
   takeSnapShot() {
     const res = this.players[this.currentPlayerIndex].takeSnapShot();

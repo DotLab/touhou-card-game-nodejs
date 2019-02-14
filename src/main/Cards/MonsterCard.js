@@ -2,16 +2,16 @@ const Card = require('./Cards/Card.js');
 
 class MonsterCard extends Card {
   /**
-    * @constructor
-    * @param {String} name Each Card has its own name
-    * @param {String} path Path to img of the card
-    * @param {Boolean} revealed True if Revealed
-    * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
-    * @param {Number} level monster's level
-    * @param {Number} att Attack
-    * @param {Number} def Defense
-    * @param {function} effect a callback function
-    */
+   * @constructor
+   * @param {String} name Each Card has its own name
+   * @param {String} path Path to img of the card
+   * @param {Boolean} revealed True if Revealed
+   * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
+   * @param {Number} level monster's level
+   * @param {Number} att Attack
+   * @param {Number} def Defense
+   * @param {function} effect a callback function
+   */
   constructor(name, path, revealed, mode, level, att, def) {
     // calls parent constructor
     super(name, path, revealed);
@@ -23,11 +23,11 @@ class MonsterCard extends Card {
   }
 
   /**
-    * Attack function when exists monster
-    * @param {MonsterCard} target Targeted monster to attack
-    * @return {Number} cccdifference where difference  = this.att - target.att (att mode) or this.def - target.def (def mode) when difference > 0,
-    * the opponent receives dmg else, the attacker receives dmg
-    */
+   * Attack function when exists monster
+   * @param {MonsterCard} target Targeted monster to attack
+   * @return {Number} cccdifference where difference  = this.att - target.att (att mode) or this.def - target.def (def mode) when difference > 0,
+   * the opponent receives dmg else, the attacker receives dmg
+   */
   attack(target) {
     let difference;
     // if target is not revealed then it is in def mode

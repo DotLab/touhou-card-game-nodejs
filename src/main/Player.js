@@ -8,11 +8,11 @@ const Field = require('./Field');
  */
 class Player {
   /**
-     * @constructor
-     * @param {Card[]} deck randomly shuffled
-     * @param {Number} hp
-     * @param {String} username
-     */
+   * @constructor
+   * @param {Card[]} deck randomly shuffled
+   * @param {Number} hp
+   * @param {String} username
+   */
   constructor(deck, hp, username) {
     this.deck = deck;
     this.hp = hp || 5000;
@@ -44,16 +44,16 @@ class Player {
   }
 
   /**
-   *
    * @return {boolean} true if action successful
    */
   act() {
     return true;
   }
+
   /**
-     * draw a card from the desk
-     * @return {undefined}
-     */
+   * draw a card from the desk
+   * @return {boolean|undefined}
+   */
   drawCard() {
     if (this.deck.length != 0) {
       this.hand.push(this.deck.pop());
@@ -122,13 +122,13 @@ class Player {
   }
 
   /**
-     * normalSummon from hand
-     * @param {MonsterCard} monster the monster to be summoned from hand
-     * @param {Number} n the index of monsterSlot in the filed(0 based)
-     * @param {Boolean} revealed True if Revealed
-     * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
-     * @return {Number} -1 if fail, 1 if succeed to summon.
-     */
+   * normalSummon from hand
+   * @param {MonsterCard} monster the monster to be summoned from hand
+   * @param {Number} n the index of monsterSlot in the filed(0 based)
+   * @param {Boolean} revealed True if Revealed
+   * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
+   * @return {Number} -1 if fail, 1 if succeed to summon.
+   */
   normalSummon(monster, n, revealed, mode) {
     if (monster.level <= 4) { // normal summon
       if (this.field.monsterSlots[n] != null) { // slot must be empty
@@ -144,15 +144,16 @@ class Player {
     }
     return -1;
   }
+
   /**
-     * tributeSummon1 from hand
-     * @param {MonsterCard} monster monster to  summon
-     * @param {Number} n the index of monsterSlot in the filed(0 based)
-     * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
-     * @param {Boolean} revealed True if Revealed
-     * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
-     * @return {Number} 1 on sucess, -1 on fail
-     */
+   * tributeSummon1 from hand
+   * @param {MonsterCard} monster monster to  summon
+   * @param {Number} n the index of monsterSlot in the filed(0 based)
+   * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
+   * @param {Boolean} revealed True if Revealed
+   * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
+   * @return {Number} 1 on success, -1 on fail
+   */
   tributeSummon1(monster, n, n1, revealed, mode) {
     if (monster.level > 4 && monster.level <= 6) {
       if (this.field.monsterSlots[n1] == null) {// nothing to tribute
@@ -174,15 +175,15 @@ class Player {
     return -1;
   }
   /**
-     * tributeSummon2 from hand
-     * @param {MonsterCard} monster monster to  summon
-     * @param {Number} n the index of monsterSlot in the filed(0 based)
-     * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
-     * @param {Number } n2 the index of monsterSlot in the filed(0 based) to tribute
-     * @param {Boolean} revealed True if Revealed
-     * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
-     * @return {Number} 1 on sucess, -1 on fail
-     */
+   * tributeSummon2 from hand
+   * @param {MonsterCard} monster monster to  summon
+   * @param {Number} n the index of monsterSlot in the filed(0 based)
+   * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
+   * @param {Number } n2 the index of monsterSlot in the filed(0 based) to tribute
+   * @param {Boolean} revealed True if Revealed
+   * @param {String} mode "ATT" for attack mode and "DEF" for defense mode
+   * @return {Number} 1 on sucess, -1 on fail
+   */
   tributeSummon2(monster, n, n1, n2, revealed, mode) {
     if (monster.level < 7) {
       return -1;
@@ -205,12 +206,13 @@ class Player {
     }
     return -1;
   }
+
   /**
-    * @param {Number} n the index of monsterSlot in the filed(0 based)
-    * @param {SpellCard} spellcard to placed
-    * @param {Boolean} revealed true if revealed
-    * @return {Number} 1 on sucess, -1 on fail
-    */
+   * @param {Number} n the index of monsterSlot in the filed(0 based)
+   * @param {SpellCard} spellcard to placed
+   * @param {Boolean} revealed true if revealed
+   * @return {Number} 1 on sucess, -1 on fail
+   */
   addSpell(n, spellcard, revealed) {
     if (this.field.spellSlots[n] != null) {
       return -1;
@@ -221,7 +223,7 @@ class Player {
   }
   /**
     * @param {Number} n the index of monsterSlot in the filed(0 based)
-    * @return {Number} 1 on sucess, -1 on fail
+    * @return {Number} 1 on success, -1 on fail
     */
   removeSpell(n) {
     if (this.field.spellSlots[n] == null) {
@@ -231,10 +233,11 @@ class Player {
     this.field.spellSlots[n]= null;
     return 1;
   }
+
   /**
-    * @param {EnvCard} env the index of monsterSlot in the filed(0 based)
-    * @return {Number} 1 on sucess, -1 on fail
-    */
+   * @param {EnvCard} env the index of monsterSlot in the filed(0 based)
+   * @return {Number} 1 on success, -1 on fail
+   */
   setEnv(env) {
     if (this.environmentSlot != null) {
       return -1;
@@ -242,9 +245,10 @@ class Player {
     this.environmentSlot = env;
     return 1;
   }
+
   /**
-    * @return {Number} 1 on sucess, -1 on fail
-  */
+   * @return {Number} 1 on success, -1 on fail
+   */
   removeEnv() {
     if (this.environmentSlot == null) {
       return -1;
