@@ -1,15 +1,11 @@
-
-// const MonsterCard = require('./Cards/MonsterCard');
-// const SpellCard = require('./Cards/SpellCard');
-/**
- * Player class
- */
-
-
 const Card = require('./Cards/Card');
 const Kaibaman = require('./Cards/KaibamanCard');
 const MonsterCard = require('./Cards/MonsterCard');
 const Field = require('./Field');
+
+/**
+ * Player class
+ */
 class Player {
   /**
      * @constructor
@@ -27,13 +23,11 @@ class Player {
     for (let i = 0; i < 5; i++) {
       this.hand.push(deck.pop());
     }
-    this.hasSummoned = false;
   }
 
   isDone() {
     if (this.phase === 4) {
       this.phase = 1;
-      this.hasSummoned = false;
       return true;
     }
     return false;
@@ -50,29 +44,19 @@ class Player {
   }
 
   /**
-   * @param {Object} input index of card to discard(0 based)
+   *
    * @return {boolean} true if action successful
    */
-  act(input) {
-    if (input.name === 'draw') {
-      return this.drawCard();
-    } else if (input.name === 'place') {
-      return this.placeCard(input.param);
-    } else if (input.name === 'attack') {
-      return this.attack(input.param);
-    } else if (input.name === 'endPhase') {
-      this.phase++;
-    }
+  act() {
+    return true;
   }
-
   /**
      * draw a card from the desk
-     * @return {boolean}
+     * @return {undefined}
      */
   drawCard() {
-    if (this.deck.length !== 0) {
+    if (this.deck.length != 0) {
       this.hand.push(this.deck.pop());
-      return true;
     } else {
       // document.write('The deck is empty!');
       return false;
@@ -146,19 +130,14 @@ class Player {
      * @return {Number} -1 if fail, 1 if succeed to summon.
      */
   normalSummon(monster, n, revealed, mode) {
-    if (this.hasSummoned == true) {
-      return -1;
-    }
     if (monster.level <= 4) { // normal summon
-      // slot must be empty
-      if (this.field.monsterSlots[n] != null) {
+      if (this.field.monsterSlots[n] != null) { // slot must be empty
         return -1;
       }
-      if ((revealed == false && mode == 'DEF') || (revealed == true && mode == 'ATT')) {// must be Hidden Defense Mode or Revealed Attack Mode
+      if ((revealed == false && mode == 'DEF') || (revealed == true && mode == 'ATT')) { // must be Hidden Defense Mode or Revealed Attack Mode
         monster.revealed = revealed;
         monster.mode = mode;
         this.field.monsterSlots[n] = monster;
-        this.hasSummoned = true;
         return 1;
       }
       return -1;
@@ -167,7 +146,7 @@ class Player {
   }
   /**
      * tributeSummon1 from hand
-     * @param {MonsterCard} monster the monster to be summoned from hand
+     * @param {MonsterCard} monster monster to  summon
      * @param {Number} n the index of monsterSlot in the filed(0 based)
      * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
      * @param {Boolean} revealed True if Revealed
@@ -182,7 +161,7 @@ class Player {
       if (this.field.monsterSlots[n] != null && n != n1) {// n has been occupied and cannot be emptied after tribute
         return -1;
       }
-      if (revealed == true) {// must be in Revealed Defense Mode or Revealed Attack Mode
+      if (revealed == true) { // must be in Revealed Defense Mode or Revealed Attack Mode
         this.field.graveyard.push(this.field.monsterSlots[n1]);
         this.field.monsterSlots[n1] = null;
         monster.revealed = revealed;
@@ -196,7 +175,7 @@ class Player {
   }
   /**
      * tributeSummon2 from hand
-     * @param {MonsterCard} monster the monster to be summoned from hand
+     * @param {MonsterCard} monster monster to  summon
      * @param {Number} n the index of monsterSlot in the filed(0 based)
      * @param {Number } n1 the index of monsterSlot in the filed(0 based) to tribute
      * @param {Number } n2 the index of monsterSlot in the filed(0 based) to tribute
@@ -214,7 +193,7 @@ class Player {
     if (this.field.monsterSlots[n] != null && n != n1 && n != n2) {// n has been occupied and cannot be emptied after tribute
       return -1;
     }
-    if (revealed == true) { // must be in Revealed Defense Mode or Revealed Attack Mode
+    if (revealed == true) {// must be in Revealed Defense Mode or Revealed Attack Mode
       this.field.graveyard.push(this.field.monsterSlots[n1]);
       this.field.monsterSlots[n1] = null;
       this.field.graveyard.push(this.field.monsterSlots[n2]);
@@ -226,23 +205,53 @@ class Player {
     }
     return -1;
   }
-
   /**
-   * take snapshot of current player status
-   * @return {object} player status
-   */
-  takeSnapShot() {
-    return {
-      name: this.username,
-      life: this.hp,
-      hand: this.hand.map((card)=>card.takeSnapShot()),
-      field: {
-        environment: this.field.environmentSlot.takeSnapShot(),
-        graveyard: this.field.graveyard.map((card)=>card.takeSnapShot()),
-        monster: this.field.monsterSlots.map((card)=>card.takeSnapShot()),
-        magic: this.field.spellSlots.map((card)=>card.takeSnapShot()),
-      },
-    };
+    * @param {Number} n the index of monsterSlot in the filed(0 based)
+    * @param {SpellCard} spellcard to placed
+    * @param {Boolean} revealed true if revealed
+    * @return {Number} 1 on sucess, -1 on fail
+    */
+  addSpell(n, spellcard, revealed) {
+    if (this.field.spellSlots[n] != null) {
+      return -1;
+    }
+    spellcard.revealed = revealed;
+    this.field.spellSlots[n] = spellcard;
+    return 1;
+  }
+  /**
+    * @param {Number} n the index of monsterSlot in the filed(0 based)
+    * @return {Number} 1 on sucess, -1 on fail
+    */
+  removeSpell(n) {
+    if (this.field.spellSlots[n] == null) {
+      return -1;
+    }
+    this.field.graveyard.push(this.field.spellSlots[n]);
+    this.field.spellSlots[n]= null;
+    return 1;
+  }
+  /**
+    * @param {EnvCard} env the index of monsterSlot in the filed(0 based)
+    * @return {Number} 1 on sucess, -1 on fail
+    */
+  setEnv(env) {
+    if (this.environmentSlot != null) {
+      return -1;
+    }
+    this.environmentSlot = env;
+    return 1;
+  }
+  /**
+    * @return {Number} 1 on sucess, -1 on fail
+  */
+  removeEnv() {
+    if (this.environmentSlot == null) {
+      return -1;
+    }
+    this.field.graveyard.push(this.field.environmentSlot);
+    this.field.environmentSlot = null;
+    return 1;
   }
 }
 
