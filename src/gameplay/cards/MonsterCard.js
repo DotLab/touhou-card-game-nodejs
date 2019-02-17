@@ -21,11 +21,22 @@ class MonsterCard extends Card {
     this.dfs = dfs;
     this.pose = null;
     this.hasAttacked = false;
+    this.hasChangedDisplay = false;
   }
 
   canSummon(display, pose) {
     if (display === Card.HIDDEN && pose === Card.ATTACK) return false;
     return true;
+  }
+
+  canChangeDisplay() {
+    if (this.hasChangedDisplay) return false;
+    return true;
+  }
+
+  changeDisplay(display) {
+    this.display = display;
+    this.hasChangedDisplay = true;
   }
 
   summon(display, pose) {
@@ -44,6 +55,7 @@ class MonsterCard extends Card {
   endTurn() {
     super.endTurn();
     this.hasAttacked = false;
+    this.hasChangedDisplay = false;
   }
 }
 

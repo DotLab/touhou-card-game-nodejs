@@ -54,6 +54,14 @@ describe('Game', () => {
     assertGameError(game.summon(0, 9, Card.REVEALED, Card.ATTACK));
   });
 
+  it('#changeDisplay', () => {
+    const game = new Game(mockUsers);
+    assertGameError(game.changeDisplay(0, Card.REVEALED));
+    assertGameSuccess(game.summon(0, 0, Card.HIDDEN, Card.DEFENSE));
+    assertGameSuccess(game.changeDisplay(0, Card.REVEALED));
+    assertGameError(game.changeDisplay(0, Card.REVEALED));
+  });
+
   it('#attack', () => {
     const game = new Game(mockUsers);
     game.summon(0, 0, Card.REVEALED, Card.ATTACK);
