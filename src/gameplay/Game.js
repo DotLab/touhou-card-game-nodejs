@@ -44,6 +44,7 @@ class Game {
   }
 
   /**
+   * Feed user's id, determine whether it is his/her turn
    * @param {String} userId
    * @return {Boolean}
    */
