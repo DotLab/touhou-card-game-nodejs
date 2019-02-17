@@ -123,6 +123,18 @@ io.on('connection', function(socket) {
         leaveLobby(user.id);
       }
 
+      try {
+        if (!user.onlineTime) {
+          user.onlineTime = 0;
+        }
+        const deltaTime = new Date().getTime() - user.lastDate.getTime();
+        user.onlineTime += deltaTime;
+        debug('deltaTime', deltaTime);
+        await User.findByIdAndUpdate(user.id, user);
+      } catch (e) {
+        debug('cannot update onlineTime');
+      }
+
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
       delete online[user.id];
@@ -141,8 +153,9 @@ io.on('connection', function(socket) {
     hasher.update(salt);
     const hash = hasher.digest('base64');
     const bio = 'CS428 is my favorite class of all time!';
+    const joinDate = Date();
 
-    doc = await User.create({name, salt, hash, bio});
+    doc = await User.create({name, salt, hash, bio, joinDate});
 
     done(success());
   });
@@ -165,6 +178,15 @@ io.on('connection', function(socket) {
 
       user = doc;
       online[user.id] = true;
+
+      if (!user.joinDate) {
+        try {
+          user.joinDate = Date();
+          await User.findByIdAndUpdate(user.id, user);
+        } catch (e) {
+          done(error('cannot update join date'));
+        }
+      }
 
       try {
         user.lastDate = Date();
@@ -203,7 +225,9 @@ io.on('connection', function(socket) {
     debug('cl_statistics');
 
     if (!user) return done(error('forbidden'));
-    done(success({lastDate: user.lastDate}));
+    done(success({joinDate: user.joinDate,
+      lastDate: user.lastDate,
+      onlineTime: user.onlineTime}));
   });
 
   socket.on('cl_create_room', async ({name}, done) => {

@@ -105,7 +105,10 @@ function renderStatistics(props) {
     } else {
       socket.emit('cl_statistics', function(res) {
         if (res.err) return error(res.err);
-        renderStatistics({showStats: true, lastDate: formatDate(res.data.lastDate)});
+        renderStatistics({showStats: true,
+          lastDate: formatDate(res.data.lastDate),
+          joinDate: formatDate(res.data.joinDate),
+          onlineTime: res.data.onlineTime});
       });
     }
   });
