@@ -123,17 +123,8 @@ io.on('connection', function(socket) {
         leaveLobby(user.id);
       }
 
-      try {
-        if (!user.onlineTime) {
-          user.onlineTime = 0;
-        }
-        const deltaTime = new Date().getTime() - user.lastDate.getTime();
-        user.onlineTime += deltaTime;
-        debug('deltaTime', deltaTime);
-        await User.findByIdAndUpdate(user.id, user);
-      } catch (e) {
-        debug('cannot update onlineTime');
-      }
+      const onlineTime = (user.onlineTime || 0) + (new Date().getTime() - user.lastDate.getTime());
+      await User.findByIdAndUpdate(user.id, {$set: {onlineTime}});
 
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
@@ -153,9 +144,15 @@ io.on('connection', function(socket) {
     hasher.update(salt);
     const hash = hasher.digest('base64');
     const bio = 'CS428 is my favorite class of all time!';
-    const joinDate = Date();
 
-    doc = await User.create({name, salt, hash, bio, joinDate});
+    doc = await User.create({
+      name, salt, hash, bio,
+      joinDate: new Date(),
+      lastDate: new Date(),
+      onlineTime: 0,
+      gameCount: 0,
+      winCount: 0,
+    });
 
     done(success());
   });
@@ -178,40 +175,22 @@ io.on('connection', function(socket) {
 
       user = doc;
       online[user.id] = true;
-
-      if (!user.joinDate) {
-        try {
-          user.joinDate = Date();
-          await User.findByIdAndUpdate(user.id, user);
-        } catch (e) {
-          done(error('cannot init join date'));
-        }
-      }
-
-      if (!user.gameCount) {
-        try {
-          user.gameCount = 0;
-          user.winCount = 0;
-          await User.findByIdAndUpdate(user.id, user);
-        } catch (e) {
-          done(error('cannot init game/win count'));
-        }
-      }
-
-      try {
-        user.lastDate = Date();
-        await User.findByIdAndUpdate(user.id, user);
-      } catch (e) {
-        done(error('cannot update last seen'));
-      }
-
-      debug('last seen', user.lastDate);
+      user = await User.findByIdAndUpdate(user.id, {$set: {lastDate: new Date()}});
 
       joinLobby(user.id, user.name);
       socket.join(LOBBY);
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
-      done(success({id: user.id, name: user.name, bio: user.bio}));
+      done(success({
+        id: user.id,
+        name: user.name,
+        bio: user.bio,
+        joinDate: user.joinDate,
+        lastDate: user.lastDate,
+        onlineTime: user.onlineTime,
+        gameCount: user.gameCount,
+        winCount: user.winCount,
+      }));
     } else {
       done(error('wrong username/password'));
     }
@@ -229,18 +208,6 @@ io.on('connection', function(socket) {
     } catch (e) {
       return done(error('update failed'));
     }
-  });
-
-  socket.on('cl_statistics', async (done) => {
-    debug('cl_statistics');
-
-    if (!user) return done(error('forbidden'));
-    done(success({joinDate: user.joinDate,
-      lastDate: user.lastDate,
-      onlineTime: user.onlineTime,
-      gameCount: user.gameCount,
-      winCount: user.winCount,
-    }));
   });
 
   socket.on('cl_create_room', async ({name}, done) => {

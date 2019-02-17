@@ -1,9 +1,8 @@
-/* global $, io */
+/* global $, io, formatDate, formatTime */
 /* eslint-disable no-console, no-invalid-this */
 
 const accountTmpl = $.templates('#accountTmpl');
 const messageTmpl = $.templates('#messageTmpl');
-const statisticsTmpl = $.templates('#statisticsTmpl');
 
 const error = function(err) {
   alert(JSON.stringify(err));
@@ -17,32 +16,6 @@ function createHandler(resolve, reject) {
       if (resolve) resolve(res.data);
     }
   };
-}
-
-// source: https://github.com/DotLab/gskse-client-react/blob/master/src/utils.js
-function formatDate(date) {
-  if (date == null) return null;
-  if (typeof date === 'string') {
-    date = new Date(date);
-  }
-  if (new Date().setHours(0, 0, 0, 0) <= date.getTime()) { // date is in today
-    return date.toLocaleTimeString();
-  }
-  return date.toLocaleDateString();
-}
-
-function formatTime(time) {
-  if (isNaN(time)) {
-    return 0;
-  } else if (time < 60000) { // less than a minute
-    return (time/100).toFixed(2) + ' seconds';
-  } else if (time < 3600000) { // less than an hour
-    return (time/60000).toFixed(2) + ' minutes';
-  } else if (time < 86400000) { // less than a day
-    return (time/3600000).toFixed(2) + ' hours';
-  } else { // more than a day
-    return (time/86400000).toFixed(2) + ' days';
-  }
 }
 
 const socket = io();
@@ -87,7 +60,14 @@ function renderAccount(props) {
         isLoggedIn: true,
       });
       renderMessage({message: `Welcome ${res.data.name}!`});
-      renderStatistics({showStats: false});
+      statistics.setState({
+        showStats: false,
+        lastDate: formatDate(res.data.lastDate),
+        joinDate: formatDate(res.data.joinDate),
+        onlineTime: formatTime(res.data.onlineTime),
+        gameCount: res.data.gameCount,
+        winCount: res.data.winCount,
+      });
     });
   });
 
@@ -108,28 +88,21 @@ function renderAccount(props) {
   });
 }
 
-function renderStatistics(props) {
-  console.log('statistics', props);
-  $('#statistics').html(statisticsTmpl.render(props));
+const statistics = new (function Statistics(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
 
-  $('#statistics-form').on('submit', function(e) {
-    e.preventDefault();
-    if (props.showStats) {
-      renderStatistics({showStats: false});
-    } else {
-      socket.emit('cl_statistics', function(res) {
-        if (res.err) return error(res.err);
-        renderStatistics({showStats: true,
-          lastDate: formatDate(res.data.lastDate),
-          joinDate: formatDate(res.data.joinDate),
-          onlineTime: formatTime(res.data.onlineTime),
-          gameCount: res.data.gameCount,
-          winCount: res.data.winCount,
-        });
-      });
-    }
-  });
-}
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('statistics#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+
+    $(selector + ' form').on('submit', function(e) {
+      e.preventDefault();
+      self.setState({showStats: !self.state.showStats});
+    });
+  };
+})('#statistics', $.templates('#statisticsTmpl'), {});
 
 const lobby = new (function Lobby(selector, tmpl, props) {
   this.state = props;
