@@ -184,7 +184,17 @@ io.on('connection', function(socket) {
           user.joinDate = Date();
           await User.findByIdAndUpdate(user.id, user);
         } catch (e) {
-          done(error('cannot update join date'));
+          done(error('cannot init join date'));
+        }
+      }
+
+      if (!user.gameCount) {
+        try {
+          user.gameCount = 0;
+          user.winCount = 0;
+          await User.findByIdAndUpdate(user.id, user);
+        } catch (e) {
+          done(error('cannot init game/win count'));
         }
       }
 
@@ -227,7 +237,10 @@ io.on('connection', function(socket) {
     if (!user) return done(error('forbidden'));
     done(success({joinDate: user.joinDate,
       lastDate: user.lastDate,
-      onlineTime: user.onlineTime}));
+      onlineTime: user.onlineTime,
+      gameCount: user.gameCount,
+      winCount: user.winCount,
+    }));
   });
 
   socket.on('cl_create_room', async ({name}, done) => {

@@ -52,14 +52,14 @@
 
     <script id="statisticsTmpl" type="text/html">
       <form id="statistics-form"> 
-        <button type="submit">Toggle Statistics</button>
+        <button type="submit">Statistics</button>
         {{if showStats}}
           <div>
             Joined: {{:joinDate}} <br/>
             Last Seen: {{:lastDate}} <br/>
             Time Online: {{:onlineTime}} <br/>
-            Games Played: <br/>
-            Games Won: <br/>
+            Games Played: {{:gameCount}}<br/>
+            Games Won: {{:winCount}}<br/>
           </div>
         {{/if}}
       </form>

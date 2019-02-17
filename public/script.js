@@ -122,7 +122,10 @@ function renderStatistics(props) {
         renderStatistics({showStats: true,
           lastDate: formatDate(res.data.lastDate),
           joinDate: formatDate(res.data.joinDate),
-          onlineTime: formatTime(res.data.onlineTime)});
+          onlineTime: formatTime(res.data.onlineTime),
+          gameCount: res.data.gameCount,
+          winCount: res.data.winCount,
+        });
       });
     }
   });
