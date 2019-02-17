@@ -15,6 +15,7 @@
     <div>
       <div id="account"></div>
       <div id="message"></div>
+      <div id="statistics"></div>
       <div id="lobby"></div>
     </div>
 
@@ -47,6 +48,17 @@
 
     <script id="messageTmpl" type="text/x-jsrender">
       Message: {{:message}}
+    </script>
+
+    <script id="statisticsTmpl" type="text/html">
+      <form id="statistics-form"> 
+        <button type="submit">Show Statistics</button>
+        {{if showStats}}
+          <div>
+            Last Seen: {{:lastDate}}
+          </div>
+        {{/if}}
+      </form>
     </script>
 
     <script id="lobbyTmpl" type="text/html">

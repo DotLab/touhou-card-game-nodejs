@@ -166,6 +166,15 @@ io.on('connection', function(socket) {
       user = doc;
       online[user.id] = true;
 
+      try {
+        user.lastDate = Date();
+        await User.findByIdAndUpdate(user.id, user);
+      } catch (e) {
+        done(error('cannot update last seen'));
+      }
+
+      debug('last seen', user.lastDate);
+
       joinLobby(user.id, user.name);
       socket.join(LOBBY);
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
@@ -188,6 +197,13 @@ io.on('connection', function(socket) {
     } catch (e) {
       return done(error('update failed'));
     }
+  });
+
+  socket.on('cl_statistics', async (done) => {
+    debug('cl_statistics');
+
+    if (!user) return done(error('forbidden'));
+    done(success({lastDate: user.lastDate}));
   });
 
   socket.on('cl_create_room', async ({name}, done) => {

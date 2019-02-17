@@ -3,6 +3,7 @@
 
 const accountTmpl = $.templates('#accountTmpl');
 const messageTmpl = $.templates('#messageTmpl');
+const statisticsTmpl = $.templates('#statisticsTmpl');
 
 const error = function(err) {
   alert(JSON.stringify(err));
@@ -16,6 +17,17 @@ function createHandler(resolve, reject) {
       if (resolve) resolve(res.data);
     }
   };
+}
+
+function formatDate(date) {
+  if (date == null) return null;
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
+  if (new Date().setHours(0, 0, 0, 0) <= date.getTime()) { // date is in today
+    return date.toLocaleTimeString();
+  }
+  return date.toLocaleDateString();
 }
 
 const socket = io();
@@ -60,6 +72,7 @@ function renderAccount(props) {
         isLoggedIn: true,
       });
       renderMessage({message: `Welcome ${res.data.name}!`});
+      renderStatistics({showStats: false});
     });
   });
 
@@ -76,6 +89,19 @@ function renderAccount(props) {
         isLoggedIn: true,
       });
       renderMessage({message: 'Account updated successfully!'});
+    });
+  });
+}
+
+function renderStatistics(props) {
+  console.log('statistics', props);
+  $('#statistics').html(statisticsTmpl.render(props));
+
+  $('#statistics-form').on('submit', function(e) {
+    e.preventDefault();
+    socket.emit('cl_statistics', function(res) {
+      if (res.err) return error(res.err);
+      renderStatistics({showStats: true, lastDate: formatDate(res.data.lastDate)});
     });
   });
 }
