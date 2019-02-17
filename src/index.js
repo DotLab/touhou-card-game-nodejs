@@ -107,6 +107,7 @@ function serializeLobby() {
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
   debug('connection', socket.id);
+  let loginDate = null;
   let user = null;
   let room = null;
 
@@ -122,6 +123,9 @@ io.on('connection', function(socket) {
       if (lobby[user.id]) {
         leaveLobby(user.id);
       }
+
+      const onlineTime = (user.onlineTime || 0) + (new Date().getTime() - loginDate.getTime());
+      await User.findByIdAndUpdate(user.id, {$set: {onlineTime, lastDate: new Date()}});
 
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
@@ -142,7 +146,14 @@ io.on('connection', function(socket) {
     const hash = hasher.digest('base64');
     const bio = 'CS428 is my favorite class of all time!';
 
-    doc = await User.create({name, salt, hash, bio});
+    doc = await User.create({
+      name, salt, hash, bio,
+      joinDate: new Date(),
+      lastDate: new Date(),
+      onlineTime: 0,
+      gameCount: 0,
+      winCount: 0,
+    });
 
     done(success());
   });
@@ -165,12 +176,22 @@ io.on('connection', function(socket) {
 
       user = doc;
       online[user.id] = true;
+      loginDate = new Date();
 
       joinLobby(user.id, user.name);
       socket.join(LOBBY);
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
-      done(success({id: user.id, name: user.name, bio: user.bio}));
+      done(success({
+        id: user.id,
+        name: user.name,
+        bio: user.bio,
+        joinDate: user.joinDate,
+        lastDate: user.lastDate,
+        onlineTime: user.onlineTime,
+        gameCount: user.gameCount,
+        winCount: user.winCount,
+      }));
     } else {
       done(error('wrong username/password'));
     }
