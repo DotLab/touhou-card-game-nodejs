@@ -12,16 +12,24 @@ function formatDate(date) {
   return date.toLocaleDateString();
 }
 
+const second = 1000;
+const minute = 60 * second;
+const hour = 60 * minute;
+const day = 24 * hour;
+
 function formatTime(time) {
-  if (isNaN(time)) {
-    return 0;
-  } else if (time < 60000) { // less than a minute
-    return (time/100).toFixed(2) + ' seconds';
-  } else if (time < 3600000) { // less than an hour
-    return (time/60000).toFixed(2) + ' minutes';
-  } else if (time < 86400000) { // less than a day
-    return (time/3600000).toFixed(2) + ' hours';
+  console.log(time);
+  if (typeof time === 'string') {
+    time = parseInt(time);
+  }
+
+  if (time < minute) { // less than a minute
+    return (time / second).toFixed(2) + ' seconds';
+  } else if (time < hour) { // less than an hour
+    return (time / minute).toFixed(2) + ' minutes';
+  } else if (time < day) { // less than a day
+    return (time / hour).toFixed(2) + ' hours';
   } else { // more than a day
-    return (time/86400000).toFixed(2) + ' days';
+    return (time / day).toFixed(2) + ' days';
   }
 }

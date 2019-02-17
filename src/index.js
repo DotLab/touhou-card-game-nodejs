@@ -107,6 +107,7 @@ function serializeLobby() {
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
   debug('connection', socket.id);
+  let loginDate = null;
   let user = null;
   let room = null;
 
@@ -123,8 +124,8 @@ io.on('connection', function(socket) {
         leaveLobby(user.id);
       }
 
-      const onlineTime = (user.onlineTime || 0) + (new Date().getTime() - user.lastDate.getTime());
-      await User.findByIdAndUpdate(user.id, {$set: {onlineTime}});
+      const onlineTime = (user.onlineTime || 0) + (new Date().getTime() - loginDate.getTime());
+      await User.findByIdAndUpdate(user.id, {$set: {onlineTime, lastDate: new Date()}});
 
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
@@ -175,7 +176,7 @@ io.on('connection', function(socket) {
 
       user = doc;
       online[user.id] = true;
-      user = await User.findByIdAndUpdate(user.id, {$set: {lastDate: new Date()}});
+      loginDate = new Date();
 
       joinLobby(user.id, user.name);
       socket.join(LOBBY);
