@@ -143,16 +143,11 @@ class Game {
     if (!player.hand[handIdx].canSummon(display, pose)) return Game.error('cannot summon card');
     if (player.field.monsterSlots[monsterIdx] !== null) return Game.error('monster grid occupied');
 
-    const actionParams = [handIdx, monsterIdx, display, pose];
-    if (this.shouldSuspend(player, Game.SUMMON, actionParams, Game.BEFORE)) {
-      this.suspend(player, Game.SUMMON, actionParams, Game.BEFORE);
-      return Game.suspend(Game.BEFORE);
-    }
-
     const card = player.removeCardInHand(handIdx);
     player.field.monsterSlots[monsterIdx] = card;
     card.summon(display, pose);
 
+    const actionParams = [handIdx, monsterIdx, display, pose];
     if (this.shouldSuspend(player, Game.SUMMON, actionParams, Game.AFTER)) {
       this.suspend(player, Game.SUMMON, actionParams, Game.AFTER);
       return Game.suspend(Game.AFTER);
