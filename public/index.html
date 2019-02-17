@@ -16,6 +16,7 @@
       <div id="account"></div>
       <div id="message"></div>
       <div id="lobby"></div>
+      <div id="game"></div>
     </div>
 
     <script id="accountTmpl" type="text/html">
@@ -129,6 +130,65 @@
       {{/if}}
     </script>
 
+    <script id="gameTmpl" type="text/html">
+      <div style="width: 100%; overflow-x: scroll; white-space: nowrap">
+        {{for opponents}}
+        <div style="display: inline-block; margin-right: 20px">
+          <div><b>{{: name}} ({{: life}} Li)</b></div>
+          <div><b>Hand</b></div>
+          <div>
+            {{for hand}}
+            <img style="height: 50px" src="{{: imgUrl}}" alt="">
+            {{/for}}
+          </div>
+          <div><b>Field</b></div>
+          <div>
+              <div>
+                <img style="height: 200px" src="{{: field.spell[3].imgUrl}}" alt="">
+                <img style="height: 200px" src="{{: field.spell[2].imgUrl}}" alt="">
+                <img style="height: 200px" src="{{: field.spell[1].imgUrl}}" alt="">
+                <img style="height: 200px" src="{{: field.spell[0].imgUrl}}" alt="">
+                <img style="height: 200px" src="{{: field.graveyard.imgUrl}}" alt="">
+                </div>
+              <div>
+                <img style="height: 200px" src="{{: field.monster[3].imgUrl}}" alt="">
+                <img style="height: 200px" src="{{: field.monster[2].imgUrl}}" alt="">
+                <img style="height: 200px" src="{{: field.monster[1].imgUrl}}" alt="">
+                <img style="height: 200px" src="{{: field.monster[0].imgUrl}}" alt="">
+                <img style="height: 200px" src="{{: field.environment.imgUrl}}" alt="">
+              </div>
+          </div>
+        </div>
+        {{/for}}
+      </div>
+      <div><b>{{: name}} ({{: life}} Li)</b></div>
+      <div><b>Field</b></div>
+      <div>
+        <div>
+          {{include field.environment tmpl="#gameCardTmpl"/}}
+          {{include field.monster[0] tmpl="#gameCardTmpl"/}}
+          {{include field.monster[1] tmpl="#gameCardTmpl"/}}
+          {{include field.monster[2] tmpl="#gameCardTmpl"/}}
+          {{include field.monster[3] tmpl="#gameCardTmpl"/}}
+        </div>
+        <div>
+          {{include field.graveyard tmpl="#gameCardTmpl"/}}
+          {{include field.spell[0] tmpl="#gameCardTmpl"/}}
+          {{include field.spell[1] tmpl="#gameCardTmpl"/}}
+          {{include field.spell[2] tmpl="#gameCardTmpl"/}}
+          {{include field.spell[3] tmpl="#gameCardTmpl"/}}
+        </div>
+      </div>
+      <div><b>Hand</b></div>
+      <div>
+        {{for hand tmpl="#gameCardTmpl"/}}
+      </div>
+    </script>
+
+    <script id="gameCardTmpl" type="text/html">
+      <img style="height: 200px" src="{{: imgUrl}}" alt="">
+    </script>
+
     <script src="/script.js"></script>
   </body>
-  </html>
+</html>

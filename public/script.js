@@ -153,3 +153,48 @@ socket.on('sv_update_room', function(room) {
     hasAnyAgreed: room.members.filter((x) => x.hasAgreed).length > 0,
   });
 });
+
+const game = new (function Game(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
+
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('Game#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+  };
+})('#game', $.templates('#gameTmpl'), {});
+
+const gamePlayerListItemConfig = {
+  name: 'Kai',
+  life: 4000,
+  hand: [
+    {imgUrl: '/imgs/card-back.png'},
+    {imgUrl: '/imgs/card-back.png'},
+    {imgUrl: '/imgs/card-back.png'},
+    {imgUrl: '/imgs/card-back.png'},
+    {imgUrl: '/imgs/card-back.png'},
+  ],
+  field: {
+    environment: {imgUrl: '/imgs/card-placeholder.png'},
+    graveyard: {imgUrl: '/imgs/card-back.png'},
+    monster: [
+      {imgUrl: '/imgs/card-placeholder.png'},
+      {imgUrl: '/imgs/card-placeholder.png'},
+      {imgUrl: '/imgs/card-placeholder.png'},
+      {imgUrl: '/imgs/card-placeholder.png'},
+    ],
+    spell: [
+      {imgUrl: '/imgs/card-placeholder.png'},
+      {imgUrl: '/imgs/card-placeholder.png'},
+      {imgUrl: '/imgs/card-placeholder.png'},
+      {imgUrl: '/imgs/card-placeholder.png'},
+    ],
+  },
+};
+const gameConfig = {
+  ...gamePlayerListItemConfig,
+  opponents: [gamePlayerListItemConfig, gamePlayerListItemConfig, gamePlayerListItemConfig],
+};
+
+game.setState(gameConfig);
