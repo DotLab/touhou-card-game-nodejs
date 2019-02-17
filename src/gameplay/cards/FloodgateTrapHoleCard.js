@@ -1,4 +1,5 @@
 const SpellCard = require('./SpellCard');
+const Card = require('../../../src/gameplay/cards/Card');
 const Game = require('../Game');
 
 class FloodgateTrapHoleCard extends SpellCard {
@@ -19,7 +20,14 @@ class FloodgateTrapHoleCard extends SpellCard {
   }
 
   activate(game, owner, actor, action, actionParams) {
-
+    actor.field.monsterSlots[actionParams[1]].display = Card.HIDDEN;
+    actor.field.monsterSlots[actionParams[1]].pose = Card.DEFENSE;
+    actor.field.monsterSlots[actionParams[1]].lockDisplay = true;
+    actor.field.monsterSlots[actionParams[1]].lockPose = true;
+    owner.field.graveyard.push(this);
+    for (let i = 0; i < owner.field.spellSlots.length; i += 1) {
+      if (owner.field.spellSlots[i] !== null && owner.field.spellSlots[i].Card === this) owner.field.spellSlots[i] = null;
+    }
   }
 }
 
