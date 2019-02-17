@@ -31,6 +31,20 @@ function formatDate(date) {
   return date.toLocaleDateString();
 }
 
+function formatTime(time) {
+  if (isNaN(time)) {
+    return 0;
+  } else if (time < 60000) { // less than a minute
+    return (time/100).toFixed(2) + ' seconds';
+  } else if (time < 3600000) { // less than an hour
+    return (time/60000).toFixed(2) + ' minutes';
+  } else if (time < 86400000) { // less than a day
+    return (time/3600000).toFixed(2) + ' hours';
+  } else { // more than a day
+    return (time/86400000).toFixed(2) + ' days';
+  }
+}
+
 const socket = io();
 let user = null;
 
@@ -108,7 +122,7 @@ function renderStatistics(props) {
         renderStatistics({showStats: true,
           lastDate: formatDate(res.data.lastDate),
           joinDate: formatDate(res.data.joinDate),
-          onlineTime: res.data.onlineTime});
+          onlineTime: formatTime(res.data.onlineTime)});
       });
     }
   });
