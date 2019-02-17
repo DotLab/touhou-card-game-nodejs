@@ -26,6 +26,16 @@ class Card {
     this.hasChangedDisplay = false;
   }
 
+  // canChangeDisplay() {
+  //   if (this.hasChangedDisplay) return false;
+  //   return true;
+  // }
+
+  // changeDisplay(display) {
+  //   this.display = display;
+  //   this.hasChangedDisplay = true;
+  // }
+
   endTurn() {
     this.hasChangedDisplay = false;
   }

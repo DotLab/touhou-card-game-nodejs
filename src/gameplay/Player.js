@@ -23,17 +23,32 @@ class Player {
     for (let i = 0; i < 5; i += 1) {
       this.hand.push(this.deck.pop());
     }
+    this.isSuspended = false;
+  }
+
+  canDraw() {
+    if (this.hasDrawn) return false;
+    return true;
   }
 
   /**
    * Draw a card.
-   * @return {undefined|String} message
    */
   draw() {
-    if (this.hasDrawn) return 'already drawn';
     this.hasDrawn = true;
     this.hand.push(this.deck.pop());
-    return undefined;
+  }
+
+  shouldSuspend(game, actor, action, actionParams, phase) {
+    return this.field.canActivate(game, this, actor, action, actionParams, phase);
+  }
+
+  suspend() {
+    this.isSuspended = true;
+  }
+
+  resume() {
+    this.isSuspended = false;
   }
 
   /**

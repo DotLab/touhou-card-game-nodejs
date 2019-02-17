@@ -34,6 +34,22 @@ class Field {
     }
     return false;
   }
+
+  canActivate(game, owner, actor, action, actionParams, phase) {
+    for (let i = 0; i < this.spellSlots.length; i += 1) {
+      if (this.spellSlots[i] !== null && this.spellSlots[i].canActivate(game, owner, actor, action, actionParams, phase)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  findSpellById(id) {
+    for (let i = 0; i < this.spellSlots.length; i += 1) {
+      if (this.spellSlots[i] !== null && this.spellSlots[i].id === id) return this.spellSlots[i];
+    }
+    return null;
+  }
 }
 
 module.exports = Field;
