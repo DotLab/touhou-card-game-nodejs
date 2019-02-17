@@ -19,6 +19,7 @@ function createHandler(resolve, reject) {
   };
 }
 
+// source: https://github.com/DotLab/gskse-client-react/blob/master/src/utils.js
 function formatDate(date) {
   if (date == null) return null;
   if (typeof date === 'string') {
@@ -99,10 +100,14 @@ function renderStatistics(props) {
 
   $('#statistics-form').on('submit', function(e) {
     e.preventDefault();
-    socket.emit('cl_statistics', function(res) {
-      if (res.err) return error(res.err);
-      renderStatistics({showStats: true, lastDate: formatDate(res.data.lastDate)});
-    });
+    if (props.showStats) {
+      renderStatistics({showStats: false});
+    } else {
+      socket.emit('cl_statistics', function(res) {
+        if (res.err) return error(res.err);
+        renderStatistics({showStats: true, lastDate: formatDate(res.data.lastDate)});
+      });
+    }
   });
 }
 
