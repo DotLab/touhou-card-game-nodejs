@@ -26,7 +26,7 @@ class FloodgateTrapHoleCard extends SpellCard {
     actor.field.monsterSlots[actionParams[1]].lockPose = true;
     owner.field.graveyard.push(this);
     for (let i = 0; i < owner.field.spellSlots.length; i += 1) {
-      if (owner.field.spellSlots[i] !== null && owner.field.spellSlots[i].Card === this) owner.field.spellSlots[i] = null;
+      if (owner.field.spellSlots[i] !== null && owner.field.spellSlots[i] === this) owner.field.spellSlots[i] = null;
     }
   }
 }

@@ -186,7 +186,7 @@ class Game {
     if (monster === null) return Game.error('no monster');
     if (!monster.canChangePose(pose)) return Game.error('cannot change pose');
 
-    monster.canChangePose(pose);
+    monster.changePose(pose);
 
     return Game.success();
   }

@@ -21,6 +21,10 @@ class MonsterCard extends Card {
     this.dfs = dfs;
     this.pose = null;
     this.hasAttacked = false;
+    this.hasChangedDisplay = false;
+    this.lockDisplay = false;
+    this.hasChangedPose = false;
+    this.lockPose = false;
   }
 
   canSummon(display, pose) {
@@ -31,6 +35,28 @@ class MonsterCard extends Card {
   summon(display, pose) {
     this.display = display;
     this.pose = pose;
+  }
+
+  canChangeDisplay() {
+    if (this.hasChangedDisplay) return false;
+    if (this.lockDisplay) return false;
+    return true;
+  }
+
+  canChangePose() {
+    if (this.hasChangedPose) return false;
+    if (this.lockPose) return false;
+    return true;
+  }
+
+  changeDisplay(display) {
+    this.display = display;
+    this.hasChangedDisplay = true;
+  }
+
+  changePose(pose) {
+    this.pose = pose;
+    this.hasChangedPose = true;
   }
 
   canAttack() {
@@ -44,6 +70,8 @@ class MonsterCard extends Card {
   endTurn() {
     super.endTurn();
     this.hasAttacked = false;
+    this.hasChangedDisplay = false;
+    this.hasChangedPose = false;
   }
 }
 

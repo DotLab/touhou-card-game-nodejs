@@ -13,9 +13,9 @@ class SpellCard extends Card {
     this.display = display;
   }
 
-  canActivate() {
-    return false;
-  }
+  // canActivate() {
+  //   return false;
+  // }
 }
 
 module.exports = SpellCard;

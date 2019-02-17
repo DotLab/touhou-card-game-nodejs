@@ -65,6 +65,20 @@ describe('Game', () => {
     assertGameError(game.attack(0, 0, 1));
   });
 
+  it('#changeDisplay', () => {
+    const game = new Game(mockUsers);
+    assertGameError(game.changeDisplay(0, Card.REVEALED));
+    assertGameSuccess(game.summon(0, 0, Card.HIDDEN, Card.DEFENSE));
+    assertGameSuccess(game.changeDisplay(0, Card.REVEALED));
+  });
+
+  it('#changePose', () => {
+    const game = new Game(mockUsers);
+    assertGameError(game.changePose(0, Card.ATTACK));
+    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.DEFENSE));
+    assertGameSuccess(game.changePose(0, Card.ATTACK));
+  });
+
   it('U010: The Gamer is dealt 5 random cards at the beginning of the Game', () => {
     const game = new Game(mockUsers);
     game.players.forEach((player) => {

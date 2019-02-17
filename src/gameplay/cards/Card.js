@@ -23,18 +23,11 @@ class Card {
     this.desc = desc;
     this.imgUrl = imgUrl;
     this.display = null;
-    this.hasChangedDisplay = false;
   }
 
-  // canChangeDisplay() {
-  //   if (this.hasChangedDisplay) return false;
-  //   return true;
-  // }
-
-  // changeDisplay(display) {
-  //   this.display = display;
-  //   this.hasChangedDisplay = true;
-  // }
+  canChangeDisplay() {
+    return false;
+  }
 
   endTurn() {
     this.hasChangedDisplay = false;
