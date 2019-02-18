@@ -87,6 +87,7 @@ class Game {
   }
 
   /**
+   * can only be called when suspended
    * @param {String} userId
    * @param {String} cardId
    * @param {Array<Object>} trapParams
@@ -101,6 +102,16 @@ class Game {
     }
 
     card.activate(this, player, this.suspendActor, this.suspendedAction, this.suspendedActionParams, this.suspendedPhase, trapParams);
+    return Game.success();
+  }
+
+  invokeSpell(spellIdx, spellParams) {
+    const player = this.players[this.turn];
+    const spell = player.field.spellSlots[spellIdx];
+
+    if (!spell.canInvoke(spellParams)) return Game.error('cannot activate');
+    spell.invoke(this, player, spellParams);
+
     return Game.success();
   }
 

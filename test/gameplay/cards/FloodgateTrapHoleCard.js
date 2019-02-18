@@ -15,7 +15,8 @@ describe('FloodgateTrapHoleCard', () => {
   it('#activate', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
     const card = game.players[0].hand[0];
-    assertGameSuccess(game.place(0, 0, Card.REVEALED));
+    assert.isFalse(game.players[0].hand[0].canInvoke());
+    assertGameSuccess(game.place(0, 0, Card.HIDDEN));
     assertGameSuccess(game.endTurn());
     assert.equal(game.turn, 1);
     assertGameSuspend(game.summon(1, 0, Card.REVEALED, Card.ATTACK), Game.AFTER);
