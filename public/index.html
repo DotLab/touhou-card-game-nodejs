@@ -15,6 +15,7 @@
     <div>
       <div id="account"></div>
       <div id="message"></div>
+      <div id="statistics"></div>
       <div id="lobby"></div>
     </div>
 
@@ -47,6 +48,21 @@
 
     <script id="messageTmpl" type="text/x-jsrender">
       Message: {{:message}}
+    </script>
+
+    <script id="statisticsTmpl" type="text/html">
+      <form id="statistics-form"> 
+        <button type="submit">Statistics</button>
+        {{if showStats}}
+          <div>
+            Joined: {{:joinDate}} <br/>
+            Last Seen: {{:lastDate}} <br/>
+            Time Online: {{:onlineTime}} <br/>
+            Games Played: {{:gameCount}}<br/>
+            Games Won: {{:winCount}}<br/>
+          </div>
+        {{/if}}
+      </form>
     </script>
 
     <script id="lobbyTmpl" type="text/html">
@@ -129,6 +145,7 @@
       {{/if}}
     </script>
 
+    <script src="/utils.js"></script>
     <script src="/script.js"></script>
   </body>
   </html>
