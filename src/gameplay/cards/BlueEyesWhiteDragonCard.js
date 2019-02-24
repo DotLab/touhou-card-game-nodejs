@@ -6,7 +6,7 @@ const MonsterCard = require('./MonsterCard.js');
  */
 class BlueEyesWhiteDragonCard extends MonsterCard {
   constructor() {
-    super(BlueEyesWhiteDragonCard.Name, '', '/imgs/BlueEyesWhiteDragon.jpg', 8, 3000, 2500);
+    super(BlueEyesWhiteDragonCard.Name, 'This legendary dragon is a powerful engine of destruction. Virtually invincible, very few have faced this awesome creature and lived to tell the tale.', '/imgs/BlueEyesWhiteDragon.jpg', 8, 3000, 2500);
   }
 }
 
