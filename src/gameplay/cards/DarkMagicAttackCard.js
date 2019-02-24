@@ -4,7 +4,8 @@ class DarkMagicAttackCard extends SpellCard {
   constructor() {
     super(DarkMagicAttackCard.Name, DarkMagicAttackCard.Desc, DarkMagicAttackCard.ImgUrl);
   }
-  canInvoke(player) {
+  canInvoke(invokeParams) {
+    const player = invokeParams[0];
     for (let i = 0; i < player.field.monsterSlots.length; i += 1) {
       if (player.field.monsterSlots[i] !== null && player.field.monsterSlots[i].name === DarkMagicianCard.Name) return true;
     }

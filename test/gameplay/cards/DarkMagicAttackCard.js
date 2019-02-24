@@ -28,7 +28,7 @@ describe('DarkMagicAttackCard', () => {
     // end of player[1]'s turn, not it is player[0]'s turn
     assert.equal(game.turn, 0);
     // Dark Magic Attack can invoke!
-    assert.isTrue(game.players[0].hand[0].canInvoke(game.players[0]));
+    assert.isTrue(game.players[0].hand[0].canInvoke([game.players[0]]));
     // Invoke!
     assertGameSuccess(game.place(0, 0, Card.REVEALED));
     // player[0] invokes, player[1] takes the effect

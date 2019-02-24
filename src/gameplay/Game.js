@@ -109,7 +109,7 @@ class Game {
     const player = this.players[this.turn];
     const spell = player.field.spellSlots[spellIdx];
 
-    if (!spell.canInvoke(spellParams[0])) return Game.error('cannot invoke');
+    if (!spell.canInvoke(spellParams)) return Game.error('cannot invoke');
     spell.invoke(this, player, spellParams);
 
     return Game.success();

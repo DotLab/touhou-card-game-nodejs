@@ -10,7 +10,8 @@ class KaibamanCard extends MonsterCard {
     super(KaibamanCard.Name, KaibamanCard.Desc, '/imgs/Kaibaman.jpg', 3, 200, 700);
   }
 
-  canInvoke(player) {
+  canInvoke(invokeParams) {
+    const player = invokeParams[0];
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === BlueEyesWhiteDragonCard.Name) return true;
     }
