@@ -6,7 +6,7 @@ class DarkMagicAttackCard extends SpellCard {
   }
   canInvoke(player) {
     for (let i = 0; i < player.field.monsterSlots.length; i += 1) {
-      if (player.field.monsterSlots[i].name === DarkMagicianCard.Name) return true;
+      if (player.field.monsterSlots[i] !== null && player.field.monsterSlots[i].name === DarkMagicianCard.Name) return true;
     }
     return false;
   }
