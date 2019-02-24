@@ -25,9 +25,6 @@ function error(err) {
 
 const crypto = require('crypto');
 
-/**
- *  Lobby
- */
 const online = {};
 
 const LOBBY = 'LOBBY';
@@ -53,8 +50,7 @@ function generateId(length = 256) {
 function createRoom(userId, userName, name) {
   debug('    createRoom', userId, userName, name);
   const id = generateId(32);
-  rooms[id] = {id, name, ownerId: userId, ownerName: userName, hasProposed: false, hasStarted: false, members: {}, messages: []};
-  rooms[id].messages.push({messageUser: userName, messageDate: new Date(), message: 'Room created'});
+  rooms[id] = {id, name, ownerId: userId, ownerName: userName, hasProposed: false, hasStarted: false, members: {}};
   return rooms[id];
 }
 
@@ -272,7 +268,6 @@ io.on('connection', function(socket) {
     if (!user) return done(error('forbidden'));
     if (!room) return done(error('not in any room'));
 
-    room.messages.push({messageUser: user.name, messageDate: new Date(), message});
     io.to(room.id).emit(SV_ROOM_SEND_MESSAGE, {
       userName: user.name, date: new Date(), message,
     });

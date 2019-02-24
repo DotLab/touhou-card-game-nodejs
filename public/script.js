@@ -137,7 +137,8 @@ const lobby = new (function Lobby(selector, tmpl, props) {
       }, error));
     });
 
-    $(selector + ' .sendMessage').on('click', function() {
+    $(selector + ' .sendMessage').on('submit', function(e) {
+      e.preventDefault();
       socket.emit('cl_room_send_message', {
         message: $('#send-message').val(),
       }, createHandler(null, error));
@@ -168,7 +169,12 @@ socket.on('sv_update_lobby', function(res) {
 });
 
 socket.on('sv_room_send_message', function(res) {
-  lobby.state.messages.splice(0, 0, [res]);
+  console.log('sv_room_send_message', res);
+  lobby.state.messages.splice(0, 0, {
+    userName: res.userName,
+    date: formatDate(res.date),
+    message: res.message,
+  });
   lobby.setState({messages: lobby.state.messages});
 });
 
