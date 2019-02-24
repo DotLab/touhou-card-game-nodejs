@@ -25,9 +25,9 @@ class Card {
     this.display = null;
   }
 
-  canChangeDisplay() {
-    return false;
-  }
+  // canChangeDisplay() {
+  //  return false;
+  // }
 
   endTurn() {
     this.hasChangedDisplay = false;
