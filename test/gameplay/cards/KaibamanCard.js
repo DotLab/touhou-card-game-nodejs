@@ -9,11 +9,11 @@ const {assertGameSuccess, assertGameError} = require('../Game');
 
 describe('KaibamanCard', () => {
   function buildDeck() {
-    return [new BlueEyesWhiteDragonCard(), new KaibamanCard()];
+    return [new BlueEyesWhiteDragonCard(), new KaibamanCard(), new KaibamanCard(), new KaibamanCard(), new KaibamanCard()];
   }
   // only kaibaman
   function buildDeck2() {
-    return [new KaibamanCard(), new KaibamanCard()];
+    return [new KaibamanCard(), new KaibamanCard(), new KaibamanCard(), new KaibamanCard(), new KaibamanCard()];
   }
   it('#invoke', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
