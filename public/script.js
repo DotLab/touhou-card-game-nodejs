@@ -137,10 +137,10 @@ const lobby = new (function Lobby(selector, tmpl, props) {
       }, error));
     });
 
-    $(selector + ' .sendMessage').on('submit', function(e) {
+    $(selector + ' .message').on('submit', function(e) {
       e.preventDefault();
       socket.emit('cl_room_send_message', {
-        message: $('#send-message').val(),
+        message: $(selector + ' .sendMessage').val(),
       }, createHandler(null, error));
     });
 
