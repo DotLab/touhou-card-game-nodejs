@@ -16,6 +16,10 @@ class SpellCard extends Card {
   // canActivate() {
   //   return false;
   // }
+
+  canInvoke() {
+    return true;
+  }
 }
 
 module.exports = SpellCard;
