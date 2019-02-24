@@ -7,7 +7,7 @@ const DarkMagicVeilCard = require('../../../src/gameplay/cards/DarkMagicVeilCard
 
 const {assertGameSuccess} = require('../Game');
 
-describe('DarkMagicAttackCard', () => {
+describe('DarkMagicVeilCard', () => {
   function buildDeck() {
     return [new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicVeilCard(), new DarkMagicVeilCard(), new DarkMagicVeilCard()];
   }

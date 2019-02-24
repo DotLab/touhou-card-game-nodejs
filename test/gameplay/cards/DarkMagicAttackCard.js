@@ -44,6 +44,6 @@ describe('DarkMagicAttackCard', () => {
   });
   it('#cannot activate', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
-    assert.isFalse(game.players[0].hand[0].canInvoke(game.players[0]));
+    assert.isFalse(game.players[0].hand[0].canInvoke([game.players[0]]));
   });
 });
