@@ -42,4 +42,8 @@ describe('DarkMagicAttackCard', () => {
     assert.equal(game.players[0].field.spellSlots[0], null);
     assert.equal(game.players[0].field.graveyard.length, 1);
   });
+  it('#cannot activate', () => {
+    const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
+    assert.isFalse(game.players[0].hand[0].canInvoke(game.players[0]));
+  });
 });
