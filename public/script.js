@@ -1,4 +1,4 @@
-/* global $, io */
+/* global $, io, formatDate, formatTime */
 /* eslint-disable no-console, no-invalid-this */
 
 const accountTmpl = $.templates('#accountTmpl');
@@ -60,6 +60,14 @@ function renderAccount(props) {
         isLoggedIn: true,
       });
       renderMessage({message: `Welcome ${res.data.name}!`});
+      statistics.setState({
+        showStats: false,
+        lastDate: formatDate(res.data.lastDate),
+        joinDate: formatDate(res.data.joinDate),
+        onlineTime: formatTime(res.data.onlineTime),
+        gameCount: res.data.gameCount,
+        winCount: res.data.winCount,
+      });
     });
   });
 
@@ -79,6 +87,22 @@ function renderAccount(props) {
     });
   });
 }
+
+const statistics = new (function Statistics(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
+
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('statistics#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+
+    $(selector + ' form').on('submit', function(e) {
+      e.preventDefault();
+      self.setState({showStats: !self.state.showStats});
+    });
+  };
+})('#statistics', $.templates('#statisticsTmpl'), {});
 
 const lobby = new (function Lobby(selector, tmpl, props) {
   this.state = props;
