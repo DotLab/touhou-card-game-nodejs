@@ -186,33 +186,38 @@ const game = new (function Game(selector, tmpl, props) {
     Object.assign(self.state, state);
     console.log('Game#render', self.state);
     $(selector).html(tmpl.render(self.state));
+
+    $(selector + ' .card').on('click', function() {
+      console.log('cardId:', $(this).attr('id'), ', playerId:', $(this).attr('player-id'));
+    });
   };
-})('#game', $.templates('#gameTmpl'), {});
+})('#game', $.templates('#gameTmpl'), {opponents: []});
 
 const gamePlayerListItemConfig = {
+  id: 'abc',
   name: 'Kai',
   life: 4000,
   hand: [
-    {imgUrl: '/imgs/card-back.png'},
-    {imgUrl: '/imgs/card-back.png'},
-    {imgUrl: '/imgs/card-back.png'},
-    {imgUrl: '/imgs/card-back.png'},
-    {imgUrl: '/imgs/card-back.png'},
+    {id: 'a', imgUrl: '/imgs/card-back.png'},
+    {id: 'b', imgUrl: '/imgs/card-back.png'},
+    {id: 'c', imgUrl: '/imgs/card-back.png'},
+    {id: 'd', imgUrl: '/imgs/card-back.png'},
+    {id: 'e', imgUrl: '/imgs/card-back.png'},
   ],
   field: {
-    environment: {imgUrl: '/imgs/card-placeholder.png'},
-    graveyard: {imgUrl: '/imgs/card-back.png'},
+    environment: {id: 'f', imgUrl: '/imgs/card-placeholder.png'},
+    graveyard: {id: 'g', imgUrl: '/imgs/card-back.png'},
     monster: [
-      {imgUrl: '/imgs/card-placeholder.png'},
-      {imgUrl: '/imgs/card-placeholder.png'},
-      {imgUrl: '/imgs/card-placeholder.png'},
-      {imgUrl: '/imgs/card-placeholder.png'},
+      {id: 'h', imgUrl: '/imgs/card-blue-eyes-white-dragon.png', name: 'Blue-Eyes White Dragon', desc: ''},
+      {id: 'm', imgUrl: '/imgs/card-placeholder.png'},
+      {id: 'k', imgUrl: '/imgs/card-placeholder.png'},
+      {id: 'j', imgUrl: '/imgs/card-placeholder.png'},
     ],
     spell: [
-      {imgUrl: '/imgs/card-placeholder.png'},
-      {imgUrl: '/imgs/card-placeholder.png'},
-      {imgUrl: '/imgs/card-placeholder.png'},
-      {imgUrl: '/imgs/card-placeholder.png'},
+      {id: 'l', imgUrl: '/imgs/card-placeholder.png'},
+      {id: 'i', imgUrl: '/imgs/card-floodgate-trap-hole.png', name: 'Floodgate Trap Hole', desc: ''},
+      {id: 'n', imgUrl: '/imgs/card-placeholder.png'},
+      {id: 'o', imgUrl: '/imgs/card-placeholder.png'},
     ],
   },
 };
