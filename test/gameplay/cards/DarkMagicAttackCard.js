@@ -10,7 +10,7 @@ const {assertGameSuccess} = require('../Game');
 
 describe('DarkMagicAttackCard', () => {
   function buildDeck() {
-    return [new DarkMagicianCard(), new FloodgateTrapHoleCard(), new DarkMagicAttackCard(), new DarkMagicAttackCard()];
+    return [new DarkMagicianCard(), new DarkMagicianCard(), new FloodgateTrapHoleCard(), new DarkMagicAttackCard(), new DarkMagicAttackCard()];
   }
 
   it('#activate', () => {
@@ -28,11 +28,11 @@ describe('DarkMagicAttackCard', () => {
     // end of player[1]'s turn, not it is player[0]'s turn
     assert.equal(game.turn, 0);
     // Dark Magic Attack can invoke!
-    assert.isTrue(game.players[0].hand[0].canInvoke());
+    assert.isTrue(game.players[0].hand[0].canInvoke(game.players[0]));
     // Invoke!
     assertGameSuccess(game.place(0, 0, Card.REVEALED));
     // player[0] invokes, player[1] takes the effect
-    assertGameSuccess(game.invokeSpell(0, [game.players[0], game.players[1]]));
+    assertGameSuccess(game.invokeSpell(0, [game.players[0], 'def']));
     // All trap and spell card of players[1] destroyed
     assert.equal(game.players[1].field.spellSlots[0], null);
     assert.equal(game.players[1].field.spellSlots[1], null);

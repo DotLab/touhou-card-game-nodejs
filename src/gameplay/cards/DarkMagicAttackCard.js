@@ -11,9 +11,9 @@ class DarkMagicAttackCard extends SpellCard {
     return false;
   }
 
-  // invokeParams: [opponentId]
+  // invokeParams: [player, opponentId]
   invoke(game, player, invokeParams) {
-    const target = game.players[game.playerIndexById[invokeParams]];
+    const target = game.players[game.playerIndexById[invokeParams[1]]];
     // push this to graveyard
     for (let i = 0; i < player.field.spellSlots.length; i += 1) {
       if (player.field.spellSlots[i] !== null && player.field.spellSlots[i] === this) {
