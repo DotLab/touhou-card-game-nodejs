@@ -20,6 +20,7 @@ class DarkMagicVeilCard extends SpellCard {
       if (player.hand[i].name === DarkMagicVeilCard.Name) {
         for (let j = 0; j < player.field.spellSlots.length; j += 1) {
           if (player.field.spellSlots[j] === this) {
+            player.life -= 1000;
             player.field.spellSlots[j] = null;
             player.field.graveyard.push(this);
             player.field.monsterSlots[invokeParams[1]] = player.hand[i];
