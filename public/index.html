@@ -135,6 +135,12 @@
             {{/if}}
           </div>
         {{/if}}
+        Chat <br/>
+        <input type="text" id="send-message">
+        <button class="sendMessage">Send</button> <br/>
+        {{for room.messages reverse=true}}
+        <strong>{{: messageUser}} </strong>({{: messageDate}}): {{: message}} <br/>
+        {{/for}}
       {{/if}}
     </script>
 

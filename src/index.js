@@ -44,6 +44,7 @@ function leaveLobby(userId) {
 
 const rooms = {};
 const SV_UPDATE_ROOM = 'sv_update_room';
+const SV_ROOM_SEND_MESSAGE = 'sv_room_send_message';
 
 function generateId(length = 256) {
   return crypto.randomBytes(length).toString('base64');
@@ -52,7 +53,8 @@ function generateId(length = 256) {
 function createRoom(userId, userName, name) {
   debug('    createRoom', userId, userName, name);
   const id = generateId(32);
-  rooms[id] = {id, name, ownerId: userId, ownerName: userName, hasProposed: false, hasStarted: false, members: {}};
+  rooms[id] = {id, name, ownerId: userId, ownerName: userName, hasProposed: false, hasStarted: false, members: {}, messages: []};
+  rooms[id].messages.push({messageUser: userName, messageDate: new Date(), message: 'Room created'});
   return rooms[id];
 }
 
@@ -260,6 +262,20 @@ io.on('connection', function(socket) {
     joinLobby(user.id, user.name);
     socket.join(LOBBY);
     io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+
+    done(success());
+  });
+
+  socket.on('cl_room_send_message', async ({message}, done) => {
+    debug('cl_room_send_message');
+
+    if (!user) return done(error('forbidden'));
+    if (!room) return done(error('not in any room'));
+
+    room.messages.push({messageUser: user.name, messageDate: new Date(), message});
+    io.to(room.id).emit(SV_ROOM_SEND_MESSAGE, {
+      userName: user.name, date: new Date(), message,
+    });
 
     done(success());
   });
