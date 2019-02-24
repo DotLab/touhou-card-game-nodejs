@@ -25,9 +25,9 @@ class Card {
     this.display = null;
   }
 
-  canChangeDisplay() {
-    return false;
-  }
+  // canChangeDisplay() {
+  //  return false;
+  // }
 
   endTurn() {
     this.hasChangedDisplay = false;
@@ -35,6 +35,10 @@ class Card {
 
   canBeTargeted() {
     return true;
+  }
+
+  canInvoke() {
+    return false;
   }
 }
 

@@ -36,6 +36,7 @@ class Field {
   }
 
   canActivate(game, owner, actor, action, actionParams, phase) {
+    // console.log(action, phase);
     for (let i = 0; i < this.spellSlots.length; i += 1) {
       if (this.spellSlots[i] !== null && this.spellSlots[i].canActivate(game, owner, actor, action, actionParams, phase)) {
         return true;

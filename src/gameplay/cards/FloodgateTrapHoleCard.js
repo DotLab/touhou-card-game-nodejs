@@ -5,17 +5,17 @@ const Game = require('../Game');
 class FloodgateTrapHoleCard extends SpellCard {
   constructor() {
     super(FloodgateTrapHoleCard.Name, FloodgateTrapHoleCard.Desc, FloodgateTrapHoleCard.ImgUrl);
-
-    this.targetMonster = null;
   }
 
   canActivate(game, owner, actor, action, actionParams, phase) {
-    if (this.targetMonster !== null) return false;
-
     if (action === Game.SUMMON && phase === Game.AFTER) {
       return true;
     }
 
+    return false;
+  }
+
+  canInvoke() {
     return false;
   }
 
