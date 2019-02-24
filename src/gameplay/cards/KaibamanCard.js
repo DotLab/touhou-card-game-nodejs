@@ -13,8 +13,8 @@ class KaibamanCard extends MonsterCard {
   canInvoke(player) {
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === BlueEyesWhiteDragonCard.Name) return true;
-      return false;
     }
+    return false;
   }
 
   invoke(game, player) {
