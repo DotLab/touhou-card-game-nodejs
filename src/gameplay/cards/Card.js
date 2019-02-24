@@ -36,6 +36,10 @@ class Card {
   canBeTargeted() {
     return true;
   }
+
+  canInvoke() {
+    return false;
+  }
 }
 
 Card.HIDDEN = 'HIDDEN';
