@@ -23,7 +23,10 @@ class Card {
     this.desc = desc;
     this.imgUrl = imgUrl;
     this.display = null;
-    this.hasChangedDisplay = false;
+  }
+
+  canChangeDisplay() {
+    return false;
   }
 
   endTurn() {
