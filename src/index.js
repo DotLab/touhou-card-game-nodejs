@@ -25,9 +25,6 @@ function error(err) {
 
 const crypto = require('crypto');
 
-/**
- *  Lobby
- */
 const online = {};
 
 const LOBBY = 'LOBBY';
@@ -44,6 +41,7 @@ function leaveLobby(userId) {
 
 const rooms = {};
 const SV_UPDATE_ROOM = 'sv_update_room';
+const SV_ROOM_SEND_MESSAGE = 'sv_room_send_message';
 
 function generateId(length = 256) {
   return crypto.randomBytes(length).toString('base64');
@@ -260,6 +258,19 @@ io.on('connection', function(socket) {
     joinLobby(user.id, user.name);
     socket.join(LOBBY);
     io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+
+    done(success());
+  });
+
+  socket.on('cl_room_send_message', async ({message}, done) => {
+    debug('cl_room_send_message');
+
+    if (!user) return done(error('forbidden'));
+    if (!room) return done(error('not in any room'));
+
+    io.to(room.id).emit(SV_ROOM_SEND_MESSAGE, {
+      userName: user.name, date: new Date(), message,
+    });
 
     done(success());
   });
