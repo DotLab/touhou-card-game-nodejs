@@ -5,10 +5,9 @@ class DarkMagicVeilCard extends SpellCard {
   constructor() {
     super(DarkMagicVeilCard.Name, DarkMagicVeilCard.Desc, DarkMagicVeilCard.ImgUrl);
   }
-  canInvoke(invokeParams) {
-    const player = invokeParams[0];
+  canInvoke(game, player, invokeParams) {
     if (player.life <= 1000) return false;
-    if (player.field.monsterSlots[invokeParams[1]] !== null) return false;
+    if (player.field.monsterSlots[invokeParams[0]] !== null) return false;
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === DarkMagicianCard.Name) return true;
     }
@@ -23,7 +22,7 @@ class DarkMagicVeilCard extends SpellCard {
             player.life -= 1000;
             player.field.spellSlots[j] = null;
             player.field.graveyard.push(this);
-            player.field.monsterSlots[invokeParams[1]] = player.hand[i];
+            player.field.monsterSlots[invokeParams[0]] = player.hand[i];
             player.hand[i] = null;
             return;
           }

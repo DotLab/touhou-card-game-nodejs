@@ -15,15 +15,15 @@ describe('DarkMagicVeilCard', () => {
   it('#invoke', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
     // Dark Magic Attack can invoke!
-    assert.isTrue(game.players[0].hand[0].canInvoke([game.players[0], 0]));
+    assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [0]));
     game.players[0].life = 500;
-    assert.isFalse(game.players[0].hand[0].canInvoke([game.players[0], 0]));
+    assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [0]));
     game.players[0].life = 3000;
     // Invoke!
     assertGameSuccess(game.place(0, 0, Card.REVEALED));
-    assertGameSuccess(game.invokeSpell(0, [game.players[0], 0]));
+    assertGameSuccess(game.invokeSpell(0, [0]));
     assert.equal(game.players[0].life, 2000);
-    assert.isFalse(game.players[0].hand[1].canInvoke([game.players[0], 0]));
+    assert.isFalse(game.players[0].hand[1].canInvoke(game, game.players[0], [0]));
     assert.equal(game.players[0].field.spellSlots[0], null);
     assert.equal(game.players[0].field.graveyard.length, 1);
   });
