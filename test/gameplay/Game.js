@@ -72,6 +72,14 @@ describe('Game', () => {
     assertGameSuccess(game.changeDisplay(0, Card.REVEALED));
   });
 
+  it('#takeSnapshot', () => {
+    const game = new Game(mockUsers);
+    assertGameError(game.changeDisplay(0, Card.REVEALED));
+    assertGameSuccess(game.summon(0, 0, Card.HIDDEN, Card.DEFENSE));
+    assertGameSuccess(game.changeDisplay(0, Card.REVEALED));
+    game.takeSnapshot();
+  });
+
   it('#changePose', () => {
     const game = new Game(mockUsers);
     assertGameError(game.changePose(0, Card.ATTACK));
