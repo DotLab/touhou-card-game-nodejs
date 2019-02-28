@@ -105,12 +105,12 @@ class Game {
     return Game.success();
   }
 
-  invokeSpell(spellIdx, spellParams) {
+  invokeSpell(spellIdx, effectParams) {
     const player = this.players[this.turn];
     const spell = player.field.spellSlots[spellIdx];
 
-    if (!spell.canInvoke(spellParams)) return Game.error('cannot invoke');
-    spell.invoke(this, player, spellParams);
+    if (!spell.canInvoke(this, player, effectParams)) return Game.error('cannot invoke');
+    spell.invoke(this, player, effectParams);
 
     return Game.success();
   }
@@ -119,7 +119,7 @@ class Game {
     const player = this.players[this.turn];
     const monster = player.field.monsterSlots[monsterIdx];
 
-    if (!monster.canInvoke(effectParams)) return Game.error('cannot invoke');
+    if (!monster.canInvoke(this, player, effectParams)) return Game.error('cannot invoke');
     monster.invoke(this, player, effectParams);
 
     return Game.success();
