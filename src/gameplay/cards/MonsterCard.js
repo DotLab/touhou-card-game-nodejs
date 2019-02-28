@@ -73,6 +73,16 @@ class MonsterCard extends Card {
     this.hasChangedDisplay = false;
     this.hasChangedPose = false;
   }
+
+  takeSnapshot() {
+    return {
+      ...super.takeSnapshot(),
+      lv: this.lv,
+      atk: this.atk,
+      dfs: this.dfs,
+      pose: this.pose,
+    };
+  }
 }
 
 module.exports = MonsterCard;

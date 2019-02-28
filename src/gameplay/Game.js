@@ -253,6 +253,29 @@ class Game {
     }
     return Game.success();
   }
+
+  takeSnapshot() {
+    return {
+      players: this.players.map((player) => {
+        const field = player.field;
+        return {
+          userId: player.userId,
+          userName: player.userName,
+          life: player.life,
+
+          isMyTurn: this.isMyTurn(player.userId),
+
+          hand: player.hand.map((card) => card.takeSnapshot()),
+          field: {
+            environmentSlot: field.environmentSlot ? field.environmentSlot.takeSnapshot() : null,
+            graveyard: field.graveyard.length > 0 ? field.graveyard[field.graveyard.length - 1].takeSnapshot() : null,
+            monsterSlots: field.monsterSlots.map((card) => (card ? card.takeSnapshot() : null)),
+            spellSlots: field.spellSlots.map((card) => (card ? card.takeSnapshot() : null)),
+          },
+        };
+      }),
+    };
+  }
 }
 
 Game.BEFORE = 'BEFORE';

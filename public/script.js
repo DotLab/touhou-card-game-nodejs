@@ -210,37 +210,55 @@ const game = new (function Game(selector, tmpl, props) {
   };
 })('#game', $.templates('#gameTmpl'), {opponents: []});
 
-const gamePlayerListItemConfig = {
-  id: 'abc',
-  name: 'Kai',
-  life: 4000,
-  hand: [
-    {id: 'a', imgUrl: '/imgs/card-back.png'},
-    {id: 'b', imgUrl: '/imgs/card-back.png'},
-    {id: 'c', imgUrl: '/imgs/card-back.png'},
-    {id: 'd', imgUrl: '/imgs/card-back.png'},
-    {id: 'e', imgUrl: '/imgs/card-back.png'},
-  ],
-  field: {
-    environment: {id: 'f', imgUrl: '/imgs/card-placeholder.png'},
-    graveyard: {id: 'g', imgUrl: '/imgs/card-back.png'},
-    monster: [
-      {id: 'h', imgUrl: '/imgs/card-blue-eyes-white-dragon.png', name: 'Blue-Eyes White Dragon', desc: ''},
-      {id: 'm', imgUrl: '/imgs/card-placeholder.png'},
-      {id: 'k', imgUrl: '/imgs/card-placeholder.png'},
-      {id: 'j', imgUrl: '/imgs/card-placeholder.png'},
-    ],
-    spell: [
-      {id: 'l', imgUrl: '/imgs/card-placeholder.png'},
-      {id: 'i', imgUrl: '/imgs/card-floodgate-trap-hole.png', name: 'Floodgate Trap Hole', desc: ''},
-      {id: 'n', imgUrl: '/imgs/card-placeholder.png'},
-      {id: 'o', imgUrl: '/imgs/card-placeholder.png'},
-    ],
-  },
-};
-const gameConfig = {
-  ...gamePlayerListItemConfig,
-  opponents: [gamePlayerListItemConfig, gamePlayerListItemConfig, gamePlayerListItemConfig],
-};
+// const gamePlayerListItemConfig = {
+//   userId: 'abc',
+//   userName: 'Kai',
+//   life: 4000,
+//   hand: [
+//     {id: 'a', imgUrl: '/imgs/card-back.png'},
+//     {id: 'b', imgUrl: '/imgs/card-back.png'},
+//     {id: 'c', imgUrl: '/imgs/card-back.png'},
+//     {id: 'd', imgUrl: '/imgs/card-back.png'},
+//     {id: 'e', imgUrl: '/imgs/card-back.png'},
+//   ],
+//   field: {
+//     environmentSlot: {id: 'f', imgUrl: '/imgs/card-placeholder.png'},
+//     graveyard: {id: 'g', imgUrl: '/imgs/card-back.png'},
+//     monsterSlots: [
+//       {id: 'h', imgUrl: '/imgs/card-blue-eyes-white-dragon.png', name: 'Blue-Eyes White Dragon', desc: ''},
+//       {id: 'm', imgUrl: '/imgs/card-placeholder.png'},
+//       {id: 'k', imgUrl: '/imgs/card-placeholder.png'},
+//       {id: 'j', imgUrl: '/imgs/card-placeholder.png'},
+//     ],
+//     spellSlots: [
+//       {id: 'l', imgUrl: '/imgs/card-placeholder.png'},
+//       {id: 'i', imgUrl: '/imgs/card-floodgate-trap-hole.png', name: 'Floodgate Trap Hole', desc: ''},
+//       {id: 'n', imgUrl: '/imgs/card-placeholder.png'},
+//       {id: 'o', imgUrl: '/imgs/card-placeholder.png'},
+//     ],
+//   },
+// };
 
-game.setState(gameConfig);
+// const gameConfig = {
+//   ...gamePlayerListItemConfig,
+//   opponents: [gamePlayerListItemConfig, gamePlayerListItemConfig, gamePlayerListItemConfig],
+// };
+
+// game.setState(gameConfig);
+
+socket.on('sv_game_start', function(shot) {
+  const players = shot.players;
+  const opponents = [];
+  let me = null;
+
+  for (let i = 0; i < players.length; i += 1) {
+    if (players[i].userId === 'abc') {
+      me = players[i];
+    } else {
+      opponents.push(players[i]);
+    }
+  }
+
+  me.opponents = opponents;
+  game.setState(me);
+});

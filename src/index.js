@@ -102,6 +102,10 @@ function serializeLobby() {
   };
 }
 
+const Game = require('./gameplay/Game');
+const KaibamanCard = require('./gameplay/cards/KaibamanCard');
+const BlueEyesWhiteDragonCard = require('./gameplay/cards/BlueEyesWhiteDragonCard');
+
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
   debug('connection', socket.id);
@@ -313,6 +317,15 @@ io.on('connection', function(socket) {
 
     done(success());
   });
+
+  const deck = [];
+  for (let i = 0; i < 20; i += 1) {
+    deck.push(new KaibamanCard());
+    deck.push(new BlueEyesWhiteDragonCard());
+  }
+  const game = new Game([{id: 'abc', name: 'Kailang', deck}, {id: 'cde', name: 'Bob', deck}, {id: 'edf', name: 'Alice', deck}]);
+  game.summon(0, 0, 'HIDDEN', 'DEFENSE');
+  socket.emit('sv_game_start', game.takeSnapshot());
 
   socket.on('cl_game_action', async (obj, done) => {
     debug('cl_draw_card');
