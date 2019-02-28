@@ -6,13 +6,9 @@ addons:
 services: mongodb
 after_success: npm run coverage
 script:
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
   - npm test
-  - openssl aes-256-cbc -K $encrypted_a86a9c8d2738_key -iv $encrypted_a86a9c8d2738_iv -in deploy-rsa.enc -out /tmp/deploy-rsa -d
-  - chmod 600 /tmp/deploy-rsa
-  - eval `ssh-agent`
-  - ssh-add /tmp/deploy-rsa
-  - ssh kailangfu@35.233.171.1 "cd repositories/touhou-card-game-nodejs/ && git pull && pm2 restart tcg-server"
-  - kill $SSH_AGENT_PID
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
       openssl aes-256-cbc -K $encrypted_a86a9c8d2738_key -iv $encrypted_a86a9c8d2738_iv -in deploy-rsa.enc -out /tmp/deploy-rsa -d;
       chmod 600 /tmp/deploy-rsa;
