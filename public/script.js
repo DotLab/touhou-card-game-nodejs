@@ -137,6 +137,13 @@ const lobby = new (function Lobby(selector, tmpl, props) {
       }, error));
     });
 
+    $(selector + ' .message').on('submit', function(e) {
+      e.preventDefault();
+      socket.emit('cl_room_send_message', {
+        message: $(selector + ' .sendMessage').val(),
+      }, createHandler(null, error));
+    });
+
     $(selector + ' .propose').on('click', function() {
       socket.emit('cl_room_propose', createHandler(null, error));
     });
@@ -155,10 +162,20 @@ const lobby = new (function Lobby(selector, tmpl, props) {
       socket.emit('cl_room_start', createHandler(null, error));
     });
   };
-})('#lobby', $.templates('#lobbyTmpl'), {});
+})('#lobby', $.templates('#lobbyTmpl'), {messages: []});
 
 socket.on('sv_update_lobby', function(res) {
   lobby.setState(res);
+});
+
+socket.on('sv_room_send_message', function(res) {
+  console.log('sv_room_send_message', res);
+  lobby.state.messages.splice(0, 0, {
+    userName: res.userName,
+    date: formatDate(res.date),
+    message: res.message,
+  });
+  lobby.setState({messages: lobby.state.messages});
 });
 
 socket.on('sv_update_room', function(room) {

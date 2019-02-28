@@ -40,7 +40,7 @@ describe('FloodgateTrapHoleCard', () => {
 
   it('#activate zhenglun', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
-    assertGameSuccess(game.place(0, 0, Card.REVEALED));
+    assertGameSuccess(game.place(0, 0, Card.HIDDEN));
     assertGameSuccess(game.endTurn());
     // end of player[0]'s turn, not it is player[1]'s turn
     assert.equal(game.turn, 1);
