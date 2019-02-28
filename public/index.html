@@ -135,14 +135,14 @@
               Not enough members.
             {{/if}}
           </div>
+          <form class="message">
+            <input type="text" class="sendMessage">
+            <button type="submit">Send</button> <br/>
+            {{for messages}}
+            <strong>{{: userName}} </strong>({{: date}}): {{: message}} <br/>
+            {{/for}}
+          </form>
         {{/if}}
-        <form class="message">
-          <input type="text" class="sendMessage">
-          <button type="submit">Send</button> <br/>
-          {{for messages}}
-          <strong>{{: userName}} </strong>({{: date}}): {{: message}} <br/>
-          {{/for}}
-        </form>
       {{/if}}
     </script>
 
