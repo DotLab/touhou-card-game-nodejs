@@ -201,7 +201,13 @@
           {{include field.spellSlots[3] ~userId=userId ~height=200 ~title="Spell 4" tmpl="#gameCardTmpl"/}}
         </div>
       </div>
-      <div>{{for hand ~userId=userId ~height=100 ~title="Hand" tmpl="#gameCardTmpl"/}}</div>
+      <div>
+        {{for hand ~userId=userId ~height=100 ~title="Hand" tmpl="#gameCardTmpl"/}}
+        <span>
+          <button>Draw</button>
+          <button>End Turn</button>
+        </span>
+      </div>
       <div><b>{{: userName}} ({{: life}} Li)</b></div>
     </script>
 

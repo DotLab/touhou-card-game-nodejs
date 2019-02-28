@@ -315,25 +315,26 @@ io.on('connection', function(socket) {
     room.hasStarted = true;
     io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
 
+    const deck = [];
+    for (let i = 0; i < 20; i += 1) {
+      deck.push(new KaibamanCard());
+      deck.push(new BlueEyesWhiteDragonCard());
+    }
+
+    room.game = new Game([
+      {id: user.id, name: user.name, deck},
+      ...Object.keys(room.members).map((memberId) => ({
+        id: room.members[memberId].id,
+        name: room.members[memberId].name,
+        deck,
+      })),
+    ]);
+    io.to(room.id).emit('sv_game_start', room.game.takeSnapshot());
+
     done(success());
   });
 
-  const deck = [];
-  for (let i = 0; i < 20; i += 1) {
-    deck.push(new KaibamanCard());
-    deck.push(new BlueEyesWhiteDragonCard());
-  }
-  const game = new Game([{id: 'abc', name: 'Kailang', deck}, {id: 'cde', name: 'Bob', deck}, {id: 'edf', name: 'Alice', deck}]);
-  game.summon(0, 0, 'HIDDEN', 'DEFENSE');
-  socket.emit('sv_game_start', game.takeSnapshot());
-
-  socket.on('cl_game_action', async (obj, done) => {
-    debug('cl_draw_card');
-    const res = room.game.act(obj);
-    if (res) {
-      done(success(room.game.takeSnapshot()));
-    } else {
-      done(error(res));
-    }
+  socket.on('cl_game_action', async (action, params, done) => {
+    debug('cl_game_action', action);
   });
 });
