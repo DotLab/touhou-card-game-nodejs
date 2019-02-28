@@ -11,5 +11,6 @@ class BlueEyesWhiteDragonCard extends MonsterCard {
 }
 
 BlueEyesWhiteDragonCard.Name = 'Blue-Eyes White Dragon';
+BlueEyesWhiteDragonCard.ImgUrl = '/imgs/blue-eyes-white-dragon.png';
 
 module.exports = BlueEyesWhiteDragonCard;
