@@ -9,17 +9,17 @@ const {assertGameSuccess, assertGameError} = require('../Game');
 
 describe('KaibamanCard', () => {
   function buildDeck() {
-    return [new BlueEyesWhiteDragonCard(), new KaibamanCard()];
+    return [new BlueEyesWhiteDragonCard(), new KaibamanCard(), new KaibamanCard(), new KaibamanCard(), new KaibamanCard()];
   }
   // only kaibaman
   function buildDeck2() {
-    return [new KaibamanCard(), new KaibamanCard()];
+    return [new KaibamanCard(), new KaibamanCard(), new KaibamanCard(), new KaibamanCard(), new KaibamanCard()];
   }
   it('#invoke', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
     const card = game.players[0].hand[0];
     assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
-    assertGameSuccess(game.invokeMonsterEffect(0, game.players[0]));
+    assertGameSuccess(game.invokeMonsterEffect(0, []));
     assert.equal(game.players[0].field.monsterSlots[0].name, 'Blue-Eyes White Dragon');
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     assert.equal(game.players[0].field.graveyard[0], card); // kaibaman in graveyard
@@ -31,7 +31,7 @@ describe('KaibamanCard', () => {
   it('#cannotInvoke', () => {
     const game = new Game([{id: 'abc', deck: buildDeck2()}, {id: 'def', deck: buildDeck2()}]);
     assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
-    assertGameError(game.invokeMonsterEffect(0, game.players[0]));
+    assertGameError(game.invokeMonsterEffect(0, []));
     assertGameSuccess(game.endTurn());
     // end of player[0]'s turn, not it is player[1]'s turn
     assert.equal(game.turn, 1);
