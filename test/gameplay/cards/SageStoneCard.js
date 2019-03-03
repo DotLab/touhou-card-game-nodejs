@@ -10,7 +10,7 @@ const {assertGameSuccess} = require('../Game');
 
 describe('SageStone', () => {
   function buildDeck() {
-    return [new DarkMagicianGirlCard(), new DarkMagicianCard(), new DarkMagicianGirlCard(), new SageStoneCard(), new DarkMagicianGirlCard()];
+    return [new DarkMagicianCard(), new DarkMagicianGirlCard(), new DarkMagicianCard(), new SageStoneCard(), new SageStoneCard(), new DarkMagicianGirlCard()];
   }
 
   it('#activate', () => {
@@ -22,5 +22,9 @@ describe('SageStone', () => {
     assertGameSuccess(game.invokeSpell(0, [1]));
     assert.equal(game.players[0].field.monsterSlots[1].name, DarkMagicianCard.Name );
     assert.equal(game.players[0].field.graveyard.length, 1);
+    assertGameSuccess(game.place(0, 0, Card.REVEALED));
+    assertGameSuccess(game.invokeSpell(0, [2]));
+    assert.equal(game.players[0].field.monsterSlots[2].name, DarkMagicianCard.Name );
+    assert.equal(game.players[0].field.graveyard.length, 2);
   });
 });
