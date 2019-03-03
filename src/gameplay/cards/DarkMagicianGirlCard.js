@@ -7,10 +7,11 @@ const DarkMagicianCard = require('./DarkMagicianCard');
 class DarkMagicianGirlCard extends MonsterCard {
   constructor() {
     super(DarkMagicianGirlCard.Name, DarkMagicianGirlCard.Desc, '/imgs/DarkMagicianGirl.jpg', 6, 2000, 1700);
+    this.hasInvoked = false;
   }
 
   canInvoke(game, player, invokeParams) {
-    return true;
+    return !this.hasInvoked;
   }
 
   invoke(game, player, invokeParams) {
@@ -19,6 +20,7 @@ class DarkMagicianGirlCard extends MonsterCard {
       if (player.field.graveyard[i].name === DarkMagicianCard.Name) count += 1;
     }
     this.atk += (300 * count);
+    this.hasInvoked = true;
   }
 }
 
