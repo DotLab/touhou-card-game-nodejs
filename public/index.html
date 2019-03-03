@@ -16,6 +16,7 @@
       <div id="account"></div>
       <div id="message"></div>
       <div id="statistics"></div>
+      <div id="store"></div>
       <div id="lobby"></div>
     </div>
 
@@ -63,6 +64,17 @@
           </div>
         {{/if}}
       </form>
+    </script>
+
+    <script id="storeTmpl" type="text/html">
+      <form id="store-form">
+        <button type="submit">Store</button>
+        {{if showStore}}
+          <div>  
+            I am the store
+          </div>
+        {{/if}}
+      </form> 
     </script>
 
     <script id="lobbyTmpl" type="text/html">

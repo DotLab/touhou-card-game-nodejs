@@ -68,6 +68,9 @@ function renderAccount(props) {
         gameCount: res.data.gameCount,
         winCount: res.data.winCount,
       });
+      store.setState({
+        showStore: false,
+      });
     });
   });
 
@@ -103,6 +106,22 @@ const statistics = new (function Statistics(selector, tmpl, props) {
     });
   };
 })('#statistics', $.templates('#statisticsTmpl'), {});
+
+const store = new (function Store(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
+
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('store#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+    // TODO
+    $(selector + ' form').on('submit', function(e) {
+      e.preventDefault();
+      self.setState({showStore: !self.state.showStore});
+    });
+  };
+})('#store', $.templates('#storeTmpl'), {});
 
 const lobby = new (function Lobby(selector, tmpl, props) {
   this.state = props;
