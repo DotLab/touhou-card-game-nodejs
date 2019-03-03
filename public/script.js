@@ -199,6 +199,19 @@ socket.on('sv_update_lobby', function(res) {
   lobby.setState(res);
 });
 
+socket.on('sv_refresh_user', function(res) {
+  console.log('sv_refresh_user', res);
+  statistics.setState({
+    spiritPointsCount: res.spiritPointsCount,
+    magicPointsCount: res.magicPointsCount,
+    lifeUpgrade: res.lifeUpgrade,
+  });
+  store.setState({
+    spiritPointsCount: res.spiritPointsCount,
+    magicPointsCount: res.magicPointsCount,
+  });
+});
+
 socket.on('sv_room_send_message', function(res) {
   console.log('sv_room_send_message', res);
   lobby.state.messages.splice(0, 0, {

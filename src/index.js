@@ -42,6 +42,7 @@ function leaveLobby(userId) {
 const rooms = {};
 const SV_UPDATE_ROOM = 'sv_update_room';
 const SV_ROOM_SEND_MESSAGE = 'sv_room_send_message';
+const SV_REFRESH_USER = 'sv_refresh_user';
 
 function generateId(length = 256) {
   return crypto.randomBytes(length).toString('base64');
@@ -223,6 +224,11 @@ io.on('connection', function(socket) {
     user.lifeUpgrade += 100;
     try {
       await User.findByIdAndUpdate(user.id, user);
+      socket.emit(SV_REFRESH_USER, {
+        spiritPointsCount: user.spiritPointsCount,
+        magicPointsCount: user.magicPointsCount,
+        lifeUpgrade: user.lifeUpgrade,
+      });
       return done(success({spiritPointsCount: user.spiritPointsCount, lifeUpgrade: user.lifeUpgrade}));
     } catch (e) {
       return done(error('purchase failed'));
