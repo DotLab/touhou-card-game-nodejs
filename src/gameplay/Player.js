@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const Field = require('./Field');
 const Card = require('./cards/Card');
 
@@ -24,6 +25,8 @@ class Player {
       this.hand.push(this.deck.pop());
     }
     this.isSuspended = false;
+    /** @type {dict}*/
+    this.hasActivated = {};
   }
 
   canDraw() {
@@ -56,7 +59,38 @@ class Player {
    */
   endTurn() {
     this.hasDrawn = false;
+    let name;
+    // eslint-disable-next-line guard-for-in
+    for (name in this.hasActivated) {
+      this.hasActivated[name] = false;
+    }
     this.field.endTurn();
+  }
+
+  /**
+   * @param {string} name
+   * @return {Number} index
+   */
+  findCardInDeckByName(name) {
+    // eslint-disable-next-line no-console
+    let index = -1;
+    for (let i = 0; i < this.deck.length; i++) {
+      if (this.deck[i].name === name) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  }
+
+  /**
+   * @param {Number} index of card in Deck
+   * @return the card
+   */
+
+  getCardFromDeckByIdx(index) {
+    const card = this.deck.splice(index, 1);
+    return card[0];
   }
 
   canBeDirectlyAttacked() {
