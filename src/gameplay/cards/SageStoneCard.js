@@ -29,7 +29,9 @@ class SageStoneCard extends SpellCard {
     }
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === DarkMagicianCard.Name) {
-        game.summon(i, invokeParams[0], Card.REVEALED, Card.ATTACK);
+        const card = player.removeCardInHand(i);
+        player.field.monsterSlots[invokeParams[0]] = card;
+        card.summon(Card.REVEALED, Card.ATTACK);
         return;
       }
     }
