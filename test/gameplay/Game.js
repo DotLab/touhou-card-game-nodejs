@@ -3,6 +3,7 @@ const assert = require('chai').assert;
 const MonsterCard = require('../../src/gameplay/cards/MonsterCard');
 const KaibamanCard = require('../../src/gameplay/cards/KaibamanCard');
 const BlueEyesWhiteDragonCard = require('../../src/gameplay/cards/BlueEyesWhiteDragonCard');
+const DarkMagicianCard = require('../../src/gameplay/cards/BlueEyesWhiteDragonCard');
 const Card = require('../../src/gameplay/cards/Card');
 const Game = require('../../src/gameplay/Game');
 
@@ -63,6 +64,37 @@ describe('Game', () => {
     assertGameError(game.attack(1, 0, 0));
     assertGameError(game.attack(0, 2, 0));
     assertGameError(game.attack(0, 0, 1));
+  });
+  it('#attack1', ()=> {
+    const mockUsers1 = [
+      {id: 'abc', name: 'F', deck: createMockDeck1()},
+      {id: 'def', name: 'K', deck: createMockDeck2()},
+    ];
+
+    function createMockDeck1() {
+      const res = [];
+      for (let i = 0; i < 10; i += 1) {
+        res.push(new BlueEyesWhiteDragonCard());
+      }
+      return res;
+    }
+    function createMockDeck2() {
+      const res = [];
+      for (let i = 0; i < 10; i += 1) {
+        res.push(new DarkMagicianCard());
+      }
+      return res;
+    }
+
+    const game = new Game(mockUsers1);
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+    const loserCard = game.players[1].field.monsterSlots[0];
+    assertGameSuccess(game.attack(0, 1, 0));
+    assert.equal(game.players[1].field.monsterSlots[0], null);
+    assert.equal(game.players[1].field.graveyard[0], loserCard);
   });
 
   it('#changeDisplay', () => {
