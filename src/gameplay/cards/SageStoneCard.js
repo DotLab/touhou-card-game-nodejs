@@ -4,7 +4,7 @@ const DarkMagicianGirlCard = require('./DarkMagicianGirlCard');
 const Card = require('../../../src/gameplay/cards/Card');
 class SageStoneCard extends SpellCard {
   constructor() {
-    super(SageStoneCard.Name, SageStoneCard.Desc, '/imgs/DarkMagicianGirl.jpg');
+    super(SageStoneCard.Name, SageStoneCard.Desc, SageStoneCard.Url);
   }
   canInvoke(game, player, invokeParams) {
     if (player.field.monsterSlots[invokeParams[0]] != null) return false;
@@ -18,7 +18,7 @@ class SageStoneCard extends SpellCard {
     return false;
   }
 
-  // invokeParams: [opponentId]
+  // invokeParams: index of monsterSlot
   invoke(game, player, invokeParams) {
     // push this to graveyard
     for (let i = 0; i < player.field.spellSlots.length; i += 1) {
@@ -46,5 +46,6 @@ class SageStoneCard extends SpellCard {
 
 SageStoneCard.Name = 'Sage Stone';
 SageStoneCard.Desc = 'If you control a face-up "Dark Magician Girl": Special Summon 1 "Dark Magician" from your hand or Deck.';
+SageStoneCard.Url = '/Imgs/DarkMagicianGirl.jpg';
 
 module.exports = SageStoneCard;
