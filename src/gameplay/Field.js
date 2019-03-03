@@ -14,6 +14,19 @@ class Field {
     this.spellSlots = [null, null, null, null];
     /** @type {Card[]} */
     this.graveyard = [];
+    /** @type {Card[]} */
+    this.oblivion = [];
+  }
+
+  /**
+  * Remove a card from oblivion field
+  * @param {Number} index card index in oblivion field
+  * @return {Card} card
+  */
+
+  removeCardFromOblivion(index) {
+    const removed = this.oblivion.splice(index, 1);
+    return removed[0];
   }
 
   endTurn() {
