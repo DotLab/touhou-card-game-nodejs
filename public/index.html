@@ -61,6 +61,9 @@
             Time Online: {{:onlineTime}} <br/>
             Games Played: {{:gameCount}}<br/>
             Games Won: {{:winCount}}<br/>
+            Spirit Points: {{:spiritPointsCount}}<br/>
+            Magic Points: {{:magicPointsCount}}<br/>
+            Life Upgrade: +{{:lifeUpgrade}}<br/> 
           </div>
         {{/if}}
       </form>
@@ -71,7 +74,29 @@
         <button type="submit">Store</button>
         {{if showStore}}
           <div>  
-            I am the store
+            Spirit Points: {{:spiritPointsCount}} 
+            Magic Points: {{:magicPointsCount}}
+            <ul>
+              <li>Life +100
+                <ul>
+                  <li>-50 Spirit Points</li>
+                  {{if spiritPointsCount >= 50}}
+                    <li><button type="text" class="buyLife">Buy</button></li>
+                  {{else}}
+                    <li>Not enough Spirit Points</li>
+                  {{/if}}
+                </ul>
+              </li>
+              <li>Card Upgrade</li>
+              <ul>
+                  <li>-100 Spirit Points</li>
+                  {{if spiritPointsCount >= 100}}
+                    <li><button type=submit>Buy</button></li>
+                  {{else}}
+                    <li>Not enough Spirit Points</li>
+                  {{/if}}
+              </ul>
+            </ul>
           </div>
         {{/if}}
       </form> 

@@ -67,9 +67,14 @@ function renderAccount(props) {
         onlineTime: formatTime(res.data.onlineTime),
         gameCount: res.data.gameCount,
         winCount: res.data.winCount,
+        spiritPointsCount: res.data.spiritPointsCount,
+        magicPointsCount: res.data.magicPointsCount,
+        lifeUpgrade: res.data.lifeUpgrade,
       });
       store.setState({
         showStore: false,
+        spiritPointsCount: res.data.spiritPointsCount,
+        magicPointsCount: res.data.magicPointsCount,
       });
     });
   });
@@ -115,10 +120,17 @@ const store = new (function Store(selector, tmpl, props) {
     Object.assign(self.state, state);
     console.log('store#render', self.state);
     $(selector).html(tmpl.render(self.state));
-    // TODO
+
     $(selector + ' form').on('submit', function(e) {
       e.preventDefault();
       self.setState({showStore: !self.state.showStore});
+    });
+
+    $(selector + ' .buyLife').on('click', function(e) {
+      e.preventDefault();
+      socket.emit('cl_buy_life', createHandler(function(res) {
+        // self.setState({spiritPointsCount: res.data.spiritPointsCount});
+      }, error));
     });
   };
 })('#store', $.templates('#storeTmpl'), {});

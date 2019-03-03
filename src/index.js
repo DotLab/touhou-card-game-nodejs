@@ -151,6 +151,9 @@ io.on('connection', function(socket) {
       onlineTime: 0,
       gameCount: 0,
       winCount: 0,
+      spiritPointsCount: 0,
+      magicPointsCount: 0,
+      lifeUpgrade: 0,
     });
 
     done(success());
@@ -189,6 +192,9 @@ io.on('connection', function(socket) {
         onlineTime: user.onlineTime,
         gameCount: user.gameCount,
         winCount: user.winCount,
+        spiritPointsCount: user.spiritPointsCount,
+        magicPointsCount: user.magicPointsCount,
+        lifeUpgrade: user.lifeUpgrade,
       }));
     } else {
       done(error('wrong username/password'));
@@ -206,6 +212,20 @@ io.on('connection', function(socket) {
       return done(success({name: user.name, bio: user.bio}));
     } catch (e) {
       return done(error('update failed'));
+    }
+  });
+
+  socket.on('cl_buy_life', async (done) => {
+    debug('cl_buy_life');
+
+    if (!user) return done(error('forbidden'));
+    user.spiritPointsCount -= 50;
+    user.lifeUpgrade += 100;
+    try {
+      await User.findByIdAndUpdate(user.id, user);
+      return done(success({spiritPointsCount: user.spiritPointsCount, lifeUpgrade: user.lifeUpgrade}));
+    } catch (e) {
+      return done(error('purchase failed'));
     }
   });
 
