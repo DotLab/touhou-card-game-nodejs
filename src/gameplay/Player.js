@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const Field = require('./Field');
 const Card = require('./cards/Card');
 
@@ -60,10 +59,7 @@ class Player {
   endTurn() {
     this.hasDrawn = false;
     let name;
-    // eslint-disable-next-line guard-for-in
-    for (name in this.hasActivated) {
-      this.hasActivated[name] = false;
-    }
+    this.hasActivated[name] = {};
     this.field.endTurn();
   }
 
@@ -72,9 +68,8 @@ class Player {
    * @return {Number} index
    */
   findCardInDeckByName(name) {
-    // eslint-disable-next-line no-console
     let index = -1;
-    for (let i = 0; i < this.deck.length; i++) {
+    for ( let i = 0; i < this.deck.length; i++) {
       if (this.deck[i].name === name) {
         index = i;
         break;

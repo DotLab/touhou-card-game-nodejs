@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const assert = require('chai').assert;
 
 const Game = require('../../../src/gameplay/Game');

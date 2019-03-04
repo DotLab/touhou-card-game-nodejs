@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const SpellCard = require('./SpellCard');
 
 class SpellbookOfSecretsCard extends SpellCard {
@@ -8,11 +7,9 @@ class SpellbookOfSecretsCard extends SpellCard {
 
   canInvoke(game, player, invokeParams) {
     const name = invokeParams[0];
-    // eslint-disable-next-line no-console
     if (!name.includes('Spellbook')) return false; //  not a spellbook card
     if (name === SpellbookOfSecretsCard.Name) return false;
     if (player.findCardInDeckByName(name) === -1) {
-      // eslint-disable-next-line no-console
       return false; // no such card
     }
     if (SpellbookOfSecretsCard.Name in player.hasActivated) {
