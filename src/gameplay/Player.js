@@ -83,7 +83,7 @@ class Player {
    * @return the card
    */
 
-  getCardFromDeckByIdx(index) {
+  removeCardFromDeck(index) {
     const card = this.deck.splice(index, 1);
     return card[0];
   }
