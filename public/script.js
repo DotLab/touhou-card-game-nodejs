@@ -76,6 +76,11 @@ function renderAccount(props) {
         spiritPointsCount: res.data.spiritPointsCount,
         magicPointsCount: res.data.magicPointsCount,
       });
+      console.log('players', res.data.players);
+      allPlayers.setState({
+        showAllPlayers: false,
+        players: res.data.players,
+      });
     });
   });
 
@@ -134,6 +139,22 @@ const store = new (function Store(selector, tmpl, props) {
     });
   };
 })('#store', $.templates('#storeTmpl'), {});
+
+const allPlayers = new (function allPlayers(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
+
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('allPlayers#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+
+    $(selector + ' form').on('submit', function(e) {
+      e.preventDefault();
+      self.setState({showAllPlayers: !self.state.showAllPlayers});
+    });
+  };
+})('#allPlayers', $.templates('#allPlayersTmpl'), {});
 
 const lobby = new (function Lobby(selector, tmpl, props) {
   this.state = props;

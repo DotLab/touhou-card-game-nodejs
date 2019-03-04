@@ -103,6 +103,20 @@ function serializeLobby() {
   };
 }
 
+function getAllPlayers() {
+  const allPlayers = {};
+  User.find({}, function(err, users) {
+    users.forEach(function(user) {
+      allPlayers[user.name] = {
+        name: user.name,
+        bio: user.bio,
+        lastDate: user.lastDate,
+        spiritPointsCount: user.spiritPointsCount,
+      };
+    });
+  });
+}
+
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
   debug('connection', socket.id);
@@ -184,6 +198,9 @@ io.on('connection', function(socket) {
       socket.join(LOBBY);
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
+      const allPlayers = getAllPlayers(); // await
+      debug('all players', allPlayers);
+
       done(success({
         id: user.id,
         name: user.name,
@@ -196,6 +213,7 @@ io.on('connection', function(socket) {
         spiritPointsCount: user.spiritPointsCount,
         magicPointsCount: user.magicPointsCount,
         lifeUpgrade: user.lifeUpgrade,
+        players: allPlayers,
       }));
     } else {
       done(error('wrong username/password'));

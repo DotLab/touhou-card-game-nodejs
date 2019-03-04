@@ -17,6 +17,7 @@
       <div id="message"></div>
       <div id="statistics"></div>
       <div id="store"></div>
+      <div id="allPlayers"></div>
       <div id="lobby"></div>
     </div>
 
@@ -89,7 +90,8 @@
               <ul>
                   <li>-100 Spirit Points</li>
                   {{if spiritPointsCount >= 100}}
-                    <li><button type=submit>Buy</button></li>
+                    <!-- <li><button type=submit>Buy</button></li>  -->
+                    <li>Not yet implemented</li>
                   {{else}}
                     <li>Not enough Spirit Points</li>
                   {{/if}}
@@ -98,6 +100,20 @@
           </div>
         {{/if}}
       </form> 
+    </script>
+
+    <script id="allPlayersTmpl" type="text/html">
+      <form class="allPlayersList">
+        <button type="submit">All Players</button>
+        {{if showAllPlayers}}
+        player
+        {{:players}}
+
+        {{for players}}
+          pl: {{:name}} {{>bio}}
+        {{/for}}
+        {{/if}}
+      </form>
     </script>
 
     <script id="lobbyTmpl" type="text/html">
