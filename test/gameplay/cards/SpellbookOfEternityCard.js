@@ -14,47 +14,36 @@ describe('SpellbookOfEternityCard', () => {
   it('#canInvoke', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
     game.players[0].field.oblivion.push(new SpellbookOfSecretsCard());
-    const targetName = SpellbookOfSecretsCard.Name;
-    assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
+    assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [0]));
   });
 
   it('#sameName', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
     game.players[0].field.oblivion.push(new SpellbookOfEternityCard());
-    const targetName = SpellbookOfEternityCard.name;
-    assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
-  });
-
-  it('#noCardFound', () => {
-    const game = new Game([{id: 'abc', deck: buildDeck()}]);
-    game.players[0].field.oblivion.push(new SpellbookOfEternityCard());
-    const targetName = 'Kaibaman';
-    assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
+    assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [0]));
   });
 
   it('#activate', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
-    const targetName = SpellbookOfSecretsCard.Name;
     game.players[0].field.oblivion.push(new SpellbookOfEternityCard());
     game.players[0].field.oblivion.push(new SpellbookOfSecretsCard());
-    assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
+    assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [1]));
     assertGameSuccess(game.place(0, 0, Card.HIDDEN));
-    assertGameSuccess(game.invokeSpell(0, [targetName]));
+    assertGameSuccess(game.invokeSpell(0, [1]));
     assert.isTrue(game.players[0].hand[game.players[0].hand.length-1].name === SpellbookOfSecretsCard.Name);
     assert.isTrue(game.players[0].field.oblivion.length === 1);
   });
 
   it('#cannotReactivate', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
-    const targetName = SpellbookOfSecretsCard.Name;
     game.players[0].field.oblivion.push(new SpellbookOfEternityCard());
     game.players[0].field.oblivion.push(new SpellbookOfSecretsCard());
     game.players[0].field.oblivion.push(new SpellbookOfSecretsCard());
-    assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
+    assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [1]));
     assertGameSuccess(game.place(0, 0, Card.HIDDEN));
-    assertGameSuccess(game.invokeSpell(0, [targetName]));
+    assertGameSuccess(game.invokeSpell(0, [1]));
     assert.isTrue(game.players[0].hand[game.players[0].hand.length-1].name === SpellbookOfSecretsCard.Name);
     assert.isTrue(game.players[0].field.oblivion.length === 2);
-    assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
+    assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [1]));
   });
 });

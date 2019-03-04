@@ -111,6 +111,7 @@ class Game {
 
     if (!spell.canInvoke(this, player, effectParams)) return Game.error('cannot invoke');
     spell.invoke(this, player, effectParams);
+    player.hasActivated[spell.Name] = true;
 
     return Game.success();
   }

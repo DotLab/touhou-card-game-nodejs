@@ -12,10 +12,8 @@ class SpellbookOfSecretsCard extends SpellCard {
     if (player.findCardInDeckByName(name) === -1) {
       return false; // no such card
     }
-    if (SpellbookOfSecretsCard.Name in player.hasActivated) {
-      if (player.hasActivated[SpellbookOfSecretsCard.Name] == true) {
-        return false; // if has activated on this turn
-      }
+    if (player.hasActivated[SpellbookOfSecretsCard.Name] == true) {
+      return false; // if has activated on this turn
     }
     return true;
   }
@@ -23,7 +21,7 @@ class SpellbookOfSecretsCard extends SpellCard {
   invoke(game, player, invokeParams) {
     const name = invokeParams[0];
     const index = player.findCardInDeckByName(name);
-    const card = player.getCardFromDeckByIdx(index);
+    const card = player.removeCardFromDeck(index);
     player.hand.push(card);
     player.hasActivated[SpellbookOfSecretsCard.Name] = true;
   }

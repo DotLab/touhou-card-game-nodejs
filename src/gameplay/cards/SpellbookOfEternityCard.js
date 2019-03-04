@@ -6,31 +6,21 @@ class SpellbookOfEternityCard extends SpellCard {
   }
 
   canInvoke(game, player, invokeParams) {
-    const name = invokeParams[0];
+    const oblivionIdx = invokeParams[0];
     const oblivion = player.field.oblivion;
+    const name = oblivion[oblivionIdx].name;
     if (!name.includes('Spellbook')) return false; //  not a spellbook card
     if (name == SpellbookOfEternityCard.Name) return false;
     if (oblivion.length == 0) return false; // no card in oblivion
-    if (SpellbookOfEternityCard.Name in player.hasActivated) {
-      if (player.hasActivated[SpellbookOfEternityCard.Name] == true) {
-        return false; // if has activated on this turn
-      }
+    if (player.hasActivated[SpellbookOfEternityCard.Name] == true) {
+      return false; // if has activated on this turn
     }
-    for (let i = 0; i < oblivion.length; i += 1) {
-      if (oblivion[i].name === name && oblivion[i] instanceof SpellCard ) return true; // is a spell card
-    }
-    return false;
+    if (! (oblivion[oblivionIdx] instanceof SpellCard) ) return false; // not a spell card
+    return true;
   }
 
   invoke(game, player, invokeParams) {
-    const name = invokeParams[0];
-    let index = -1;
-    for (let i = 0; i < player.field.oblivion.length; i += 1) {
-      if (player.field.oblivion[i].name === name) {
-        index = i;
-        break;
-      }
-    }
+    const index = invokeParams[0];
     const card = player.field.removeCardFromOblivion(index);
     player.hand.push(card);
     player.hasActivated[SpellbookOfEternityCard.Name] = true;
