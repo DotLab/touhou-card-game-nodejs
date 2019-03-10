@@ -191,6 +191,14 @@ const lobby = new (function Lobby(selector, tmpl, props) {
       }, error));
     });
 
+    $(selector + ' .watchRoom').on('click', function() {
+      socket.emit('cl_watch_room', {
+        roomId: $(this).attr('value'),
+      }, createHandler(function(room) {
+        self.setState({room: room, isHosting: false});
+      }, error));
+    });
+
     $(selector + ' .message').on('submit', function(e) {
       e.preventDefault();
       socket.emit('cl_room_send_message', {

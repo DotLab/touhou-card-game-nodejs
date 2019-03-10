@@ -51,7 +51,7 @@ function generateId(length = 256) {
 function createRoom(userId, userName, name) {
   debug('    createRoom', userId, userName, name);
   const id = generateId(32);
-  rooms[id] = {id, name, ownerId: userId, ownerName: userName, hasProposed: false, hasStarted: false, members: {}};
+  rooms[id] = {id, name, ownerId: userId, ownerName: userName, hasProposed: false, hasStarted: false, members: {}, watchers: {}};
   return rooms[id];
 }
 
@@ -80,15 +80,23 @@ function leaveRoom(roomId, userId) {
       room.ownerName = newOwner.name;
       delete room.members[memberIds[0]];
     }
-  } else { // member leaves
+  } else { // member or watcher leaves
     delete room.members[userId];
+    delete room.watchers[userId];
   }
+}
+
+function watchRoom(roomId, userId, userName) {
+  debug('    watchRoom', roomId, userId, userName);
+  rooms[roomId].watchers[userId] = {id: userId, name: userName};
+  return rooms[roomId];
 }
 
 function serializeRoom(room) {
   return {
     ...room,
     members: Object.keys(room.members).map((userId) => room.members[userId]),
+    watchers: Object.keys(room.watchers).map((userId) => room.watchers[userId]),
   };
 }
 
@@ -289,6 +297,23 @@ io.on('connection', function(socket) {
     done(success(serializeRoom(room)));
   });
 
+  socket.on('cl_watch_room', async ({roomId}, done) => {
+    debug('cl_watch_room', roomId);
+
+    if (!user) return done(error('forbidden'));
+    if (room) return done(error('already in a room'));
+
+    room = watchRoom(roomId, user.id, user.name);
+    socket.join(room.id);
+    io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+
+    leaveLobby(user.id);
+    socket.leave(LOBBY);
+    io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+
+    done(success(serializeRoom(room)));
+  });
+
   socket.on('cl_leave_room', async (done) => {
     debug('cl_leave_room');
 
@@ -357,6 +382,7 @@ io.on('connection', function(socket) {
 
     room.hasStarted = true;
     io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+    io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
     done(success());
   });

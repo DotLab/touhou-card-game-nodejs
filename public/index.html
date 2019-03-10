@@ -138,7 +138,11 @@
             {{for rooms}}
             <li>
               {{include #view tmpl="#lobbyRoomListItemTmpl"/}}
-              <button class="joinRoom" value="{{: id}}">Join</button>
+              {{if hasStarted}}
+                <button class="watchRoom" value="{{: id}}">Watch</button>
+              {{else}}
+                <button class="joinRoom" value="{{: id}}">Join</button>
+              {{/if}}
             </li>
             {{/for}}
           </ul>
@@ -206,6 +210,9 @@
       <strong>{{: name}}</strong> (owned by <em>{{: ownerName}}</em>)
       {{if members.length}}
       <strong>{{: members.length}} members:</strong> {{for members}}<em>{{: name}}, </em>{{/for}}
+      {{/if}}
+      {{if watchers.length}}
+      <strong>{{: watchers.length}} watchers:</strong> {{for watchers}}<em>{{: name}}, </em>{{/for}}
       {{/if}}
     </script>
 
