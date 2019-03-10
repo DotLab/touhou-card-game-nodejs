@@ -154,6 +154,9 @@
       {{if members.length}}
       <strong>{{: members.length}} members:</strong> {{for members}}<em>{{: name}}, </em>{{/for}}
       {{/if}}
+      {{if watchers.length}}
+      <strong>{{: watchers.length}} watchers:</strong> {{for watchers}}<em>{{: name}}, </em>{{/for}}
+      {{/if}}
     </script>
 
     <script src="/utils.js"></script>
