@@ -106,12 +106,18 @@
       <form class="allPlayersList">
         <button type="submit">All Players</button>
         {{if showAllPlayers}}
-        player
-        {{:players}}
-
+        <ul>
         {{for players}}
-          pl: {{:name}} {{>bio}}
+        <li>
+          {{:name}}
+          <ul> 
+            {{if bio}}<li>"{{:bio}}"</li>{{/if}}
+            {{if lastDate}}<li>Last Seen: {{:lastDate}}</li>{{/if}}
+            {{if lifeUpgrade}}<li>Life Upgrade: {{:lifeUpgrade}}</li>{{/if}}
+          </ul> 
+        </li>
         {{/for}}
+        </ul>
         {{/if}}
       </form>
     </script>

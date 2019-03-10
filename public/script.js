@@ -76,7 +76,6 @@ function renderAccount(props) {
         spiritPointsCount: res.data.spiritPointsCount,
         magicPointsCount: res.data.magicPointsCount,
       });
-      console.log('players', res.data.players);
       allPlayers.setState({
         showAllPlayers: false,
         players: res.data.players,
@@ -151,6 +150,9 @@ const allPlayers = new (function allPlayers(selector, tmpl, props) {
 
     $(selector + ' form').on('submit', function(e) {
       e.preventDefault();
+      // socket.emit('cl_all_players', {
+
+      // });
       self.setState({showAllPlayers: !self.state.showAllPlayers});
     });
   };

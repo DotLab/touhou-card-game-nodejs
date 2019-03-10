@@ -1,3 +1,5 @@
+/* global formatDate */
+
 const debug = require('debug')('tcg');
 
 const mongoose = require('mongoose');
@@ -105,15 +107,19 @@ function serializeLobby() {
 
 function getAllPlayers() {
   const allPlayers = {};
+  let index = 0;
   User.find({}, function(err, users) {
     users.forEach(function(user) {
-      allPlayers[user.name] = {
+      allPlayers[index] = {
         name: user.name,
         bio: user.bio,
         lastDate: user.lastDate,
         spiritPointsCount: user.spiritPointsCount,
       };
+      index++;
     });
+    debug('get all players', allPlayers);
+    return allPlayers;
   });
 }
 
@@ -198,8 +204,25 @@ io.on('connection', function(socket) {
       socket.join(LOBBY);
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
-      const allPlayers = getAllPlayers(); // await
-      debug('all players', allPlayers);
+      const allPlayers = [];
+      let index = 0;
+      await User.find({}, function(err, users) {
+        users.forEach(function(user) {
+          allPlayers[index] = {
+            name: user.name,
+            bio: user.bio,
+            lastDate: user.lastDate,
+            lifeUpgrade: user.lifeUpgrade,
+          };
+          index++;
+        });
+        allPlayers.sort(function(a, b) {
+          //
+          if (a.lifeUpgrade && ! b.lifeUpgrade) return 0;
+          if (! a.lifeUpgrade && b.lifeUpgrade) return 1;
+          return b.lifeUpgrade - a.lifeUpgrade;
+        });
+      });
 
       done(success({
         id: user.id,
