@@ -24,7 +24,9 @@ class KaibamanCard extends MonsterCard {
           if (player.field.monsterSlots[j] === this) {
             player.field.monsterSlots[j] = null;
             player.field.graveyard.push(this);
-            game.summon(i, j, Card.REVEALED, Card.ATTACK);
+            const card = player.removeCardInHand(i);
+            player.field.monsterSlots[j] = card;
+            card.summon(Card.REVEALED, Card.ATTACK);
             return;
           }
         }
