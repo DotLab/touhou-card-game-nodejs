@@ -1,5 +1,3 @@
-/* global formatDate */
-
 const debug = require('debug')('tcg');
 
 const mongoose = require('mongoose');
@@ -103,24 +101,6 @@ function serializeLobby() {
     lobby: Object.keys(lobby).map((userId) => lobby[userId]),
     rooms: serializeRooms(),
   };
-}
-
-function getAllPlayers() {
-  const allPlayers = {};
-  let index = 0;
-  User.find({}, function(err, users) {
-    users.forEach(function(user) {
-      allPlayers[index] = {
-        name: user.name,
-        bio: user.bio,
-        lastDate: user.lastDate,
-        spiritPointsCount: user.spiritPointsCount,
-      };
-      index++;
-    });
-    debug('get all players', allPlayers);
-    return allPlayers;
-  });
 }
 
 const io = require('socket.io')(http);
