@@ -81,7 +81,11 @@
             {{for rooms}}
             <li>
               {{include #view tmpl="#lobbyRoomListItemTmpl"/}}
-              <button class="joinRoom" value="{{: id}}">Join</button>
+              {{if hasStarted}}
+                <button class="watchRoom" value="{{: id}}">Watch</button>
+              {{else}}
+                <button class="joinRoom" value="{{: id}}">Join</button>
+              {{/if}}
             </li>
             {{/for}}
           </ul>
