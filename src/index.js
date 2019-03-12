@@ -160,8 +160,8 @@ io.on('connection', function(socket) {
       onlineTime: 0,
       gameCount: 0,
       winCount: 0,
-      spiritPointsCount: 0,
-      magicPointsCount: 0,
+      spiritPointsCount: 100,
+      magicPointsCount: 100,
       lifeUpgrade: 0,
     });
 
@@ -192,26 +192,6 @@ io.on('connection', function(socket) {
       socket.join(LOBBY);
       io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
-      const allPlayers = [];
-      let index = 0;
-      await User.find({}, function(err, users) {
-        users.forEach(function(user) {
-          allPlayers[index] = {
-            name: user.name,
-            bio: user.bio,
-            lastDate: user.lastDate,
-            lifeUpgrade: user.lifeUpgrade,
-          };
-          index++;
-        });
-        allPlayers.sort(function(a, b) {
-          //
-          if (a.lifeUpgrade && ! b.lifeUpgrade) return 0;
-          if (! a.lifeUpgrade && b.lifeUpgrade) return 1;
-          return b.lifeUpgrade - a.lifeUpgrade;
-        });
-      });
-
       done(success({
         id: user.id,
         name: user.name,
@@ -224,7 +204,6 @@ io.on('connection', function(socket) {
         spiritPointsCount: user.spiritPointsCount,
         magicPointsCount: user.magicPointsCount,
         lifeUpgrade: user.lifeUpgrade,
-        players: allPlayers,
       }));
     } else {
       done(error('wrong username/password'));
@@ -262,6 +241,26 @@ io.on('connection', function(socket) {
     } catch (e) {
       return done(error('purchase failed'));
     }
+  });
+
+  socket.on('cl_all_players', async (done) => {
+    debug('cl_all_players');
+
+    if (!user) return done(error('forbidden'));
+
+    const userDocs = await User.find({});
+    const users = userDocs.map((doc) => ({
+      name: doc.name,
+      bio: doc.bio,
+      lastDate: doc.lastDate,
+      lifeUpgrade: doc.lifeUpgrade,
+    })).sort((a, b) => {
+      if (a.lifeUpgrade && ! b.lifeUpgrade) return 0;
+      if (! a.lifeUpgrade && b.lifeUpgrade) return 1;
+      return b.lifeUpgrade - a.lifeUpgrade;
+    });
+
+    done(success(users));
   });
 
   socket.on('cl_create_room', async ({name}, done) => {

@@ -78,7 +78,7 @@ function renderAccount(props) {
       });
       allPlayers.setState({
         showAllPlayers: false,
-        players: res.data.players,
+        players: [],
       });
     });
   });
@@ -125,7 +125,7 @@ const store = new (function Store(selector, tmpl, props) {
     console.log('store#render', self.state);
     $(selector).html(tmpl.render(self.state));
 
-    $(selector + ' form').on('submit', function(e) {
+    $(selector + ' .showStore').on('click', function(e) {
       e.preventDefault();
       self.setState({showStore: !self.state.showStore});
     });
@@ -148,12 +148,21 @@ const allPlayers = new (function allPlayers(selector, tmpl, props) {
     console.log('allPlayers#render', self.state);
     $(selector).html(tmpl.render(self.state));
 
-    $(selector + ' form').on('submit', function(e) {
+    $(selector + ' .allPlayersList').on('click', function(e) {
       e.preventDefault();
-      // socket.emit('cl_all_players', {
-
-      // });
-      self.setState({showAllPlayers: !self.state.showAllPlayers});
+      socket.emit('cl_all_players', function(res) {
+        console.log('res', res.data);
+        if (res.err) return error(res.err);
+        self.setState({
+          showAllPlayers: !self.state.showAllPlayers,
+          players: res.data.map(function(player) {
+            return {
+              ...player,
+              lastDate: formatDate(player.lastDate),
+            };
+          }),
+        });
+      });
     });
   };
 })('#allPlayers', $.templates('#allPlayersTmpl'), {});

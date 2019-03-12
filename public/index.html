@@ -71,42 +71,39 @@
     </script>
 
     <script id="storeTmpl" type="text/html">
-      <form id="store-form">
-        <button type="submit">Store</button>
-        {{if showStore}}
-          <div>  
-            <ul>
-              <li>Life +100
-                <ul>
-                  <li>-50 Spirit Points</li>
-                  {{if spiritPointsCount >= 50}}
-                    <li><button type="text" class="buyLife">Buy</button></li>
-                  {{else}}
-                    <li>Not enough Spirit Points</li>
-                  {{/if}}
-                </ul>
-              </li>
-              <li>Card Upgrade</li>
+      <button class="showStore">Store</button>
+      {{if showStore}}
+        <div>  
+          <ul>
+            <li>Life +100
               <ul>
-                  <li>-100 Spirit Points</li>
-                  {{if spiritPointsCount >= 100}}
-                    <!-- <li><button type=submit>Buy</button></li>  -->
-                    <li>Not yet implemented</li>
-                  {{else}}
-                    <li>Not enough Spirit Points</li>
-                  {{/if}}
+                <li>-50 Spirit Points</li>
+                {{if spiritPointsCount >= 50}}
+                  <li><button class="buyLife">Buy</button></li>
+                {{else}}
+                  <li>Not enough Spirit Points</li>
+                {{/if}}
               </ul>
+            </li>
+            <li>Card Upgrade</li>
+            <ul>
+                <li>-100 Spirit Points</li>
+                {{if spiritPointsCount >= 100}}
+                  <!-- <li><button type=submit>Buy</button></li>  -->
+                  <li>Not yet implemented</li>
+                {{else}}
+                  <li>Not enough Spirit Points</li>
+                {{/if}}
             </ul>
-          </div>
-        {{/if}}
-      </form> 
+          </ul>
+        </div>
+      {{/if}}
     </script>
 
     <script id="allPlayersTmpl" type="text/html">
-      <form class="allPlayersList">
-        <button type="submit">All Players</button>
-        {{if showAllPlayers}}
-        <ul>
+      <button class="allPlayersList">All Players</button>
+      {{if showAllPlayers}}
+      <ul>
         {{for players}}
         <li>
           {{:name}}
@@ -117,9 +114,8 @@
           </ul> 
         </li>
         {{/for}}
-        </ul>
-        {{/if}}
-      </form>
+      </ul>
+      {{/if}}
     </script>
 
     <script id="lobbyTmpl" type="text/html">
