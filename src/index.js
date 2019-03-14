@@ -268,6 +268,8 @@ io.on('connection', function(socket) {
     socket.leave(LOBBY);
     io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
+    if (room.game) socket.emit('sv_game_update', room.game.takeSnapshot());
+
     done(success(serializeRoom(room)));
   });
 
