@@ -380,9 +380,11 @@ io.on('connection', function(socket) {
 
     let res;
     switch (action.name) {
-      case 'summon': res = game.summon(action.i, action.params[0], action.display, action.pose); break;
+      case 'summon': res = game.summon(action.i, action.params[1], action.display, action.pose); break;
       case 'changeDisplay': res = game.changeDisplay(action.i, action.display); break;
       case 'changePose': res = game.changePose(action.i, action.pose); break;
+      case 'directAttack':
+      case 'attack': res = game.attack(action.i, action.params[0], action.params[1]); break;
     }
 
     debug(res);

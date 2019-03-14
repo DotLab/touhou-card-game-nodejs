@@ -24,12 +24,13 @@ export default class Slot extends React.Component {
     const game = p.game;
     const card = p.card;
     if (!game.state.selectedAction) {
-      if (card && (!p.game.state.selectedCard || game.state.selectedCard.id != card.id)) {
+      if (p.me.userId === p.game.state.me.userId && card && (!p.game.state.selectedCard || game.state.selectedCard.id != card.id)) {
         game.setState({selectedCard: card, selectedSlot: this});
       }
     } else if (this.canBeSelected()) {
       game.setState({selectedParams: [
         ...game.state.selectedParams,
+        p.me.i,
         p.i,
       ]});
     }
@@ -102,7 +103,7 @@ export default class Slot extends React.Component {
       {!p.game.state.selectedAction && shouldShowActions && <div className="Pos(a) T(0) Start(0) Z(1)">
         {card.actions.filter((a) => this.shouldShowAction(a)).map((a) => (<button onClick={() => this.onAction(a)}>{a.name}</button>))}
       </div>}
-      <img className={'D(i) Bxsh($box-shadow):h ' + height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : (card.display === 'HIDDEN' ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
+      <img className={'D(i) Bxsh($box-shadow):h ' + height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : ((card.display === 'HIDDEN' || p.me.userId !== p.game.state.me.userId) ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
     </div>;
   }
 }

@@ -16,6 +16,8 @@ class Game extends React.Component {
     this.onChange = onChange.bind(this);
 
     this.confirmAction = this.confirmAction.bind(this);
+    this.cancelAction = this.cancelAction.bind(this);
+
 
     this.state = {
       me: null,
@@ -60,6 +62,15 @@ class Game extends React.Component {
     });
   }
 
+  cancelAction() {
+    this.setState({
+      selectedCard: null,
+      selectedSlot: null,
+      selectedAction: null,
+      selectedParams: [],
+    });
+  }
+
   componentDidMount() {
     const socket = this.app.socket;
     socket.on('sv_game_update', (snapshot) => {
@@ -69,6 +80,7 @@ class Game extends React.Component {
       let me = null;
 
       for (let i = 0; i < players.length; i += 1) {
+        players[i].i = i;
         if (players[i].userId === 'abc') {// user.id) {
           me = players[i];
         } else {
@@ -96,7 +108,7 @@ class Game extends React.Component {
 
     const field = me.field;
     let message;
-    if (s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length) {
+    if (s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length * 2) {
       message = `all parameters selected for action '${s.selectedAction.name}' of '${s.selectedCard.name}'!`;
     } else if (s.selectedAction) {
       message = `choose parameter ${s.selectedParams.length} for action '${s.selectedAction.name}' of '${s.selectedCard.name}'`;
@@ -110,7 +122,29 @@ class Game extends React.Component {
       }
     }
 
-    return <div>
+    return <div className="Lh(1)">
+      {/* opponents */}
+      <div className="W(100%) Ovy(a) Ovx(s) Whs(nw)">
+        {me.opponents.map((opponent) => (<div className="D(ib) Mend(20px)">
+          <div><b>{opponent.userName}</b> ({opponent.life} Li)</div>
+          <div>{opponent.hand.map((c, i) => (<Slot game={this} me={opponent} in={Game.HAND} i={i} card={c} />))}</div>
+          <div>
+            <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={3} card={opponent.field.spellSlots[3]} />
+            <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={2} card={opponent.field.spellSlots[2]} />
+            <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={1} card={opponent.field.spellSlots[1]} />
+            <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={0} card={opponent.field.spellSlots[0]} />
+            <Slot game={this} me={opponent} in={Game.GRAVEYARD} i={0} card={opponent.field.graveyard[0]} />
+          </div>
+          <div>
+            <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={3} card={opponent.field.monsterSlots[3]} />
+            <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={2} card={opponent.field.monsterSlots[2]} />
+            <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={1} card={opponent.field.monsterSlots[1]} />
+            <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={0} card={opponent.field.monsterSlots[0]} />
+            <Slot game={this} me={opponent} in={Game.ENVIRONMENT_SLOT} i={0} card={opponent.field.environmentSlot} />
+          </div>
+        </div>))}
+      </div>
+      {/* me */}
       <div>
         <Slot game={this} me={me} in={Game.ENVIRONMENT_SLOT} i={0} card={field.environmentSlot} />
         <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={0} card={field.monsterSlots[0]} />
@@ -128,9 +162,8 @@ class Game extends React.Component {
       <div>
         {me.hand.map((c, i) => (<Slot game={this} me={me} in={Game.HAND} i={i} card={c} />))}
         <span className="Mstart(5px)">
-          {s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length && <span>
-            <button onClick={this.confirmAction}>confirm action</button>
-          </span>}
+          {s.selectedAction && <button onClick={this.cancelAction}>cancel action</button>}
+          {s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length * 2 && <button onClick={this.confirmAction}>confirm action</button>}
           - {message} -
           {s.err && <span className="C(red)"> [{s.err}] </span>}
           {s.selectedAction && <span>
