@@ -17,5 +17,6 @@ class PotOfGreedCard extends SpellCard {
 
 PotOfGreedCard.Name = 'Pot Of Greed';
 PotOfGreedCard.Desc = 'Draw 2 cards.';
+PotOfGreedCard.ImgUrl = '/imgs/card-pot-of-greed.png';
 
 module.exports = PotOfGreedCard;
