@@ -263,12 +263,12 @@ class Game {
           userName: player.userName,
           life: player.life,
 
-          isMyTurn: this.isMyTurn(player.userId),
+          stage: this.isSuspended ? Game.SUSPENDED : (this.isMyTurn(player.userId) ? Game.MY_TURN : Game.WATCHING),
 
           hand: player.hand.map((card) => card.takeSnapshot()),
           field: {
+            graveyard: field.graveyard.map((card) => card.takeSnapshot()),
             environmentSlot: field.environmentSlot ? field.environmentSlot.takeSnapshot() : null,
-            graveyard: field.graveyard.length > 0 ? field.graveyard[field.graveyard.length - 1].takeSnapshot() : null,
             monsterSlots: field.monsterSlots.map((card) => (card ? card.takeSnapshot() : null)),
             spellSlots: field.spellSlots.map((card) => (card ? card.takeSnapshot() : null)),
           },
@@ -285,5 +285,22 @@ Game.DRAW = 'DRAW';
 Game.SUMMON = 'SUMMON';
 Game.ATTACK = 'ATTACK';
 Game.END_TURN = 'END_TURN';
+
+Game.MY_TURN = 'MY_TURN';
+Game.WATCHING = 'WATCHING';
+Game.SUSPENDED = 'SUSPENDED';
+
+Game.CARD = 'CARD';
+Game.SLOT = 'SLOT';
+
+Game.SELF = 'SELF';
+Game.OPPONENT = 'OPPONENT';
+Game.ALL = 'ALL';
+
+Game.HAND = 'HAND';
+Game.GRAVEYARD = 'GRAVEYARD';
+Game.ENVIRONMENT_SLOTS = 'ENVIRONMENT_SLOTS';
+Game.MONSTER_SLOTS = 'MONSTER_SLOTS';
+Game.SPELL_SLOTS = 'SPELL_SLOTS';
 
 module.exports = Game;
