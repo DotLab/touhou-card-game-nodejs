@@ -89,7 +89,7 @@ export default class Lobby extends React.Component {
   }
 
   async createRoom() {
-    const room = await this.app.genericApi1('cl_create_room', {roomName: this.state.roomNameInput});
+    const room = await this.app.genericApi1('cl_create_room', {name: this.state.roomNameInput});
     this.setState({room, isHosting: true});
   }
 

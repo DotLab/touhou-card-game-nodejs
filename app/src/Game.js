@@ -117,9 +117,9 @@ class Game extends React.Component {
       if (me) {
         me.opponents = opponents;
         log('me', me);
-        this.setState({me});
+        this.setState({me, players: null});
       } else { // watcher
-        this.setState({players});
+        this.setState({me: null, players});
       }
     });
   }
