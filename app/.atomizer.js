@@ -36,6 +36,9 @@ module.exports = {
 
         '$font-family-sans-serif':      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
         '$font-family-monospace':       'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-        '$font-family-base':            '$font-family-sans-serif',
+        '$font-family-base':            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+
+        '$-90deg': '-90deg',
+        '$90deg': '90deg',
     },
 };

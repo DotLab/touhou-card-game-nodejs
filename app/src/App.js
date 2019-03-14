@@ -26,7 +26,7 @@ export default class App extends React.Component {
       this.socket.emit(event, (res) => {
         if (res.success === true) return resolve(res.data);
         this.error(res.err);
-        if (typeof reject === 'function') reject(res.data);
+        if (typeof reject === 'function') reject(res.err);
       });
     });
   }
@@ -36,7 +36,7 @@ export default class App extends React.Component {
       this.socket.emit(event, arg1, (res) => {
         if (res.success === true) return resolve(res.data);
         this.error(res.err);
-        if (typeof reject === 'function') reject(res.data);
+        if (typeof reject === 'function') reject(res.err);
       });
     });
   }
