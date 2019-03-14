@@ -360,6 +360,21 @@ io.on('connection', function(socket) {
     done(success());
   });
 
+  function createDeck() {
+    const deck = [];
+    for (let i = 0; i < 20; i += 1) {
+      deck.push(new KaibamanCard());
+      deck.push(new BlueEyesWhiteDragonCard());
+    }
+    return deck;
+  }
+
+  const game = new Game([
+    {id: 'abc', name: 'Kailang', deck: createDeck()},
+    {id: 'def', name: 'Alice', deck: createDeck()},
+  ]);
+  socket.emit('sv_game_start', game.takeSnapshot());
+
   socket.on('cl_game_action', async (action, params, done) => {
     debug('cl_game_action', action);
   });
