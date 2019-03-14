@@ -10,7 +10,7 @@ const app = express();
 const Server = require('http').Server;
 const http = new Server(app);
 
-app.use(express.static('public'));
+app.use(express.static('./app/build'));
 
 const port = process.env.PORT || 3000;
 http.listen(port, () => debug('listening on port %d', port));

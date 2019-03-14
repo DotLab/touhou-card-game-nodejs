@@ -8,7 +8,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import io from 'socket.io-client';
-const socket = io('localhost:3000');
+const socket = io(process.env.NODE_ENV === 'development' ? 'localhost:3000' : undefined);
 
 ReactDOM.render(<App socket={socket}/>, document.getElementById('root'));
 
