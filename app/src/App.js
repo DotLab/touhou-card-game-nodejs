@@ -3,6 +3,7 @@ import React from 'react';
 import Account from './Account';
 import Statistics from './Statistics';
 import Lobby from './Lobby';
+import Game from './Game';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -67,6 +68,7 @@ export default class App extends React.Component {
       <div>{s.message}</div>
       <Statistics app={this} />
       <Lobby app={this} />
+      <Game app={this} />
     </div>;
   }
 }
