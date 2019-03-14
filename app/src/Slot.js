@@ -95,14 +95,14 @@ export default class Slot extends React.Component {
     const shouldShowActions = card && p.game.state.selectedCard && p.game.state.selectedCard.id === card.id;
     const shouldShowActionSelect = p.game.state.selectedAction && this.canBeSelected();
 
-    return <div className="D(ib) Pos(r)" onClick={this.onClick}>
+    return <div className="D(ib) Pos(r) Lh(0) Scale(1.1):h Brightness(1.1):h" onClick={this.onClick}>
       {shouldShowActionSelect && <div className="Pos(a) T(0) Start(0) Z(1)">
         <button>select</button>
       </div>}
       {!p.game.state.selectedAction && shouldShowActions && <div className="Pos(a) T(0) Start(0) Z(1)">
         {card.actions.filter((a) => this.shouldShowAction(a)).map((a) => (<button onClick={() => this.onAction(a)}>{a.name}</button>))}
       </div>}
-      <img className={height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : (card.display === 'HIDDEN' ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
+      <img className={'D(i) Bxsh($box-shadow):h ' + height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : (card.display === 'HIDDEN' ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
     </div>;
   }
 }
