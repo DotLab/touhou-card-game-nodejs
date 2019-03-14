@@ -26,7 +26,7 @@ export default class Slot extends React.Component {
     const game = p.game;
     const card = p.card;
     if (!game.state.selectedAction) {
-      if (p.me.userId === p.game.state.me.userId && card && (!p.game.state.selectedCard || game.state.selectedCard.id != card.id)) {
+      if (p.me.userId === p.game.state.me.userId && card && (!p.game.state.selectedCard || game.state.selectedCard.id !== card.id)) {
         game.setState({selectedCard: card, selectedSlot: this});
       }
     } else if (this.canBeSelected()) {
@@ -51,11 +51,13 @@ export default class Slot extends React.Component {
 
     switch (action.stage) {
       case Game.MY_TURN: if (this.props.game.state.me.stage !== Game.MY_TURN) return false; break;
+      default: break;
     }
 
     switch (action.in) {
       case Game.HAND: if (this.props.in !== Game.HAND) return false; break;
       case Game.MONSTER_SLOTS: if (this.props.in !== Game.MONSTER_SLOTS) return false; break;
+      default: break;
     }
 
     return true;
@@ -76,16 +78,19 @@ export default class Slot extends React.Component {
     switch (curParam.select) {
       case Game.SLOT: if (p.card) return false; break;
       case Game.CARD: if (!p.card) return false; break;
+      default: break;
     }
 
     switch (curParam.in) {
       case Game.HAND: if (p.in !== Game.HAND) return false; break;
       case Game.MONSTER_SLOTS: if (p.in !== Game.MONSTER_SLOTS) return false; break;
+      default: break;
     }
 
     switch (curParam.of) {
       case Game.SELF: if (p.me.userId !== p.game.state.me.userId) return false; break;
       case Game.OPPONENT: if (p.me.userId === p.game.state.me.userId) return false; break;
+      default: break;
     }
 
     return true;

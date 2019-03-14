@@ -172,6 +172,7 @@ class Game extends React.Component {
         case Game.MY_TURN: message = 'your turn, choose a card'; break;
         case Game.SUSPENDED: message = 'game is suspended'; break;
         case Game.WATCHING: message = 'wait for your turn'; break;
+        default: message = ''; break;
       }
     }
 
