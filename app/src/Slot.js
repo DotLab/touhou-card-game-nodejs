@@ -2,8 +2,8 @@ import React from 'react';
 
 import Game from './Game';
 
-import debug from 'debug';
-const log = debug('tcg:Slot');
+// import debug from 'debug';
+// const log = debug('tcg:Slot');
 
 // import {formatDate, formatTime} from './utiles';
 
@@ -21,6 +21,8 @@ export default class Slot extends React.Component {
 
   onClick() {
     const p = this.props;
+    if (!p.game.state.me) return;
+
     const game = p.game;
     const card = p.card;
     if (!game.state.selectedAction) {
@@ -44,6 +46,7 @@ export default class Slot extends React.Component {
   }
 
   shouldShowAction(action) {
+    if (!this.props.game.state.me) return false;
     // log(this.props.game.state.me.stage, this.props.in);
 
     switch (action.stage) {
@@ -59,6 +62,8 @@ export default class Slot extends React.Component {
   }
 
   canBeSelected() {
+    if (!this.props.game.state.me) return false;
+
     const p = this.props;
     const action = p.game.state.selectedAction;
     const params = p.game.state.selectedParams;
@@ -103,7 +108,7 @@ export default class Slot extends React.Component {
       {!p.game.state.selectedAction && shouldShowActions && <div className="Pos(a) T(0) Start(0) Z(1)">
         {card.actions.filter((a) => this.shouldShowAction(a)).map((a) => (<button onClick={() => this.onAction(a)}>{a.name}</button>))}
       </div>}
-      <img className={'D(i) Bxsh($box-shadow):h ' + height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : ((card.display === 'HIDDEN' || (p.me.userId !== p.game.state.me.userId && p.in === 'HAND')) ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
+      <img className={'D(i) Bxsh($box-shadow):h ' + height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : ((card.display === 'HIDDEN' || ((!p.game.state.me || p.me.userId !== p.game.state.me.userId) && p.in === 'HAND')) ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
     </div>;
   }
 }

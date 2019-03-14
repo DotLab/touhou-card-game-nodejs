@@ -343,7 +343,7 @@ io.on('connection', function(socket) {
 
     room.game = new Game([
       {id: user.id, name: user.name, deck: createDeck()},
-      ...Object.keys(room.members).map((memberId) => ({
+      ...Object.keys(room.members).filter((id) => room.members[id].hasAgreed).map((memberId) => ({
         id: room.members[memberId].id,
         name: room.members[memberId].name,
         deck: createDeck(),

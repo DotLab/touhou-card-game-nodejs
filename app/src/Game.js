@@ -114,9 +114,13 @@ class Game extends React.Component {
         }
       }
 
-      me.opponents = opponents;
-      log('me', me);
-      this.setState({me});
+      if (me) {
+        me.opponents = opponents;
+        log('me', me);
+        this.setState({me});
+      } else { // watcher
+        this.setState({players});
+      }
     });
   }
 
@@ -127,11 +131,34 @@ class Game extends React.Component {
 
   render() {
     const s = this.state;
-    const me = s.me;
-    if (!me) {
+    if (!s.me && !s.players) {
       return <div></div>;
     }
 
+    if (!s.me) {
+      return <div>
+        {s.players.map((player) => (<div className="Mb(20px)">
+          <div><b>{player.userName}</b> ({player.life} Li)</div>
+          <div>{player.hand.map((c, i) => (<Slot game={this} me={player} in={Game.HAND} i={i} card={c} />))}</div>
+          <div>
+            <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={3} card={player.field.spellSlots[3]} />
+            <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={2} card={player.field.spellSlots[2]} />
+            <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={1} card={player.field.spellSlots[1]} />
+            <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={0} card={player.field.spellSlots[0]} />
+            <Slot game={this} me={player} in={Game.GRAVEYARD} i={0} card={player.field.graveyard[player.field.graveyard.length - 1]} />
+          </div>
+          <div>
+            <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={3} card={player.field.monsterSlots[3]} />
+            <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={2} card={player.field.monsterSlots[2]} />
+            <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={1} card={player.field.monsterSlots[1]} />
+            <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={0} card={player.field.monsterSlots[0]} />
+            <Slot game={this} me={player} in={Game.ENVIRONMENT_SLOT} i={0} card={player.field.environmentSlot} />
+          </div>
+        </div>))}
+      </div>;
+    }
+
+    const me = s.me;
     const field = me.field;
     let message;
     if (s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length * 2) {
