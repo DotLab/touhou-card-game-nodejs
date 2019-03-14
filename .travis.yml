@@ -14,7 +14,7 @@ script:
       chmod 600 /tmp/deploy-rsa;
       eval `ssh-agent`;
       ssh-add /tmp/deploy-rsa;
-      ssh kailangfu@35.233.171.1 "cd repositories/touhou-card-game-nodejs/ && git pull && npm install && npm run build-app && pm2 restart tcg-server";
+      ssh kailangfu@35.233.171.1 "cd repositories/touhou-card-game-nodejs/ && git pull && npm ci && npm run build-app && pm2 restart tcg-server";
       kill $SSH_AGENT_PID;
       rm -f /tmp/deploy-rsa;
     fi
