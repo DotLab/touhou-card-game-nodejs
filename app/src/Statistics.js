@@ -26,9 +26,9 @@ export default class Statistics extends React.Component {
     return <div>
       {isLoggedIn && <button onClick={this.toggleStats}>Statistics</button>}
       {s.showStats && <div>
-        Joined: {formatDate(user.joinDate)} <br/>
-        Last Seen: {formatDate(user.lastDate)} <br/>
-        Time Online: {formatTime(user.onlineTime)} <br/>
+        Joined: {formatDate(user.joinDate)}<br/>
+        Last Seen: {formatDate(user.lastDate)}<br/>
+        Time Online: {formatTime(user.onlineTime)}<br/>
         Games Played: {user.gameCount}<br/>
         Games Won: {user.winCount}<br/>
       </div>}

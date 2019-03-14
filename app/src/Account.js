@@ -41,9 +41,9 @@ export default class Account extends React.Component {
         </ul>
         <form onSubmit={this.onSubmitUpdate}>
           <label>New name:</label>
-          <input type="text" name="updateName" onChange={this.onChange}/>
-          <label>New bio:</label>
-          <input type="text" name="updateBio" onChange={this.onChange}/>
+          <input type="text" name="updateName" defaultValue={user.name} onChange={this.onChange}/>
+          <label> New bio:</label>
+          <input type="text" name="updateBio" defaultValue={user.bio} onChange={this.onChange}/>
           <button type="submit">Update</button>
         </form>
       </div> : <div>

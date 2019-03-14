@@ -2,6 +2,7 @@ import React from 'react';
 
 import Account from './Account';
 import Statistics from './Statistics';
+import Lobby from './Lobby';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -65,6 +66,7 @@ export default class App extends React.Component {
       <Account app={this} />
       <div>{s.message}</div>
       <Statistics app={this} />
+      <Lobby app={this} />
     </div>;
   }
 }

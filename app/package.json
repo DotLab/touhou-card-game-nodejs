@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "atomizer": "^3.5.3",
+    "debug": "^4.1.1",
     "eslint": "^5.15.1",
     "eslint-config-google": "^0.12.0",
     "react": "^16.8.4",
