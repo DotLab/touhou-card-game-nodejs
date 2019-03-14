@@ -83,12 +83,12 @@ class MonsterCard extends Card {
       dfs: this.dfs,
       pose: this.pose,
       /* eslint-disable no-multi-spaces */
-      interactions: [
-        {action: 'summon',        stage: Game.MY_TURN, in: Game.HAND,          params: [{select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF}]},
-        {action: 'changeDisplay', stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: []},
-        {action: 'changePose',    stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: []},
-        {action: 'attack',        stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: [{select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT}]},
-        {action: 'directAttack',  stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: [{select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.OPPONENT}]},
+      actions: [
+        {name: 'summon',        stage: Game.MY_TURN, in: Game.HAND,          params: [{select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF}]},
+        {name: 'changeDisplay', stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: []},
+        {name: 'changePose',    stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: []},
+        {name: 'attack',        stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: [{select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT}]},
+        {name: 'directAttack',  stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: [{select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.OPPONENT}]},
       ],
       /* eslint-enable no-multi-spaces */
     };

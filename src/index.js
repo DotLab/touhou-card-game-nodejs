@@ -373,9 +373,25 @@ io.on('connection', function(socket) {
     {id: 'abc', name: 'Kailang', deck: createDeck()},
     {id: 'def', name: 'Alice', deck: createDeck()},
   ]);
-  socket.emit('sv_game_start', game.takeSnapshot());
+  socket.emit('sv_game_update', game.takeSnapshot());
 
-  socket.on('cl_game_action', async (action, params, done) => {
+  socket.on('cl_game_action', async (action, done) => {
     debug('cl_game_action', action);
+
+    let res;
+    switch (action.name) {
+      case 'summon': res = game.summon(action.i, action.params[0], action.display, action.pose); break;
+      case 'changeDisplay': res = game.changeDisplay(action.i, action.display); break;
+      case 'changePose': res = game.changePose(action.i, action.pose); break;
+    }
+
+    debug(res);
+    if (res.success === true) {
+      done(success(res));
+    } else {
+      done(error(res.msg));
+    }
+
+    socket.emit('sv_game_update', game.takeSnapshot());
   });
 });
