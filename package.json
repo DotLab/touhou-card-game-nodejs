@@ -17,7 +17,7 @@
     "debug-be": "nodemon -w ./src -w ./test --exec \"npm run mocha\"",
     "debug-be-coverage": "nodemon -w ./src -w ./test --exec \"npm run mocha && npm run serve-coverage\"",
     "debug-docs": "nodemon -w ./src --exec \"npm run jsdoc && npm run serve-docs\"",
-    "build-app": "cd ./app && npm ci && npm run atomize && npm run build"
+    "build-app": "cd ./app && npm install && npm run atomize && npm run build"
   },
   "repository": {
     "type": "git",
