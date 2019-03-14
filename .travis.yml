@@ -9,7 +9,7 @@ script:
   - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, BRANCH=$BRANCH"
   - npm run build-app
   - npm test
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+  - if [ "$BRANCH" == "master" ]; then
       openssl aes-256-cbc -K $encrypted_a86a9c8d2738_key -iv $encrypted_a86a9c8d2738_iv -in deploy-rsa.enc -out /tmp/deploy-rsa -d;
       chmod 600 /tmp/deploy-rsa;
       eval `ssh-agent`;
