@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "atomizer": "^3.5.3",
+    "eslint": "^5.15.1",
+    "eslint-config-google": "^0.12.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-scripts": "2.1.8"
@@ -11,7 +14,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "atomize": "atomizer -c ./.atomizer.js -R ./src -o ./src/atomic.css",
+    "atomizer": "nodemon --delay 1 --exec \"npm run atomize\""
   },
   "eslintConfig": {
     "extends": "react-app"
