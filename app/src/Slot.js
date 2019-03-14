@@ -103,7 +103,7 @@ export default class Slot extends React.Component {
       {!p.game.state.selectedAction && shouldShowActions && <div className="Pos(a) T(0) Start(0) Z(1)">
         {card.actions.filter((a) => this.shouldShowAction(a)).map((a) => (<button onClick={() => this.onAction(a)}>{a.name}</button>))}
       </div>}
-      <img className={'D(i) Bxsh($box-shadow):h ' + height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : ((card.display === 'HIDDEN' || p.me.userId !== p.game.state.me.userId) ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
+      <img className={'D(i) Bxsh($box-shadow):h ' + height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : ((card.display === 'HIDDEN' || (p.me.userId !== p.game.state.me.userId && p.in === 'HAND')) ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
     </div>;
   }
 }

@@ -135,7 +135,7 @@ export default class Lobby extends React.Component {
     const s = this.state;
 
     if (!this.app.state.user) {
-      return <div>Login to see the lobby.</div>;
+      return <div></div>;
     }
 
     return <div>

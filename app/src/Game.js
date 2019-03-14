@@ -17,7 +17,8 @@ class Game extends React.Component {
 
     this.confirmAction = this.confirmAction.bind(this);
     this.cancelAction = this.cancelAction.bind(this);
-
+    this.draw = this.draw.bind(this);
+    this.endTurn = this.endTurn.bind(this);
 
     this.state = {
       me: null,
@@ -71,6 +72,30 @@ class Game extends React.Component {
     });
   }
 
+  async draw() {
+    let err = '';
+    try {
+      await this.app.genericApi1('cl_game_action', {name: 'draw'});
+    } catch (e) {
+      log(e);
+      err = e;
+    }
+
+    this.setState({err});
+  }
+
+  async endTurn() {
+    let err = '';
+    try {
+      await this.app.genericApi1('cl_game_action', {name: 'endTurn'});
+    } catch (e) {
+      log(e);
+      err = e;
+    }
+
+    this.setState({err});
+  }
+
   componentDidMount() {
     const socket = this.app.socket;
     socket.on('sv_game_update', (snapshot) => {
@@ -81,7 +106,8 @@ class Game extends React.Component {
 
       for (let i = 0; i < players.length; i += 1) {
         players[i].i = i;
-        if (players[i].userId === 'abc') {// user.id) {
+        // if (players[i].userId === 'abc') {// user.id) {
+        if (players[i].userId === this.app.state.user.id) {
           me = players[i];
         } else {
           opponents.push(players[i]);
@@ -103,7 +129,7 @@ class Game extends React.Component {
     const s = this.state;
     const me = s.me;
     if (!me) {
-      return <div>Waiting for game snapshot...</div>;
+      return <div></div>;
     }
 
     const field = me.field;
@@ -133,7 +159,7 @@ class Game extends React.Component {
             <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={2} card={opponent.field.spellSlots[2]} />
             <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={1} card={opponent.field.spellSlots[1]} />
             <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={0} card={opponent.field.spellSlots[0]} />
-            <Slot game={this} me={opponent} in={Game.GRAVEYARD} i={0} card={opponent.field.graveyard[0]} />
+            <Slot game={this} me={opponent} in={Game.GRAVEYARD} i={0} card={opponent.field.graveyard[opponent.field.graveyard.length - 1]} />
           </div>
           <div>
             <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={3} card={opponent.field.monsterSlots[3]} />
@@ -153,7 +179,7 @@ class Game extends React.Component {
         <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={3} card={field.monsterSlots[3]} />
       </div>
       <div>
-        <Slot game={this} me={me} in={Game.GRAVEYARD} i={0} card={field.graveyard[0]} />
+        <Slot game={this} me={me} in={Game.GRAVEYARD} i={0} card={field.graveyard[field.graveyard.length - 1]} />
         <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={0} card={field.spellSlots[0]} />
         <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={1} card={field.spellSlots[1]} />
         <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={2} card={field.spellSlots[2]} />
@@ -162,6 +188,10 @@ class Game extends React.Component {
       <div>
         {me.hand.map((c, i) => (<Slot game={this} me={me} in={Game.HAND} i={i} card={c} />))}
         <span className="Mstart(5px)">
+          {s.me.stage === Game.MY_TURN && <span>
+            <button onClick={this.draw}>draw one card</button>
+            <button onClick={this.endTurn}>end turn</button>
+          </span>}
           {s.selectedAction && <button onClick={this.cancelAction}>cancel action</button>}
           {s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length * 2 && <button onClick={this.confirmAction}>confirm action</button>}
           - {message} -

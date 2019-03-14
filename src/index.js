@@ -341,50 +341,37 @@ io.on('connection', function(socket) {
     io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
     io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
-    const deck = [];
-    for (let i = 0; i < 20; i += 1) {
-      deck.push(new KaibamanCard());
-      deck.push(new BlueEyesWhiteDragonCard());
-    }
-
     room.game = new Game([
-      {id: user.id, name: user.name, deck},
+      {id: user.id, name: user.name, deck: createDeck()},
       ...Object.keys(room.members).map((memberId) => ({
         id: room.members[memberId].id,
         name: room.members[memberId].name,
-        deck,
+        deck: createDeck(),
       })),
     ]);
-    io.to(room.id).emit('sv_game_start', room.game.takeSnapshot());
+    io.to(room.id).emit('sv_game_update', room.game.takeSnapshot());
 
     done(success());
   });
 
-  function createDeck() {
-    const deck = [];
-    for (let i = 0; i < 20; i += 1) {
-      deck.push(new KaibamanCard());
-      deck.push(new BlueEyesWhiteDragonCard());
-    }
-    return deck;
-  }
-
-  const game = new Game([
-    {id: 'abc', name: 'Kailang', deck: createDeck()},
-    {id: 'def', name: 'Alice', deck: createDeck()},
-  ]);
-  socket.emit('sv_game_update', game.takeSnapshot());
+  // const game = new Game([
+  //   {id: 'abc', name: 'Kailang', deck: createDeck()},
+  //   {id: 'def', name: 'Alice', deck: createDeck()},
+  // ]);
+  // socket.emit('sv_game_update', game.takeSnapshot());
 
   socket.on('cl_game_action', async (action, done) => {
     debug('cl_game_action', action);
 
     let res;
     switch (action.name) {
-      case 'summon': res = game.summon(action.i, action.params[1], action.display, action.pose); break;
-      case 'changeDisplay': res = game.changeDisplay(action.i, action.display); break;
-      case 'changePose': res = game.changePose(action.i, action.pose); break;
+      case 'summon': res = room.game.summon(action.i, action.params[1], action.display, action.pose); break;
+      case 'changeDisplay': res = room.game.changeDisplay(action.i, action.display); break;
+      case 'changePose': res = room.game.changePose(action.i, action.pose); break;
       case 'directAttack':
-      case 'attack': res = game.attack(action.i, action.params[0], action.params[1]); break;
+      case 'attack': res = room.game.attack(action.i, action.params[0], action.params[1]); break;
+      case 'draw': res = room.game.draw(); break;
+      case 'endTurn': res = room.game.endTurn(); break;
     }
 
     debug(res);
@@ -394,6 +381,16 @@ io.on('connection', function(socket) {
       done(error(res.msg));
     }
 
-    socket.emit('sv_game_update', game.takeSnapshot());
+    // socket.emit('sv_game_update', game.takeSnapshot());
+    io.to(room.id).emit('sv_game_update', room.game.takeSnapshot());
   });
 });
+
+function createDeck() {
+  const deck = [];
+  for (let i = 0; i < 20; i += 1) {
+    deck.push(new KaibamanCard());
+    deck.push(new BlueEyesWhiteDragonCard());
+  }
+  return deck;
+}
