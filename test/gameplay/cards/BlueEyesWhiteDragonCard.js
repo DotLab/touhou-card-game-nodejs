@@ -18,8 +18,8 @@ describe('BlueEyesWhiteDragonCard', () => {
     assert.equal(game.players[0].field.monsterSlots[0].name, BlueEyesWhiteDragonCard.Name);
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     assert.equal(game.players[0].field.monsterSlots[0].lv, 8);
-    assert.equal(game.players[0].field.monsterSlots[0].atk, 3000);
-    assert.equal(game.players[0].field.monsterSlots[0].dfs, 2500);
+    assert.equal(game.players[0].field.monsterSlots[0].atk, BlueEyesWhiteDragonCard.Atk);
+    assert.equal(game.players[0].field.monsterSlots[0].dfs, BlueEyesWhiteDragonCard.Dfs);
     assertGameError(game.invokeMonsterEffect(0, game.players[0]));
     assertGameSuccess(game.endTurn());
     // end of player[0]'s turn, not it is player[1]'s turn
