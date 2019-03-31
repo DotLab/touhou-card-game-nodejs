@@ -26,5 +26,5 @@ class DarkMagicianGirlCard extends MonsterCard {
 
 DarkMagicianGirlCard.Name = 'DarkMagicianGirl';
 DarkMagicianGirlCard.Desc = 'This card gains 300 ATK for every "Dark Magician" in your Graveyard.';
-
+DarkMagicianCard.IncreaseInATK = 300;
 module.exports = DarkMagicianGirlCard;
