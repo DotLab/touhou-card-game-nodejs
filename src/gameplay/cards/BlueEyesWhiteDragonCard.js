@@ -6,7 +6,7 @@ const MonsterCard = require('./MonsterCard.js');
  */
 class BlueEyesWhiteDragonCard extends MonsterCard {
   constructor() {
-    super(BlueEyesWhiteDragonCard.Name, BlueEyesWhiteDragonCard.Desc, BlueEyesWhiteDragonCard.ImgUrl, 8, 3000, 2500);
+    super(BlueEyesWhiteDragonCard.Name, BlueEyesWhiteDragonCard.Desc, BlueEyesWhiteDragonCard.ImgUrl, 8, BlueEyesWhiteDragonCard.Atk, BlueEyesWhiteDragonCard.Dfs);
   }
 }
 
