@@ -228,8 +228,8 @@ io.on('connection', function(socket) {
     }
   });
 
-  socket.on('cl_buy_life', async (done) => {
-    debug('cl_buy_life');
+  socket.on('cl_store_buy_life', async (done) => {
+    debug('cl_store_buy_life');
 
     if (!user) return done(error('forbidden'));
     user.spiritPointsCount -= 50;
@@ -263,7 +263,7 @@ io.on('connection', function(socket) {
       if (! a.lifeUpgrade && b.lifeUpgrade) return 1;
       return b.lifeUpgrade - a.lifeUpgrade;
     });
-    // socket.emit('sv_get_players', users);
+
     done(success(users));
   });
 

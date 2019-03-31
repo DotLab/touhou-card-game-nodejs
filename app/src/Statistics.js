@@ -31,6 +31,9 @@ export default class Statistics extends React.Component {
         Time Online: {formatTime(user.onlineTime)}<br/>
         Games Played: {user.gameCount}<br/>
         Games Won: {user.winCount}<br/>
+        Spirit Points: {user.spiritPointsCount}<br/>
+        Magic Points: {user.magicPointsCount}<br/>
+        Life Upgrade: +{user.lifeUpgrade}<br/>
       </div>}
     </div>;
   }
