@@ -44,6 +44,9 @@ const SV_UPDATE_ROOM = 'sv_update_room';
 const SV_ROOM_SEND_MESSAGE = 'sv_room_send_message';
 const SV_REFRESH_USER = 'sv_refresh_user';
 
+const LIFE_UPGRADE_AMOUNT = 100;
+const LIFE_UPGRADE_COST = 50;
+
 function generateId(length = 256) {
   return crypto.randomBytes(length).toString('base64');
 }
@@ -232,8 +235,8 @@ io.on('connection', function(socket) {
     debug('cl_store_buy_life');
 
     if (!user) return done(error('forbidden'));
-    user.spiritPointsCount -= 50;
-    user.lifeUpgrade += 100;
+    user.spiritPointsCount -= LIFE_UPGRADE_COST;
+    user.lifeUpgrade += LIFE_UPGRADE_AMOUNT;
     try {
       await User.findByIdAndUpdate(user.id, user);
       socket.emit(SV_REFRESH_USER, {

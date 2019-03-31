@@ -1,5 +1,8 @@
 import React from 'react';
 
+const LIFE_UPGRADE_AMOUNT = 100;
+const LIFE_UPGRADE_COST = 50;
+
 export default class Store extends React.Component {
   constructor(props) {
     super(props);
@@ -20,7 +23,7 @@ export default class Store extends React.Component {
   }
 
   async buyLife() {
-    if (this.app.state.user.spiritPointsCount >= 50) {
+    if (this.app.state.user.spiritPointsCount >= LIFE_UPGRADE_COST) {
       const points = await this.app.genericApi0('cl_store_buy_life');
       this.app.setState({user: {
         ...this.app.state.user,
@@ -47,8 +50,8 @@ export default class Store extends React.Component {
               <th> </th>
             </tr>
             <tr>
-              <td>Life +100 </td>
-              <td>-50 Spirit Points </td>
+              <td>Life +{LIFE_UPGRADE_AMOUNT} </td>
+              <td>-{LIFE_UPGRADE_COST} Spirit Points </td>
               <td><button onClick={this.buyLife}>Buy</button> </td>
             </tr>
             {/* <tr>
