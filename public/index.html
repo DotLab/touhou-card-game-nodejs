@@ -17,6 +17,7 @@
       <div id="message"></div>
       <div id="statistics"></div>
       <div id="lobby"></div>
+      <div id="game"></div>
     </div>
 
     <script id="accountTmpl" type="text/html">
@@ -81,7 +82,11 @@
             {{for rooms}}
             <li>
               {{include #view tmpl="#lobbyRoomListItemTmpl"/}}
-              <button class="joinRoom" value="{{: id}}">Join</button>
+              {{if hasStarted}}
+                <button class="watchRoom" value="{{: id}}">Watch</button>
+              {{else}}
+                <button class="joinRoom" value="{{: id}}">Join</button>
+              {{/if}}
             </li>
             {{/for}}
           </ul>
@@ -134,14 +139,14 @@
               Not enough members.
             {{/if}}
           </div>
+          <form class="message">
+            <input type="text" class="sendMessage">
+            <button type="submit">Send</button> <br/>
+            {{for messages}}
+            <strong>{{: userName}} </strong>({{: date}}): {{: message}} <br/>
+            {{/for}}
+          </form>
         {{/if}}
-        <form class="message">
-          <input type="text" class="sendMessage">
-          <button type="submit">Send</button> <br/>
-          {{for messages}}
-          <strong>{{: userName}} </strong>({{: date}}): {{: message}} <br/>
-          {{/for}}
-        </form>
       {{/if}}
     </script>
 
@@ -150,9 +155,96 @@
       {{if members.length}}
       <strong>{{: members.length}} members:</strong> {{for members}}<em>{{: name}}, </em>{{/for}}
       {{/if}}
+      {{if watchers.length}}
+      <strong>{{: watchers.length}} watchers:</strong> {{for watchers}}<em>{{: name}}, </em>{{/for}}
+      {{/if}}
+    </script>
+
+    <script id="gameTmpl" type="text/html">
+      <style>
+        #game .card:hover {
+          box-shadow: #00000080 0 5px 20px;
+          transform: scale(1.2);
+          filter: brightness(1.2);
+        }
+      </style>
+      <div style="width: 100%; overflow-y: auto; overflow-x: scroll; white-space: nowrap">
+        {{for opponents}}
+        <div style="display: inline-block; margin-right: 20px">
+          <div><b>{{: userName}} ({{: life}} Li)</b></div>
+          <div>{{for hand ~userId=userId ~height=50 ~title="Hand" ~opponent=true tmpl="#gameCardTmpl"/}}</div>
+          <div>
+              <div>
+                {{include field.spellSlots[3] ~userId=userId ~height=200 ~title="Spell 4" tmpl="#gameCardTmpl"/}}
+                {{include field.spellSlots[2] ~userId=userId ~height=200 ~title="Spell 3" tmpl="#gameCardTmpl"/}}
+                {{include field.spellSlots[1] ~userId=userId ~height=200 ~title="Spell 2" tmpl="#gameCardTmpl"/}}
+                {{include field.spellSlots[0] ~userId=userId ~height=200 ~title="Spell 1" tmpl="#gameCardTmpl"/}}
+                {{include field.graveyard ~userId=userId ~height=200 ~title="Graveyard" tmpl="#gameCardTmpl"/}}
+              </div>
+              <div>
+                {{include field.monsterSlots[3] ~userId=userId ~height=200 ~title="Monster 4" tmpl="#gameCardTmpl"/}}
+                {{include field.monsterSlots[2] ~userId=userId ~height=200 ~title="Monster 3" tmpl="#gameCardTmpl"/}}
+                {{include field.monsterSlots[1] ~userId=userId ~height=200 ~title="Monster 2" tmpl="#gameCardTmpl"/}}
+                {{include field.monsterSlots[0] ~userId=userId ~height=200 ~title="Monster 1" tmpl="#gameCardTmpl"/}}
+                {{include field.environmentSlot ~userId=userId ~height=200 ~title="Environment" tmpl="#gameCardTmpl"/}}
+              </div>
+          </div>
+        </div>
+        {{/for}}
+      </div>
+      <div>
+        <div>
+          {{include field.environmentSlot ~userId=userId ~height=200 ~title="Environment" tmpl="#gameCardTmpl"/}}
+          {{include field.monsterSlots[0] ~userId=userId ~height=200 ~title="Monster 1" tmpl="#gameCardTmpl"/}}
+          {{include field.monsterSlots[1] ~userId=userId ~height=200 ~title="Monster 2" tmpl="#gameCardTmpl"/}}
+          {{include field.monsterSlots[2] ~userId=userId ~height=200 ~title="Monster 3" tmpl="#gameCardTmpl"/}}
+          {{include field.monsterSlots[3] ~userId=userId ~height=200 ~title="Monster 4" tmpl="#gameCardTmpl"/}}
+        </div>
+        <div>
+          {{include field.graveyard ~userId=userId ~height=200 ~title="Graveyard" tmpl="#gameCardTmpl"/}}
+          {{include field.spellSlots[0] ~userId=userId ~height=200 ~title="Spell 1" tmpl="#gameCardTmpl"/}}
+          {{include field.spellSlots[1] ~userId=userId ~height=200 ~title="Spell 2" tmpl="#gameCardTmpl"/}}
+          {{include field.spellSlots[2] ~userId=userId ~height=200 ~title="Spell 3" tmpl="#gameCardTmpl"/}}
+          {{include field.spellSlots[3] ~userId=userId ~height=200 ~title="Spell 4" tmpl="#gameCardTmpl"/}}
+        </div>
+      </div>
+      <div>
+        {{for hand ~userId=userId ~height=100 ~title="Hand" tmpl="#gameCardTmpl"/}}
+        <span>
+          <button>Draw</button>
+          <button>End Turn</button>
+        </span>
+      </div>
+      <div><b>{{: userName}} ({{: life}} Li)</b></div>
+    </script>
+
+    <script id="gameCardTmpl" type="text/html">
+      {{if #data}}
+        <div 
+          class="card" 
+          style="transition: all 0.1s; display: inline-block; position: relative; margin: 0; padding: 0; {{: pose === 'DEFENSE' ? 'transform: rotate(-90deg)' : ''}}"
+        >
+          <!-- <button style="position: absolute; top: 0; width: 100%; margin: 0; padding: 0">Defence</button> -->
+          <img 
+            id="{{: id}}"
+            player-id="{{: ~userId}}"
+            style="display: block; height: {{: ~height}}px; margin: 0; padding: 0" 
+            src="{{: (~opponent || display === 'HIDDEN') ? '/imgs/card-back.png' : imgUrl}}" 
+            alt="card" 
+            title="{{: ~title}}: {{: (~opponent && display !== 'REVEALED') ? '???' : name}}{{: display === 'HIDDEN' ? ' [Hidden]' : ''}}{{: pose === 'DEFENSE' ? ' [Defense]' : ''}}"
+          />
+        </div>
+      {{else}}
+        <img 
+          style="height: {{: ~height}}px; transition: all 0.1s" 
+          src="/imgs/card-placeholder.png" 
+          alt="card" 
+          title="{{: ~title}} Slot"
+        />
+      {{/if}}
     </script>
 
     <script src="/utils.js"></script>
     <script src="/script.js"></script>
   </body>
-  </html>
+</html>

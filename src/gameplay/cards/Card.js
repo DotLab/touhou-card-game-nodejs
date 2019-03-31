@@ -40,6 +40,16 @@ class Card {
   canInvoke() {
     return false;
   }
+
+  takeSnapshot() {
+    return {
+      id: this.id,
+      name: this.name,
+      desc: this.desc,
+      imgUrl: this.imgUrl,
+      display: this.display,
+    };
+  }
 }
 
 Card.HIDDEN = 'HIDDEN';

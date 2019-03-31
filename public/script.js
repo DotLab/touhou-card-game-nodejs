@@ -137,6 +137,14 @@ const lobby = new (function Lobby(selector, tmpl, props) {
       }, error));
     });
 
+    $(selector + ' .watchRoom').on('click', function() {
+      socket.emit('cl_watch_room', {
+        roomId: $(this).attr('value'),
+      }, createHandler(function(room) {
+        self.setState({room: room, isHosting: false});
+      }, error));
+    });
+
     $(selector + ' .message').on('submit', function(e) {
       e.preventDefault();
       socket.emit('cl_room_send_message', {
@@ -193,4 +201,36 @@ socket.on('sv_update_room', function(room) {
     hasAgreed: hasAgreed,
     hasAnyAgreed: room.members.filter((x) => x.hasAgreed).length > 0,
   });
+});
+
+const game = new (function Game(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
+
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('Game#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+
+    $(selector + ' .card').on('click', function() {
+      console.log('cardId:', $(this).attr('id'), ', playerId:', $(this).attr('player-id'));
+    });
+  };
+})('#game', $.templates('#gameTmpl'), {opponents: []});
+
+socket.on('sv_game_start', function(shot) {
+  const players = shot.players;
+  const opponents = [];
+  let me = null;
+
+  for (let i = 0; i < players.length; i += 1) {
+    if (players[i].userId === user.id) {
+      me = players[i];
+    } else {
+      opponents.push(players[i]);
+    }
+  }
+
+  me.opponents = opponents;
+  game.setState(me);
 });

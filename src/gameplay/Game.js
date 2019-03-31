@@ -254,6 +254,29 @@ class Game {
     }
     return Game.success();
   }
+
+  takeSnapshot() {
+    return {
+      players: this.players.map((player) => {
+        const field = player.field;
+        return {
+          userId: player.userId,
+          userName: player.userName,
+          life: player.life,
+
+          stage: this.isSuspended ? Game.SUSPENDED : (this.isMyTurn(player.userId) ? Game.MY_TURN : Game.WATCHING),
+
+          hand: player.hand.map((card) => card.takeSnapshot()),
+          field: {
+            graveyard: field.graveyard.map((card) => card.takeSnapshot()),
+            environmentSlot: field.environmentSlot ? field.environmentSlot.takeSnapshot() : null,
+            monsterSlots: field.monsterSlots.map((card) => (card ? card.takeSnapshot() : null)),
+            spellSlots: field.spellSlots.map((card) => (card ? card.takeSnapshot() : null)),
+          },
+        };
+      }),
+    };
+  }
 }
 
 Game.BEFORE = 'BEFORE';
@@ -263,5 +286,22 @@ Game.DRAW = 'DRAW';
 Game.SUMMON = 'SUMMON';
 Game.ATTACK = 'ATTACK';
 Game.END_TURN = 'END_TURN';
+
+Game.MY_TURN = 'MY_TURN';
+Game.WATCHING = 'WATCHING';
+Game.SUSPENDED = 'SUSPENDED';
+
+Game.CARD = 'CARD';
+Game.SLOT = 'SLOT';
+
+Game.SELF = 'SELF';
+Game.OPPONENT = 'OPPONENT';
+Game.ALL = 'ALL';
+
+Game.HAND = 'HAND';
+Game.GRAVEYARD = 'GRAVEYARD';
+Game.ENVIRONMENT_SLOT = 'ENVIRONMENT_SLOT';
+Game.MONSTER_SLOTS = 'MONSTER_SLOTS';
+Game.SPELL_SLOTS = 'SPELL_SLOTS';
 
 module.exports = Game;

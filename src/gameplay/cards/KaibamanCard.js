@@ -7,7 +7,7 @@ const Card = require('./Card');
  */
 class KaibamanCard extends MonsterCard {
   constructor() {
-    super(KaibamanCard.Name, KaibamanCard.Desc, '/imgs/Kaibaman.jpg', 3, 200, 700);
+    super(KaibamanCard.Name, KaibamanCard.Desc, KaibamanCard.ImgUrl, 3, 200, 700);
   }
 
   canInvoke(game, player, invokeParams) {
@@ -37,5 +37,6 @@ class KaibamanCard extends MonsterCard {
 
 KaibamanCard.Name = 'Kaibaman';
 KaibamanCard.Desc = 'You can Tribute this card; Special Summon 1 "Blue-Eyes White Dragon" from your hand.';
+KaibamanCard.ImgUrl = '/imgs/card-kaibaman.png';
 
 module.exports = KaibamanCard;

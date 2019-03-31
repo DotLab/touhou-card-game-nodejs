@@ -3,6 +3,8 @@ const assert = require('chai').assert;
 const MonsterCard = require('../../src/gameplay/cards/MonsterCard');
 const KaibamanCard = require('../../src/gameplay/cards/KaibamanCard');
 const BlueEyesWhiteDragonCard = require('../../src/gameplay/cards/BlueEyesWhiteDragonCard');
+const DarkMagicianCard = require('../../src/gameplay/cards/DarkMagicianCard');
+const DarkMagicianGirlCard = require('../../src/gameplay/cards/DarkMagicianGirlCard');
 const Card = require('../../src/gameplay/cards/Card');
 const Game = require('../../src/gameplay/Game');
 
@@ -64,12 +66,73 @@ describe('Game', () => {
     assertGameError(game.attack(0, 2, 0));
     assertGameError(game.attack(0, 0, 1));
   });
+  it('#attack1', ()=> {
+    const mockUsers1 = [
+      {id: 'abc', name: 'F', deck: createMockDeck1()},
+      {id: 'def', name: 'K', deck: createMockDeck2()},
+    ];
+
+    function createMockDeck1() {
+      const res = [];
+      for (let i = 0; i < 10; i += 1) {
+        res.push(new BlueEyesWhiteDragonCard());
+      }
+      return res;
+    }
+    function createMockDeck2() {
+      const res = [];
+      // res.push(new DarkMagicianCard());
+      for (let i = 0; i < 10; i += 1) {
+        // res.push(new DarkMagicianCard());
+        res.push(new DarkMagicianGirlCard());
+      }
+      res.push(new DarkMagicianCard());
+      return res;
+    }
+
+    const game = new Game(mockUsers1);
+    // console.log(game.players[0].hand);
+    // console.log(game.players[1].hand);
+    // const blackGirl = game.players[1].deck[1];
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.endTurn();
+    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    // console.log(game.players[0].field.monsterSlots[0]);
+    // console.log(game.players[1].field.monsterSlots[0]);
+    game.endTurn();
+    const loserCard = game.players[1].field.monsterSlots[0];
+    assertGameSuccess(game.attack(0, 1, 0));
+    assert.equal(game.players[1].field.monsterSlots[0], null);
+    assert.equal(game.players[1].field.graveyard[0], loserCard);
+    game.endTurn();
+    assert.equal(game.turn, 1);
+    game.summon(1, 0, Card.REVEALED, Card.ATTACK);
+
+
+    assert.equal(game.players[1].field.monsterSlots[0].name, DarkMagicianGirlCard.Name);
+    assert.equal(game.players[1].field.monsterSlots[0].canInvoke(game, game.players[1], []), true);
+    const beforeAtk = game.players[1].field.monsterSlots[0].atk;
+    game.players[1].field.monsterSlots[0].invoke(game, game.players[1], []);
+    // console.log(game.players[1].field.graveyard);
+    // game.invokeMonsterEffect(0, []);
+    const afterAtk = game.players[1].field.monsterSlots[0].atk;
+    assert.equal(afterAtk, beforeAtk+300 );
+    assert.isTrue(game.players[1].field.monsterSlots[0].hasInvoked );
+  });
 
   it('#changeDisplay', () => {
     const game = new Game(mockUsers);
     assertGameError(game.changeDisplay(0, Card.REVEALED));
     assertGameSuccess(game.summon(0, 0, Card.HIDDEN, Card.DEFENSE));
     assertGameSuccess(game.changeDisplay(0, Card.REVEALED));
+  });
+
+  it('#takeSnapshot', () => {
+    const game = new Game(mockUsers);
+    assertGameError(game.changeDisplay(0, Card.REVEALED));
+    assertGameSuccess(game.summon(0, 0, Card.HIDDEN, Card.DEFENSE));
+    assertGameSuccess(game.changeDisplay(0, Card.REVEALED));
+    game.takeSnapshot();
   });
 
   it('#changePose', () => {

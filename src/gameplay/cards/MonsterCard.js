@@ -1,4 +1,5 @@
 const Card = require('./Card.js');
+const Game = require('../Game');
 
 /**
  * Monster Card
@@ -72,6 +73,25 @@ class MonsterCard extends Card {
     this.hasAttacked = false;
     this.hasChangedDisplay = false;
     this.hasChangedPose = false;
+  }
+
+  takeSnapshot() {
+    return {
+      ...super.takeSnapshot(),
+      lv: this.lv,
+      atk: this.atk,
+      dfs: this.dfs,
+      pose: this.pose,
+      /* eslint-disable no-multi-spaces */
+      actions: [
+        {name: 'summon',        stage: Game.MY_TURN, in: Game.HAND,          params: [{select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF}]},
+        {name: 'changeDisplay', stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: []},
+        {name: 'changePose',    stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: []},
+        {name: 'attack',        stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: [{select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT}]},
+        {name: 'directAttack',  stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: [{select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.OPPONENT}]},
+      ],
+      /* eslint-enable no-multi-spaces */
+    };
   }
 }
 
