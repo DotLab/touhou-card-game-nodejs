@@ -116,7 +116,7 @@ describe('Game', () => {
     // console.log(game.players[1].field.graveyard);
     // game.invokeMonsterEffect(0, []);
     const afterAtk = game.players[1].field.monsterSlots[0].atk;
-    assert.equal(afterAtk, beforeAtk + DarkMagicianCard.IncreaseInATK );
+    assert.equal(afterAtk, beforeAtk + DarkMagicianCard.AtkIncrease );
     assert.isTrue(game.players[1].field.monsterSlots[0].hasInvoked );
   });
 
