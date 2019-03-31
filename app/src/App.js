@@ -2,6 +2,7 @@ import React from 'react';
 
 import Account from './Account';
 import Statistics from './Statistics';
+import PlayersList from './PlayersList';
 import Lobby from './Lobby';
 import Game from './Game';
 
@@ -67,6 +68,7 @@ export default class App extends React.Component {
       <Account app={this} />
       <div>{s.message}</div>
       <Statistics app={this} />
+      <PlayersList app={this} />
       <Lobby app={this} />
       <Game app={this} />
     </div>;

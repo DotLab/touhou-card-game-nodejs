@@ -247,8 +247,8 @@ io.on('connection', function(socket) {
     }
   });
 
-  socket.on('cl_all_players', async (done) => {
-    debug('cl_all_players');
+  socket.on('cl_get_players', async (done) => {
+    debug('cl_get_players');
 
     if (!user) return done(error('forbidden'));
 
@@ -263,7 +263,7 @@ io.on('connection', function(socket) {
       if (! a.lifeUpgrade && b.lifeUpgrade) return 1;
       return b.lifeUpgrade - a.lifeUpgrade;
     });
-
+    // socket.emit('sv_get_players', users);
     done(success(users));
   });
 

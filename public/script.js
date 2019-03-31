@@ -150,7 +150,7 @@ const allPlayers = new (function allPlayers(selector, tmpl, props) {
 
     $(selector + ' .allPlayersList').on('click', function(e) {
       e.preventDefault();
-      socket.emit('cl_all_players', function(res) {
+      socket.emit('cl_get_players', function(res) {
         console.log('res', res.data);
         if (res.err) return error(res.err);
         self.setState({
