@@ -15,6 +15,8 @@ export default class App extends React.Component {
       message: '',
       user: null,
     };
+
+    // this.login({loginName: 'aaa', loginPassword: 'aaa'});
   }
 
   error(err) {
@@ -64,8 +66,16 @@ export default class App extends React.Component {
   render() {
     const s = this.state;
     return <div>
+      <div className="container">
+        <h1 className="mt-2 mb-0">Touhou Card Game</h1>
+      </div>
       <Account app={this} />
-      <div>{s.message}</div>
+      {s.message && <div className="container-fluid">
+        <div className="alert alert-info alert-dismissible fade show mt-2 mb-0">
+          <strong>{s.message}</strong>
+          <button className="close" data-dismiss="alert">&times;</button>
+        </div>
+      </div>}
       <Statistics app={this} />
       <Lobby app={this} />
       <Game app={this} />

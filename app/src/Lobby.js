@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {formatDate, onChange, onSubmit} from './utiles';
+import {formatDate, onChange, onSubmit, formatNumber} from './utiles';
 
 import debug from 'debug';
 const log = debug('tcg:Lobby');
@@ -8,10 +8,10 @@ const log = debug('tcg:Lobby');
 const Item = ({name, ownerName, members, watchers}) => (<span>
   <strong>{name}</strong> (owned by <em>{ownerName}</em>)
   {!!members.length && <span>
-    <strong>{members.length} members:</strong> {members.map(({name}) => (<em>{name}, </em>))}
+    <strong>{members.length} members:</strong> {members.map(({name}) => (<em key={name}>{name}, </em>))}
   </span>}
   {!!watchers.length && <span>
-    <strong>{watchers.length} watchers:</strong> {watchers.map(({name}) => (<em>{name}, </em>))}
+    <strong>{watchers.length} watchers:</strong> {watchers.map(({name}) => (<em key={name}>{name}, </em>))}
   </span>}
 </span>);
 
@@ -23,11 +23,11 @@ export default class Lobby extends React.Component {
 
     this.onChange = onChange.bind(this);
 
-    this.createRoom = this.createRoom.bind(this);
+    this.onSubmitCreateRoom = onSubmit(this.createRoom.bind(this));
     this.leaveRoom = this.leaveRoom.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
     this.watchRoom = this.watchRoom.bind(this);
-    this.onRoomSendMessageSubmit = onSubmit(this.roomSendMessage.bind(this));
+    this.onSubmitRoomSendMessage = onSubmit(this.roomSendMessage.bind(this));
     this.roomPropose = this.roomPropose.bind(this);
     this.roomAgree = this.roomAgree.bind(this);
     this.roomRefuse = this.roomRefuse.bind(this);
@@ -95,7 +95,7 @@ export default class Lobby extends React.Component {
 
   async leaveRoom() {
     await this.app.genericApi0('cl_leave_room');
-    this.setState({room: null, isHosting: null});
+    this.setState({room: null, isHosting: null, messages: []});
   }
 
   async joinRoom(roomId) {
@@ -138,46 +138,52 @@ export default class Lobby extends React.Component {
       return <div></div>;
     }
 
-    return <div>
+    return <div className="container mt-2">
+      <h2 className="h3">Lobby</h2>
       {!s.room ? <div>
-        {s.lobby && <div><strong>{s.lobby.length} users in lobby:</strong> {s.lobby.map(({name}) => (<em>{name}, </em>))}</div>}
-        <div>
-          <input type="text" defaultValue={s.roomNameInput} name="roomNameInput" onChange={this.onChange}/> <button onClick={this.createRoom}>Create Room</button>
-        </div>
-        {s.rooms && <ul>
-          {s.rooms.map((r) => (<li>
-            <Item {...r} /> {r.hasStarted ? <button onClick={() => this.watchRoom(r.id)}>Watch</button> : <button onClick={() => this.joinRoom(r.id)}>Join</button>}
+        {s.lobby && <div><strong>{formatNumber(s.lobby.length)} user(s) in lobby:</strong> {s.lobby.map(({name}) => (<em key={name}>{name}, </em>))}</div>}
+        <form className="form-inline" onSubmit={this.onSubmitCreateRoom}>
+          <input className="form-control mr-2" type="text" defaultValue={s.roomNameInput} name="roomNameInput" onChange={this.onChange}/>
+          <button className="btn btn-primary" type="submit">Create Room</button>
+        </form>
+        {s.rooms && <ul className="mt-2">
+          {s.rooms.map((r, i) => (<li key={i}>
+            <Item {...r} /> {r.hasStarted ? <button className="btn btn-secondary" onClick={() => this.watchRoom(r.id)}>Watch</button> : <button className="btn btn-warning" onClick={() => this.joinRoom(r.id)}>Join</button>}
           </li>))}
         </ul>}
       </div> : <div>
-        <div>Joined room: <Item {...s.room} /> <button onClick={this.leaveRoom}>Leave Room</button></div>
+        <div>Joined room: <Item {...s.room} /> <button className="btn btn-danger" onClick={this.leaveRoom}>Leave Room</button></div>
         {s.room.hasStarted ? <div>
           Enjoy the game!
         </div> : <div>
           {s.room.members.length > 0 ? <div>
             {s.room.hasProposed ? <div>
-              <ul>{s.room.members.map(({name, hasAgreed}) => (<li><strong>{name}</strong> {hasAgreed ? 'Agreed to start' : 'Waiting for agreement'}</li>))}</ul>
+              <ul>{s.room.members.map(({name, hasAgreed}) => (<li key={name}><strong>{name}</strong> {hasAgreed ? 'Agreed to start' : 'Waiting for agreement'}</li>))}</ul>
               {s.isHosting ? <div>
-                {s.hasAnyAgreed ? <button onClick={this.roomStart}> Start the Game</button> : <div>Waiting for members to agree.</div>}
+                {s.hasAnyAgreed ? <button className="btn btn-success" onClick={this.roomStart}>Start the Game</button> : <div>Waiting for members to agree.</div>}
               </div> : <div>
                 {!s.hasAgreed ? <div>
-                  <button onClick={this.roomAgree}>Agree to Start the Game</button> <button onClick={this.roomRefuse}>Refuse to Start the Game</button>
+                  <button className="btn btn-success" onClick={this.roomAgree}>Agree to Start the Game</button> <button className="btn btn-secondary" onClick={this.roomRefuse}>Refuse to Start the Game</button>
                 </div> : <div>
                   Waiting for the host to Start the Game
                 </div>}
               </div>}
             </div> : <div>
-              {s.isHosting ? <div>You are the host! <button onClick={this.roomPropose}>Propose to Start a Game</button></div> : <div>Waiting for the host to start a game.</div>}
+              {s.isHosting ? <div>You are the host! <button className="btn btn-primary" onClick={this.roomPropose}>Propose to Start a Game</button></div> : <div>Waiting for the host to start a game.</div>}
             </div>}
           </div> : <div>
             Not enough members.
           </div>}
         </div>}
 
-        <form onSubmit={this.onRoomSendMessageSubmit}>
-          <input name="messageInput" value={s.messageInput} onChange={this.onChange} /><button type="submit">Send</button><br/>
-          {s.messages.map(({userName, date, message}) => (<div><strong>{userName} </strong>({formatDate(date)}): {message}</div>))}
+        <h3 className="h4 mt-2">Chat</h3>
+        <form className="form-inline" onSubmit={this.onSubmitRoomSendMessage}>
+          <input className="form-control mr-2" name="messageInput" value={s.messageInput} onChange={this.onChange} />
+          <button className="btn btn-outline-secondary" type="submit">Send</button><br/>
         </form>
+        {s.messages && !!s.messages.length && <div className="Mah(200px) Ovy(s) mt-2 card px-2">
+          {s.messages.map(({userName, date, message}, i) => (<div key={i}><strong>{userName} </strong>({formatDate(date)}): {message}</div>))}
+        </div>}
       </div>}
     </div>;
   }
