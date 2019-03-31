@@ -278,3 +278,35 @@ socket.on('sv_update_room', function(room) {
     hasAnyAgreed: room.members.filter((x) => x.hasAgreed).length > 0,
   });
 });
+
+const game = new (function Game(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
+
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('Game#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+
+    $(selector + ' .card').on('click', function() {
+      console.log('cardId:', $(this).attr('id'), ', playerId:', $(this).attr('player-id'));
+    });
+  };
+})('#game', $.templates('#gameTmpl'), {opponents: []});
+
+socket.on('sv_game_start', function(shot) {
+  const players = shot.players;
+  const opponents = [];
+  let me = null;
+
+  for (let i = 0; i < players.length; i += 1) {
+    if (players[i].userId === user.id) {
+      me = players[i];
+    } else {
+      opponents.push(players[i]);
+    }
+  }
+
+  me.opponents = opponents;
+  game.setState(me);
+});

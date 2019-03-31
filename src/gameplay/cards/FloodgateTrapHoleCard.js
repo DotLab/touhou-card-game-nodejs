@@ -33,5 +33,6 @@ class FloodgateTrapHoleCard extends SpellCard {
 
 FloodgateTrapHoleCard.Name = 'Floodgate Trap Hole';
 FloodgateTrapHoleCard.Desc = 'When your opponent Summons a monster: Change that monster to face-down Defense Position. Monsters changed to face-down Defense Position by this effect cannot change their battle positions.';
+FloodgateTrapHoleCard.ImgUrl = '/imgs/card-floodgate-trap-hole.png';
 
 module.exports = FloodgateTrapHoleCard;

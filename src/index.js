@@ -10,7 +10,7 @@ const app = express();
 const Server = require('http').Server;
 const http = new Server(app);
 
-app.use(express.static('public'));
+app.use(express.static('./app/build'));
 
 const port = process.env.PORT || 3000;
 http.listen(port, () => debug('listening on port %d', port));
@@ -110,6 +110,10 @@ function serializeLobby() {
     rooms: serializeRooms(),
   };
 }
+
+const Game = require('./gameplay/Game');
+const KaibamanCard = require('./gameplay/cards/KaibamanCard');
+const BlueEyesWhiteDragonCard = require('./gameplay/cards/BlueEyesWhiteDragonCard');
 
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
@@ -310,6 +314,8 @@ io.on('connection', function(socket) {
     socket.leave(LOBBY);
     io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
+    if (room.game) socket.emit('sv_game_update', room.game.takeSnapshot());
+
     done(success(serializeRoom(room)));
   });
 
@@ -383,16 +389,56 @@ io.on('connection', function(socket) {
     io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
     io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
 
+    room.game = new Game([
+      {id: user.id, name: user.name, deck: createDeck()},
+      ...Object.keys(room.members).filter((id) => room.members[id].hasAgreed).map((memberId) => ({
+        id: room.members[memberId].id,
+        name: room.members[memberId].name,
+        deck: createDeck(),
+      })),
+    ]);
+    io.to(room.id).emit('sv_game_update', room.game.takeSnapshot());
+
     done(success());
   });
 
-  socket.on('cl_game_action', async (obj, done) => {
-    debug('cl_draw_card');
-    const res = room.game.act(obj);
-    if (res) {
-      done(success(room.game.takeSnapshot()));
-    } else {
-      done(error(res));
+  // const game = new Game([
+  //   {id: 'abc', name: 'Kailang', deck: createDeck()},
+  //   {id: 'def', name: 'Alice', deck: createDeck()},
+  // ]);
+  // socket.emit('sv_game_update', game.takeSnapshot());
+
+  socket.on('cl_game_action', async (action, done) => {
+    debug('cl_game_action', action);
+
+    let res;
+    switch (action.name) {
+      case 'summon': res = room.game.summon(action.i, action.params[1], action.display, action.pose); break;
+      case 'changeDisplay': res = room.game.changeDisplay(action.i, action.display); break;
+      case 'changePose': res = room.game.changePose(action.i, action.pose); break;
+      case 'directAttack':
+      case 'attack': res = room.game.attack(action.i, action.params[0], action.params[1]); break;
+      case 'draw': res = room.game.draw(); break;
+      case 'endTurn': res = room.game.endTurn(); break;
     }
+
+    debug(res);
+    if (res.success === true) {
+      done(success(res));
+    } else {
+      done(error(res.msg));
+    }
+
+    // socket.emit('sv_game_update', game.takeSnapshot());
+    io.to(room.id).emit('sv_game_update', room.game.takeSnapshot());
   });
 });
+
+function createDeck() {
+  const deck = [];
+  for (let i = 0; i < 20; i += 1) {
+    deck.push(new KaibamanCard());
+    deck.push(new BlueEyesWhiteDragonCard());
+  }
+  return deck;
+}
