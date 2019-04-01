@@ -6,7 +6,7 @@ import debug from 'debug';
 const log = debug('tcg:Lobby');
 
 const Item = ({name, ownerName, members, watchers}) => (<span>
-  <strong>{name}</strong> (owned by <em>{ownerName}</em>)
+  <strong>{name}</strong> (owned by <em>{ownerName}</em>)&nbsp;
   {!!members.length && <span>
     <strong>{members.length} members:</strong> {members.map(({name}) => (<em key={name}>{name}, </em>))}
   </span>}
@@ -163,7 +163,7 @@ export default class Lobby extends React.Component {
                 {s.hasAnyAgreed ? <button className="btn btn-success" onClick={this.roomStart}>Start the Game</button> : <div>Waiting for members to agree.</div>}
               </div> : <div>
                 {!s.hasAgreed ? <div>
-                  <button className="btn btn-success" onClick={this.roomAgree}>Agree to Start the Game</button> <button className="btn btn-secondary" onClick={this.roomRefuse}>Refuse to Start the Game</button>
+                  <button className="btn btn-success" onClick={this.roomAgree}>Agree to Start the Game</button> <button className="btn btn-danger" onClick={this.roomRefuse}>Refuse to Start the Game</button>
                 </div> : <div>
                   Waiting for the host to Start the Game
                 </div>}
