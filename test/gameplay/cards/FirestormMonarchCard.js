@@ -4,7 +4,7 @@ const Game = require('../../../src/gameplay/Game');
 const Card = require('../../../src/gameplay/cards/Card');
 const FirestormMonarchCard = require('../../../src/gameplay/cards/FirestormMonarchCard');
 const DarkMagicianCard = require('../../../src/gameplay/cards/DarkMagicianCard');
-const DarkMagicianGirlCard = require('../../../src/gameplay/cards/DarkMagicianGirlCard');
+// const DarkMagicianGirlCard = require('../../../src/gameplay/cards/DarkMagicianGirlCard');
 const {assertGameSuccess, assertGameError} = require('../Game');
 
 describe('FirestormMonarchCard', () => {
@@ -12,7 +12,7 @@ describe('FirestormMonarchCard', () => {
     return [new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard()];
   }
   function buildDeck2() {
-    return [new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianGirlCard(), new DarkMagicianGirlCard(), new DarkMagicianGirlCard()];
+    return [new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard()];
   }
   it('#invoke', () => {
     // test constructor & invoke spell failed
