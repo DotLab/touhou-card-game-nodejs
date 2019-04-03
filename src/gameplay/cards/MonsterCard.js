@@ -26,6 +26,7 @@ class MonsterCard extends Card {
     this.lockDisplay = false;
     this.hasChangedPose = false;
     this.lockPose = false;
+    this.cardType = Card.MONSTER;
   }
 
   canSummon(display, pose) {
@@ -94,5 +95,5 @@ class MonsterCard extends Card {
     };
   }
 }
-
+Card.MONSTER = 'MONSTER';
 module.exports = MonsterCard;
