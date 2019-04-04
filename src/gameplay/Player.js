@@ -135,4 +135,6 @@ class Player {
   }
 }
 
+Player.InitialCardCount = 5;
+
 module.exports = Player;
