@@ -48,7 +48,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint && npm run jsdoc",
+      "pre-commit": "npm run lint",
       "pre-push": "npm test"
     }
   },
