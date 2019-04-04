@@ -19,14 +19,8 @@ export default class PlayersList extends React.Component {
     if (this.state.showPlayers) {
         this.setState({showPlayers: false});
     } else {
-        let list = await this.app.genericApi0('cl_get_players');
-        list = list.map(function(player) {
-          return {
-            ...player, 
-            lastDate: formatDate(player.lastDate),
-          };
-        });
-        this.setState({showPlayers: true, playersList: list});
+        const playersList = await this.app.genericApi0('cl_get_players');
+        this.setState({showPlayers: true, playersList});
     }
   }
 
