@@ -23,7 +23,6 @@ class Card {
     this.desc = desc;
     this.imgUrl = imgUrl;
     this.display = null;
-    this.cardType = Card.RAW;
   }
 
   // canChangeDisplay() {
@@ -58,7 +57,6 @@ Card.REVEALED = 'REVEALED';
 Card.ATTACK = 'ATTACK';
 Card.DEFENSE = 'DEFENSE';
 
+Card.MONSTER = 'MONSTER';
 
-Card.SPELL = 'SPELL';
-Card.RAW = 'RAW';
 module.exports = Card;

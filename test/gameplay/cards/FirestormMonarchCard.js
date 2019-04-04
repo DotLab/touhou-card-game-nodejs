@@ -11,9 +11,11 @@ describe('FirestormMonarchCard', () => {
   function buildDeck1() {
     return [new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard()];
   }
+
   function buildDeck2() {
     return [new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard()];
   }
+
   it('#invoke', () => {
     // test constructor & invoke spell failed
     const game = new Game([{id: 'abc', deck: buildDeck1()}, {id: 'def', deck: buildDeck2()}]);
@@ -39,8 +41,11 @@ describe('FirestormMonarchCard', () => {
 
     // assert.equal(game.players[1].field.graveyard.pop(), droppedCard);
     // assert.equal(game.players[1].field.graveyard.length, 1);
-    if (droppedCard.cardType == Card.MONSTER )assert.equal(game.players[1].life, preLife - FirestormMonarchCard.Life*droppedCard.lv);
-    else assert.equal(game.players[1].life, preLife);
+    if (droppedCard.cardType == Card.MONSTER) {
+      assert.equal(game.players[1].life, preLife - FirestormMonarchCard.Life * droppedCard.lv);
+    } else {
+      assert.equal(game.players[1].life, preLife);
+    }
 
     assertGameError(game.invokeMonsterEffect(0, [0]));
     assertGameSuccess(game.endTurn());

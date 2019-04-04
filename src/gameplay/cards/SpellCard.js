@@ -3,7 +3,6 @@ const Card = require('./Card');
 class SpellCard extends Card {
   constructor(name, desc, imgUrl) {
     super(name, desc, imgUrl);
-    this.cardType = Card.SPELL;
   }
 
   canPlace() {

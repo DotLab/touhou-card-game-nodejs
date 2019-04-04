@@ -1,4 +1,5 @@
 const MonsterCard = require('./MonsterCard');
+const Card = require('./Card');
 /**
  * FirestormMonarch Card
  * @extends MonsterCard
@@ -27,7 +28,7 @@ class FirestormMonarchCard extends MonsterCard {
     const dropped = Math.floor(Math.random() * game.players[invokeParams[2]].hand.length);
     const droppedCard = game.players[invokeParams[2]].hand[dropped];
     game.players[invokeParams[2]].field.graveyard.push(game.players[invokeParams[2]].removeCardInHand(dropped));
-    if ( droppedCard.cardType == FirestormMonarchCard.Type) {
+    if ( droppedCard.cardType == Card.MONSTER) {
       game.players[invokeParams[2]].life -= FirestormMonarchCard.Life * droppedCard.lv;
     }
     this.hasInvoked = true;
@@ -37,5 +38,5 @@ class FirestormMonarchCard extends MonsterCard {
 FirestormMonarchCard.Name = 'FirestormMonarchCard';
 FirestormMonarchCard.Desc = 'If this card is Tribute Summoned: Discard 1 random card from your opponents hand, then, if it was a Monster Card, inflict damage to your opponent equal to its original Level x 100.';
 FirestormMonarchCard.Life = 100;
-FirestormMonarchCard.Type = 'MONSTER';
+
 module.exports = FirestormMonarchCard;

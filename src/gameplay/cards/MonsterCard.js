@@ -95,5 +95,5 @@ class MonsterCard extends Card {
     };
   }
 }
-Card.MONSTER = 'MONSTER';
+
 module.exports = MonsterCard;
