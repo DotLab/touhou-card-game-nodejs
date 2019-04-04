@@ -43,6 +43,9 @@ const rooms = {};
 const SV_UPDATE_ROOM = 'sv_update_room';
 const SV_ROOM_SEND_MESSAGE = 'sv_room_send_message';
 
+const LIFE_UPGRADE_AMOUNT = 100;
+const LIFE_UPGRADE_COST = 50;
+
 function generateId(length = 256) {
   return crypto.randomBytes(length).toString('base64');
 }
@@ -163,6 +166,9 @@ io.on('connection', function(socket) {
       onlineTime: 0,
       gameCount: 0,
       winCount: 0,
+      spiritPointsCount: 100,
+      magicPointsCount: 100,
+      lifeUpgrade: 0,
     });
 
     done(success());
@@ -201,6 +207,9 @@ io.on('connection', function(socket) {
         onlineTime: user.onlineTime,
         gameCount: user.gameCount,
         winCount: user.winCount,
+        spiritPointsCount: user.spiritPointsCount,
+        magicPointsCount: user.magicPointsCount,
+        lifeUpgrade: user.lifeUpgrade,
       }));
     } else {
       done(error('wrong username/password'));
@@ -219,6 +228,46 @@ io.on('connection', function(socket) {
     } catch (e) {
       return done(error('update failed'));
     }
+  });
+
+  socket.on('cl_store_buy_life', async (done) => {
+    debug('cl_store_buy_life');
+
+    if (!user) return done(error('forbidden'));
+
+    try {
+      user = await User.findByIdAndUpdate(user.id, {$inc: {
+        spiritPointsCount: -LIFE_UPGRADE_COST,
+        lifeUpgrade: LIFE_UPGRADE_AMOUNT,
+      }}, {new: true});
+
+      return done(success({
+        spiritPointsCount: user.spiritPointsCount,
+        lifeUpgrade: user.lifeUpgrade,
+      }));
+    } catch (e) {
+      return done(error('purchase failed'));
+    }
+  });
+
+  socket.on('cl_get_players', async (done) => {
+    debug('cl_get_players');
+
+    if (!user) return done(error('forbidden'));
+
+    const docs = await User.find({});
+    const users = docs.map((doc) => ({
+      name: doc.name,
+      bio: doc.bio,
+      lastDate: doc.lastDate,
+      lifeUpgrade: doc.lifeUpgrade,
+    })).sort((a, b) => {
+      if (a.lifeUpgrade && !b.lifeUpgrade) return 0;
+      if (!a.lifeUpgrade && b.lifeUpgrade) return 1;
+      return b.lifeUpgrade - a.lifeUpgrade;
+    });
+
+    done(success(users));
   });
 
   socket.on('cl_create_room', async ({name}, done) => {
@@ -298,6 +347,8 @@ io.on('connection', function(socket) {
 
     if (!user) return done(error('forbidden'));
     if (!room) return done(error('not in any room'));
+
+    message = message.substr(0, 200);
 
     io.to(room.id).emit(SV_ROOM_SEND_MESSAGE, {
       userName: user.name, date: new Date(), message,
