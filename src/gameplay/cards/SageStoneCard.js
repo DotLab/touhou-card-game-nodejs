@@ -9,7 +9,7 @@ class SageStoneCard extends SpellCard {
   canInvoke(game, player, invokeParams) {
     if (player.field.monsterSlots[invokeParams[0]] != null) return false;
     for (let i = 0; i < player.field.monsterSlots.length; i += 1) {
-      if (player.field.monsterSlots[i] !== null && player.field.monsterSlots[i].name === DarkMagicianGirlCard.Name) {
+      if (player.field.monsterSlots[i] !== null && player.compareFieldName(i, DarkMagicianGirlCard.Name)) {
         if (player.field.monsterSlots[i].display = Card.REVEALED) {
           return true;
         }
@@ -28,7 +28,7 @@ class SageStoneCard extends SpellCard {
       }
     }
     for (let i = 0; i < player.hand.length; i += 1) {
-      if (player.hand[i].name === DarkMagicianCard.Name) {
+      if (player.compareHandName(i, DarkMagicianCard.Name)) {
         const card = player.removeCardInHand(i);
         player.field.monsterSlots[invokeParams[0]] = card;
         card.summon(Card.REVEALED, Card.ATTACK);
@@ -36,7 +36,7 @@ class SageStoneCard extends SpellCard {
       }
     }
     for (let i = 0; i < player.deck.length; i += 1) {
-      if (player.deck[i].name === DarkMagicianCard.Name) {
+      if (player.compareDeckName(i, DarkMagicianCard.Name)) {
         player.field.monsterSlots[invokeParams[0]] = player.deck[i];
         player.deck.splice(i, 1);
         return;

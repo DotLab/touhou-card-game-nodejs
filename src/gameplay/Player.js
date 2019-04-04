@@ -104,6 +104,27 @@ class Player {
     this.field.monsterSlots[index] = null;
     this.field.graveyard.push(card);
   }
+
+  compareFieldName(index, name) {
+    if (this.field.monsterSlots[index].name === name) {
+      return true;
+    }
+    return false;
+  }
+
+  compareHandName(index, name) {
+    if (this.field.hand[index].name === name) {
+      return true;
+    }
+    return false;
+  }
+
+  compareDeckName(index, name) {
+    if (this.field.deck[index].name === name) {
+      return true;
+    }
+    return false;
+  }
 }
 
 Player.InitialCardCount = 5;
