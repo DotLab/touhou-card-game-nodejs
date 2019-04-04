@@ -20,6 +20,6 @@ describe('showIndex', () => {
 
   it('take screen shot', async () => {
     const base64png = await driver.takeScreenshot();
-    fs.writeFileSync('screenshot.png', new Buffer(base64png, 'base64'));
+    fs.writeFileSync('screenshot.png', Buffer.from(base64png, 'base64'));
   });
 });

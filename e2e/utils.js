@@ -14,5 +14,5 @@ exports.createWebdriver = function() {
 
 exports.saveScreenshot = async function(driver, path) {
   const base64png = await driver.takeScreenshot();
-  fs.writeFileSync(path, new Buffer(base64png, 'base64'));
+  fs.writeFileSync(path, Buffer.from(base64png, 'base64'));
 };
