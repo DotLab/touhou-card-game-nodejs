@@ -17,7 +17,8 @@
     "debug-be": "nodemon -w ./src -w ./test --exec \"npm run mocha\"",
     "debug-be-coverage": "nodemon -w ./src -w ./test --exec \"npm run mocha && npm run serve-coverage\"",
     "debug-docs": "nodemon -w ./src --exec \"npm run jsdoc && npm run serve-docs\"",
-    "build-app": "cd ./app && npm ci && npm run atomize && npm run build"
+    "build-app": "cd ./app && npm ci && npm run atomize && npm run build",
+    "e2e": "mocha ./e2e --recursive --timeout 10000"
   },
   "repository": {
     "type": "git",
@@ -47,15 +48,17 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint && npm run jsdoc",
+      "pre-commit": "npm run lint",
       "pre-push": "npm test"
     }
   },
   "dependencies": {
     "chai": "^4.2.0",
+    "chromedriver": "^2.46.0",
     "debug": "^4.1.1",
     "express": "^4.16.4",
     "mongoose": "^5.4.9",
+    "selenium-webdriver": "^4.0.0-alpha.1",
     "socket.io": "^2.2.0"
   },
   "nyc": {
