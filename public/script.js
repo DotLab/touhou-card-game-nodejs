@@ -67,6 +67,18 @@ function renderAccount(props) {
         onlineTime: formatTime(res.data.onlineTime),
         gameCount: res.data.gameCount,
         winCount: res.data.winCount,
+        spiritPointsCount: res.data.spiritPointsCount,
+        magicPointsCount: res.data.magicPointsCount,
+        lifeUpgrade: res.data.lifeUpgrade,
+      });
+      store.setState({
+        showStore: false,
+        spiritPointsCount: res.data.spiritPointsCount,
+        magicPointsCount: res.data.magicPointsCount,
+      });
+      allPlayers.setState({
+        showAllPlayers: false,
+        players: [],
       });
     });
   });
@@ -103,6 +115,57 @@ const statistics = new (function Statistics(selector, tmpl, props) {
     });
   };
 })('#statistics', $.templates('#statisticsTmpl'), {});
+
+const store = new (function Store(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
+
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('store#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+
+    $(selector + ' .showStore').on('click', function(e) {
+      e.preventDefault();
+      self.setState({showStore: !self.state.showStore});
+    });
+
+    $(selector + ' .buyLife').on('click', function(e) {
+      e.preventDefault();
+      socket.emit('cl_buy_life', createHandler(function(res) {
+        // self.setState({spiritPointsCount: res.data.spiritPointsCount});
+      }, error));
+    });
+  };
+})('#store', $.templates('#storeTmpl'), {});
+
+const allPlayers = new (function allPlayers(selector, tmpl, props) {
+  this.state = props;
+  const self = this;
+
+  self.setState = function(state) {
+    Object.assign(self.state, state);
+    console.log('allPlayers#render', self.state);
+    $(selector).html(tmpl.render(self.state));
+
+    $(selector + ' .allPlayersList').on('click', function(e) {
+      e.preventDefault();
+      socket.emit('cl_get_players', function(res) {
+        console.log('res', res.data);
+        if (res.err) return error(res.err);
+        self.setState({
+          showAllPlayers: !self.state.showAllPlayers,
+          players: res.data.map(function(player) {
+            return {
+              ...player,
+              lastDate: formatDate(player.lastDate),
+            };
+          }),
+        });
+      });
+    });
+  };
+})('#allPlayers', $.templates('#allPlayersTmpl'), {});
 
 const lobby = new (function Lobby(selector, tmpl, props) {
   this.state = props;
@@ -174,6 +237,19 @@ const lobby = new (function Lobby(selector, tmpl, props) {
 
 socket.on('sv_update_lobby', function(res) {
   lobby.setState(res);
+});
+
+socket.on('sv_refresh_user', function(res) {
+  console.log('sv_refresh_user', res);
+  statistics.setState({
+    spiritPointsCount: res.spiritPointsCount,
+    magicPointsCount: res.magicPointsCount,
+    lifeUpgrade: res.lifeUpgrade,
+  });
+  store.setState({
+    spiritPointsCount: res.spiritPointsCount,
+    magicPointsCount: res.magicPointsCount,
+  });
 });
 
 socket.on('sv_room_send_message', function(res) {

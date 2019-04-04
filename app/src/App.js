@@ -2,6 +2,8 @@ import React from 'react';
 
 import Account from './Account';
 import Statistics from './Statistics';
+import Store from './Store';
+import PlayersList from './PlayersList';
 import Lobby from './Lobby';
 import Game from './Game';
 
@@ -16,7 +18,7 @@ export default class App extends React.Component {
       user: null,
     };
 
-    // this.login({loginName: 'aaa', loginPassword: 'aaa'});
+    // this.login({loginName: 'aaaa', loginPassword: 'aaaa'});
   }
 
   error(err) {
@@ -77,6 +79,8 @@ export default class App extends React.Component {
         </div>
       </div>}
       <Statistics app={this} />
+      <Store app={this} />
+      <PlayersList app={this} />
       <Lobby app={this} />
       <Game app={this} />
     </div>;

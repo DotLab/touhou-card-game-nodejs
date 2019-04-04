@@ -38,6 +38,12 @@ export default class Statistics extends React.Component {
           <dd className="col-sm-9">{formatNumber(user.gameCount)}</dd>
           <dt className="col-sm-3">Games Won</dt>
           <dd className="col-sm-9">{formatNumber(user.winCount)}</dd>
+          <dt className="col-sm-3">Spirit Points</dt>
+          <dd className="col-sm-9">{formatNumber(user.spiritPointsCount)} SP</dd>
+          <dt className="col-sm-3">Magic Points</dt>
+          <dd className="col-sm-9">{formatNumber(user.magicPointsCount)} MP</dd>
+          <dt className="col-sm-3">Life Upgrade</dt>
+          <dd className="col-sm-9">{formatNumber(user.lifeUpgrade)} L</dd>
         </dl>
       </div>}
     </div>;
