@@ -23,7 +23,6 @@ class Field {
   * @param {Number} index card index in oblivion field
   * @return {Card} card
   */
-
   removeCardFromOblivion(index) {
     const removed = this.oblivion.splice(index, 1);
     return removed[0];

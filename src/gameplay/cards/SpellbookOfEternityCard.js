@@ -23,7 +23,6 @@ class SpellbookOfEternityCard extends SpellCard {
     const index = invokeParams[0];
     const card = player.field.removeCardFromOblivion(index);
     player.hand.push(card);
-    player.hasActivated[SpellbookOfEternityCard.Name] = true;
   }
 }
 

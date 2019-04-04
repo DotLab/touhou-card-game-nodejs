@@ -24,7 +24,7 @@ class Player {
       this.hand.push(this.deck.pop());
     }
     this.isSuspended = false;
-    /** @type {dict}*/
+    /** @type {Map<String, Boolean>}*/
     this.hasActivated = {};
   }
 
@@ -58,8 +58,7 @@ class Player {
    */
   endTurn() {
     this.hasDrawn = false;
-    let name;
-    this.hasActivated[name] = {};
+    this.hasActivated = {};
     this.field.endTurn();
   }
 

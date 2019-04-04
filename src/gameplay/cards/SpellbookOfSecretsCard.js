@@ -23,7 +23,6 @@ class SpellbookOfSecretsCard extends SpellCard {
     const index = player.findCardInDeckByName(name);
     const card = player.removeCardFromDeck(index);
     player.hand.push(card);
-    player.hasActivated[SpellbookOfSecretsCard.Name] = true;
   }
 }
 
