@@ -57,4 +57,6 @@ Card.REVEALED = 'REVEALED';
 Card.ATTACK = 'ATTACK';
 Card.DEFENSE = 'DEFENSE';
 
+Card.MONSTER = 'MONSTER';
+
 module.exports = Card;
