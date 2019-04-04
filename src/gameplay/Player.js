@@ -24,6 +24,8 @@ class Player {
       this.hand.push(this.deck.pop());
     }
     this.isSuspended = false;
+    /** @type {Map<String, Boolean>}*/
+    this.hasActivated = {};
   }
 
   canDraw() {
@@ -56,7 +58,33 @@ class Player {
    */
   endTurn() {
     this.hasDrawn = false;
+    this.hasActivated = {};
     this.field.endTurn();
+  }
+
+  /**
+   * @param {string} name
+   * @return {Number} index
+   */
+  findCardInDeckByName(name) {
+    let index = -1;
+    for ( let i = 0; i < this.deck.length; i++) {
+      if (this.deck[i].name === name) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  }
+
+  /**
+   * @param {Number} index of card in Deck
+   * @return the card
+   */
+
+  removeCardFromDeck(index) {
+    const card = this.deck.splice(index, 1);
+    return card[0];
   }
 
   canBeDirectlyAttacked() {
