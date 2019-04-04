@@ -6,8 +6,10 @@ class PotOfGreedCard extends SpellCard {
   }
 
   invoke(game, player) {
-    player.draw();
-    player.draw();
+    for ( let i = 0; i < PotOfGreedCard.CardsDraw; i++) {
+      player.draw();
+    }
+    // player.draw();
     player.field.graveyard.push(this);
     for (let i = 0; i < player.field.spellSlots.length; i += 1) {
       if (player.field.spellSlots[i] !== null && player.field.spellSlots[i] === this) player.field.spellSlots[i] = null;
@@ -18,5 +20,5 @@ class PotOfGreedCard extends SpellCard {
 PotOfGreedCard.Name = 'Pot Of Greed';
 PotOfGreedCard.Desc = 'Draw 2 cards.';
 PotOfGreedCard.ImgUrl = '/imgs/card-pot-of-greed.png';
-
+PotOfGreedCard.CardsDraw = 2;
 module.exports = PotOfGreedCard;

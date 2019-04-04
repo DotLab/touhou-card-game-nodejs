@@ -98,6 +98,7 @@ class Game extends React.Component {
 
   componentDidMount() {
     const socket = this.app.socket;
+
     socket.on('sv_game_update', (snapshot) => {
       log('sv_game_update', snapshot);
       const players = snapshot.players;
@@ -135,11 +136,11 @@ class Game extends React.Component {
       return <div></div>;
     }
 
-    if (!s.me) {
-      return <div>
+    if (!s.me) {  // watching
+      return <div className="mt-2">
         {s.players.map((player) => (<div className="Mb(20px)">
           <div><b>{player.userName}</b> ({player.life} Li)</div>
-          <div>{player.hand.map((c, i) => (<Slot game={this} me={player} in={Game.HAND} i={i} card={c} />))}</div>
+          <div>{player.hand.map((c, i) => (<Slot key={i} game={this} me={player} in={Game.HAND} i={i} card={c} />))}</div>
           <div>
             <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={3} card={player.field.spellSlots[3]} />
             <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={2} card={player.field.spellSlots[2]} />
@@ -176,12 +177,12 @@ class Game extends React.Component {
       }
     }
 
-    return <div className="Lh(1)">
+    return <div className="Lh(1) mt-2">
       {/* opponents */}
       <div className="W(100%) Ovy(a) Ovx(s) Whs(nw)">
-        {me.opponents.map((opponent) => (<div className="D(ib) Mend(20px)">
+        {me.opponents.map((opponent, i) => (<div key={i} className="D(ib) Mend(20px)">
           <div><b>{opponent.userName}</b> ({opponent.life} Li)</div>
-          <div>{opponent.hand.map((c, i) => (<Slot game={this} me={opponent} in={Game.HAND} i={i} card={c} />))}</div>
+          <div>{opponent.hand.map((c, i) => (<Slot key={i} game={this} me={opponent} in={Game.HAND} i={i} card={c} />))}</div>
           <div>
             <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={3} card={opponent.field.spellSlots[3]} />
             <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={2} card={opponent.field.spellSlots[2]} />
@@ -214,22 +215,22 @@ class Game extends React.Component {
         <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={3} card={field.spellSlots[3]} />
       </div>
       <div>
-        {me.hand.map((c, i) => (<Slot game={this} me={me} in={Game.HAND} i={i} card={c} />))}
+        {me.hand.map((c, i) => (<Slot key={i} game={this} me={me} in={Game.HAND} i={i} card={c} />))}
         <span className="Mstart(5px)">
           {s.me.stage === Game.MY_TURN && <span>
-            <button onClick={this.draw}>draw one card</button>
-            <button onClick={this.endTurn}>end turn</button>
+            <button className="btn btn-secondary mr-2" onClick={this.draw}>draw one card</button>
+            <button className="btn btn-secondary mr-2" onClick={this.endTurn}>end turn</button>
           </span>}
-          {s.selectedAction && <button onClick={this.cancelAction}>cancel action</button>}
-          {s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length * 2 && <button onClick={this.confirmAction}>confirm action</button>}
-          - {message} -
+          {s.selectedAction && <button className="btn btn-info mr-2" onClick={this.cancelAction}>cancel action</button>}
+          {s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length * 2 && <button className="btn btn-success mr-2" onClick={this.confirmAction}>confirm action</button>}
+          {message}
           {s.err && <span className="C(red)"> [{s.err}] </span>}
-          {s.selectedAction && <span>
-            {(s.selectedAction.name === 'summon' || s.selectedAction.name === 'changeDisplay') && <select name="display" value={s.display} onChange={this.onChange}>
+          {s.selectedAction && <span className="D(ib) form-inline">
+            {(s.selectedAction.name === 'summon' || s.selectedAction.name === 'changeDisplay') && <select className="form-control ml-2" name="display" value={s.display} onChange={this.onChange}>
               <option value="HIDDEN">HIDDEN</option>
               <option value="REVEALED">REVEALED</option>
             </select>}
-            {(s.selectedAction.name === 'summon' || s.selectedAction.name === 'changePose') && <select name="pose" value={s.pose} onChange={this.onChange}>
+            {(s.selectedAction.name === 'summon' || s.selectedAction.name === 'changePose') && <select className="form-control ml-2" name="pose" value={s.pose} onChange={this.onChange}>
               <option value="ATTACK">ATTACK</option>
               <option value="DEFENSE">DEFENSE</option>
             </select>}

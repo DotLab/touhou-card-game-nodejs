@@ -348,6 +348,8 @@ io.on('connection', function(socket) {
     if (!user) return done(error('forbidden'));
     if (!room) return done(error('not in any room'));
 
+    message = message.substr(0, 200);
+
     io.to(room.id).emit(SV_ROOM_SEND_MESSAGE, {
       userName: user.name, date: new Date(), message,
     });

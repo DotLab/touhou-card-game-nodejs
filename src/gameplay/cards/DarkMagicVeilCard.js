@@ -6,7 +6,7 @@ class DarkMagicVeilCard extends SpellCard {
     super(DarkMagicVeilCard.Name, DarkMagicVeilCard.Desc, DarkMagicVeilCard.ImgUrl);
   }
   canInvoke(game, player, invokeParams) {
-    if (player.life <= 1000) return false;
+    if (player.life <= DarkMagicVeilCard.LifeInvoke) return false;
     if (player.field.monsterSlots[invokeParams[0]] !== null) return false;
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === DarkMagicianCard.Name) return true;
@@ -19,7 +19,7 @@ class DarkMagicVeilCard extends SpellCard {
       if (player.hand[i].name === DarkMagicVeilCard.Name) {
         for (let j = 0; j < player.field.spellSlots.length; j += 1) {
           if (player.field.spellSlots[j] === this) {
-            player.life -= 1000;
+            player.life -= DarkMagicVeilCard.LifeInvoke;
             player.field.spellSlots[j] = null;
             player.field.graveyard.push(this);
             player.field.monsterSlots[invokeParams[0]] = player.hand[i];
@@ -34,5 +34,5 @@ class DarkMagicVeilCard extends SpellCard {
 
 DarkMagicVeilCard.Name = 'Dark Magic Veil';
 DarkMagicVeilCard.Desc = 'Pay 1000 Life Points, and Special Summon 1 "Dark Magician" from your hand.';
-
+DarkMagicVeilCard.LifeInvoke = 1000;
 module.exports = DarkMagicVeilCard;

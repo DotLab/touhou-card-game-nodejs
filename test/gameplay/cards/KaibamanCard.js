@@ -20,7 +20,8 @@ describe('KaibamanCard', () => {
     const card = game.players[0].hand[0];
     assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
     assertGameSuccess(game.invokeMonsterEffect(0, []));
-    assert.equal(game.players[0].field.monsterSlots[0].name, 'Blue-Eyes White Dragon');
+    assert.equal(game.players[0].field.monsterSlots[0].name, BlueEyesWhiteDragonCard.Name);
+
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     assert.equal(game.players[0].field.graveyard[0], card); // kaibaman in graveyard
     assertGameSuccess(game.endTurn());

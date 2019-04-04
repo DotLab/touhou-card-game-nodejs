@@ -19,12 +19,12 @@ class DarkMagicianGirlCard extends MonsterCard {
     for (let i = 0; i < player.field.graveyard.length; i += 1) {
       if (player.field.graveyard[i].name === DarkMagicianCard.Name) count += 1;
     }
-    this.atk += (300 * count);
+    this.atk += (DarkMagicianCard.AtkIncrease * count);
     this.hasInvoked = true;
   }
 }
 
 DarkMagicianGirlCard.Name = 'DarkMagicianGirl';
 DarkMagicianGirlCard.Desc = 'This card gains 300 ATK for every "Dark Magician" in your Graveyard.';
-
+DarkMagicianCard.AtkIncrease= 300;
 module.exports = DarkMagicianGirlCard;
