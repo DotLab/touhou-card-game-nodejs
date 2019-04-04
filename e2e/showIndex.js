@@ -15,7 +15,7 @@ describe('showIndex', () => {
   });
 
   it('open index page', async () => {
-    await driver.get('https://www.google.com/');
+    await driver.get('http://localhost:3000/');
   });
 
   it('take screen shot', async () => {
