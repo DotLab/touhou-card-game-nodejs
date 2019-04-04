@@ -18,7 +18,7 @@ export default class App extends React.Component {
       user: null,
     };
 
-    // this.login({loginName: 'aaa', loginPassword: 'aaa'});
+    this.login({loginName: 'aaaa', loginPassword: 'aaaa'});
   }
 
   error(err) {
