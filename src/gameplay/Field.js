@@ -14,6 +14,18 @@ class Field {
     this.spellSlots = [null, null, null, null];
     /** @type {Card[]} */
     this.graveyard = [];
+    /** @type {Card[]} */
+    this.oblivion = [];
+  }
+
+  /**
+  * Remove a card from oblivion field
+  * @param {Number} index card index in oblivion field
+  * @return {Card} card
+  */
+  removeCardFromOblivion(index) {
+    const removed = this.oblivion.splice(index, 1);
+    return removed[0];
   }
 
   endTurn() {
@@ -36,7 +48,6 @@ class Field {
   }
 
   canActivate(game, owner, actor, action, actionParams, phase) {
-    // console.log(action, phase);
     for (let i = 0; i < this.spellSlots.length; i += 1) {
       if (this.spellSlots[i] !== null && this.spellSlots[i].canActivate(game, owner, actor, action, actionParams, phase)) {
         return true;
