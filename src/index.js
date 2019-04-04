@@ -42,7 +42,6 @@ function leaveLobby(userId) {
 const rooms = {};
 const SV_UPDATE_ROOM = 'sv_update_room';
 const SV_ROOM_SEND_MESSAGE = 'sv_room_send_message';
-const SV_REFRESH_USER = 'sv_refresh_user';
 
 const LIFE_UPGRADE_AMOUNT = 100;
 const LIFE_UPGRADE_COST = 50;
@@ -235,16 +234,17 @@ io.on('connection', function(socket) {
     debug('cl_store_buy_life');
 
     if (!user) return done(error('forbidden'));
-    user.spiritPointsCount -= LIFE_UPGRADE_COST;
-    user.lifeUpgrade += LIFE_UPGRADE_AMOUNT;
+
     try {
-      await User.findByIdAndUpdate(user.id, user);
-      socket.emit(SV_REFRESH_USER, {
+      user = await User.findByIdAndUpdate(user.id, {$inc: {
+        spiritPointsCount: -LIFE_UPGRADE_COST,
+        lifeUpgrade: LIFE_UPGRADE_AMOUNT,
+      }}, {new: true});
+
+      return done(success({
         spiritPointsCount: user.spiritPointsCount,
-        magicPointsCount: user.magicPointsCount,
         lifeUpgrade: user.lifeUpgrade,
-      });
-      return done(success({spiritPointsCount: user.spiritPointsCount, lifeUpgrade: user.lifeUpgrade}));
+      }));
     } catch (e) {
       return done(error('purchase failed'));
     }
@@ -255,15 +255,15 @@ io.on('connection', function(socket) {
 
     if (!user) return done(error('forbidden'));
 
-    const userDocs = await User.find({});
-    const users = userDocs.map((doc) => ({
+    const docs = await User.find({});
+    const users = docs.map((doc) => ({
       name: doc.name,
       bio: doc.bio,
       lastDate: doc.lastDate,
       lifeUpgrade: doc.lifeUpgrade,
     })).sort((a, b) => {
-      if (a.lifeUpgrade && ! b.lifeUpgrade) return 0;
-      if (! a.lifeUpgrade && b.lifeUpgrade) return 1;
+      if (a.lifeUpgrade && !b.lifeUpgrade) return 0;
+      if (!a.lifeUpgrade && b.lifeUpgrade) return 1;
       return b.lifeUpgrade - a.lifeUpgrade;
     });
 
