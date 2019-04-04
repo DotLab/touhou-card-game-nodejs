@@ -16,6 +16,8 @@
       <div id="account"></div>
       <div id="message"></div>
       <div id="statistics"></div>
+      <div id="store"></div>
+      <div id="allPlayers"></div>
       <div id="lobby"></div>
       <div id="game"></div>
     </div>
@@ -61,9 +63,60 @@
             Time Online: {{:onlineTime}} <br/>
             Games Played: {{:gameCount}}<br/>
             Games Won: {{:winCount}}<br/>
+            Spirit Points: {{:spiritPointsCount}}<br/>
+            Magic Points: {{:magicPointsCount}}<br/>
+            Life Upgrade: +{{:lifeUpgrade}}<br/> 
           </div>
         {{/if}}
       </form>
+    </script>
+
+    <script id="storeTmpl" type="text/html">
+      <button class="showStore">Store</button>
+      {{if showStore}}
+        <div>  
+          <ul>
+            <li>Life +100
+              <ul>
+                <li>-50 Spirit Points</li>
+                {{if spiritPointsCount >= 50}}
+                  <li><button class="buyLife">Buy</button></li>
+                {{else}}
+                  <li>Not enough Spirit Points</li>
+                {{/if}}
+              </ul>
+            </li>
+            <li>Card Upgrade</li>
+            <ul>
+                <li>-100 Spirit Points</li>
+                {{if spiritPointsCount >= 100}}
+                  <!-- <li><button type=submit>Buy</button></li>  -->
+                  <li>Not yet implemented</li>
+                {{else}}
+                  <li>Not enough Spirit Points</li>
+                {{/if}}
+            </ul>
+          </ul>
+        </div>
+      {{/if}}
+    </script>
+
+    <script id="allPlayersTmpl" type="text/html">
+      <button class="allPlayersList">All Players</button>
+      {{if showAllPlayers}}
+      <ul>
+        {{for players}}
+        <li>
+          {{:name}}
+          <ul> 
+            {{if bio}}<li>"{{:bio}}"</li>{{/if}}
+            {{if lastDate}}<li>Last Seen: {{:lastDate}}</li>{{/if}}
+            {{if lifeUpgrade}}<li>Life Upgrade: {{:lifeUpgrade}}</li>{{/if}}
+          </ul> 
+        </li>
+        {{/for}}
+      </ul>
+      {{/if}}
     </script>
 
     <script id="lobbyTmpl" type="text/html">
