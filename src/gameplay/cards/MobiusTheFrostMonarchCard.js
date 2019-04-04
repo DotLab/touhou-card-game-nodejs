@@ -10,7 +10,15 @@ class MobiusTheFrostMonarchCard extends MonsterCard {
     this.activated = false;
   }
 
+  /**
+   * Check whether the monster can invoke his ability
+   * @param {Object} game
+   * @param {Object} player
+   * @param {Object} invokeParams - should be null
+   * @return {boolean} whether it can activate its ability
+   */
   canInvoke(game, player, invokeParams) {
+    // once it activates, it can no more activate
     return !this.activated;
   }
 
@@ -27,9 +35,10 @@ class MobiusTheFrostMonarchCard extends MonsterCard {
    */
   invoke(game, player, invokeParams) {
     for (let i = 0; i <invokeParams.length; i+=2) {
-      if (invokeParams[i]===null) continue;
+      if (invokeParams[i] === null) {
+        continue;
+      }
       const target = game.players[invokeParams[i]];
-      // console.log(target);
       const targetCard = target.field.spellSlots[invokeParams[i+1]];
       target.field.graveyard.push(targetCard);
       target.field.spellSlots[invokeParams[i+1]] = null;
