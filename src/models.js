@@ -12,6 +12,9 @@ exports.User = mongoose.model('User', {
   // cached
   gameCount: Number,
   winCount: Number,
+  spiritPointsCount: Number,
+  magicPointsCount: Number,
+  lifeUpgrade: Number,
 });
 
 // A User has a record of each game they have played
