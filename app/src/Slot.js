@@ -106,12 +106,13 @@ export default class Slot extends React.Component {
     const shouldShowActions = card && p.game.state.selectedCard && p.game.state.selectedCard.id === card.id;
     const shouldShowActionSelect = p.game.state.selectedAction && this.canBeSelected();
 
-    return <div className="D(ib) Pos(r) Lh(0) Scale(1.1):h Brightness(1.1):h" onClick={this.onClick}>
+    return <div className="Trsp(a) Trsdu(.2s) D(ib) Pos(r) Lh(0) Scale(1.2):h Brightness(1.1):h" onClick={this.onClick}>
       {shouldShowActionSelect && <div className="Pos(a) T(0) Start(0) Z(1)">
-        <button>select</button>
+        <button className="Bdw(0) Lh(1) btn-primary p-0 m-0 rounded">select</button>
       </div>}
       {!p.game.state.selectedAction && shouldShowActions && <div className="Pos(a) T(0) Start(0) Z(1)">
-        {card.actions.filter((a) => this.shouldShowAction(a)).map((a) => (<button onClick={() => this.onAction(a)}>{a.name}</button>))}
+        {card.actions.filter((a) => 
+          this.shouldShowAction(a)).map((a, i) => (<button key={i} className="Bdw(0) Lh(1) btn-secondary p-0 m-0 rounded" onClick={() => this.onAction(a)}>{a.name}</button>))}
       </div>}
       <img className={'D(i) Bxsh($box-shadow):h ' + height + (card && card.pose === 'DEFENSE' ? ' Rotate($-90deg)' : '')} src={!card ? '/imgs/card-placeholder.png' : ((card.display === 'HIDDEN' || ((!p.game.state.me || p.me.userId !== p.game.state.me.userId) && p.in === 'HAND')) ? '/imgs/card-back.png' : card.imgUrl)} alt=""/>
     </div>;
