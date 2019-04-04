@@ -41,7 +41,7 @@ export default class Store extends React.Component {
     const isLoggedIn = user !== null;
 
     return <div className="container mt-2">
-      {isLoggedIn && <button className="btn btn-info" onClick={this.toggleView}>Store</button>}
+      {isLoggedIn && <button className="btn btn-info" onClick={this.toggleView}>Toggle Store</button>}
       {s.showStore && <div className="mt-2">
         <table className="table table-striped my-0 py-0">
           <thead>
