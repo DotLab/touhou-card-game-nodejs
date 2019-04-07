@@ -26,13 +26,7 @@ export default class PlayersList extends React.Component {
   }
 
   async followPlayer(playerTo) {
-    // const user = this.app.state.user;
-    console.log("following", playerTo);
-
     const followingList = await this.app.genericApi1('cl_following', playerTo);
-    console.log(followingList);
-    console.log(followingList.following);
-    // this.setState({following: followingList});
     this.app.setState({user: {
       ...this.app.state.user,
       following: followingList.following,

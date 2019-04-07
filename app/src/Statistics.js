@@ -23,7 +23,7 @@ export default class Statistics extends React.Component {
     const s = this.state;
     const user = this.app.state.user;
     const isLoggedIn = user !== null;
-    console.log(user);
+
     return <div className="container mt-2">
       {isLoggedIn && <button className="btn btn-info" name="toggleStats" onClick={this.toggleStats}>Toggle Statistics</button>}
       {s.showStats && <div className="card mt-2 px-3 py-2">
