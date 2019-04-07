@@ -281,8 +281,7 @@ io.on('connection', function(socket) {
 
     if (!user) return done(error('forbidden'));
 
-    // user.following=[];
-    debug(user.following);
+    // update playerTo.followers
     if (!Array.isArray(user.following) || user.following.length < 1) {
       user.following = [playerTo];
       try {
