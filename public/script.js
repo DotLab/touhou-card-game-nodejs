@@ -76,8 +76,8 @@ function renderAccount(props) {
         spiritPointsCount: res.data.spiritPointsCount,
         magicPointsCount: res.data.magicPointsCount,
       });
-      allPlayers.setState({
-        showAllPlayers: false,
+      getPlayers.setState({
+        showGetPlayers: false,
         players: [],
       });
     });
@@ -139,22 +139,22 @@ const store = new (function Store(selector, tmpl, props) {
   };
 })('#store', $.templates('#storeTmpl'), {});
 
-const allPlayers = new (function allPlayers(selector, tmpl, props) {
+const getPlayers = new (function getPlayers(selector, tmpl, props) {
   this.state = props;
   const self = this;
 
   self.setState = function(state) {
     Object.assign(self.state, state);
-    console.log('allPlayers#render', self.state);
+    console.log('getPlayers#render', self.state);
     $(selector).html(tmpl.render(self.state));
 
-    $(selector + ' .allPlayersList').on('click', function(e) {
+    $(selector + ' .getPlayersList').on('click', function(e) {
       e.preventDefault();
       socket.emit('cl_get_players', function(res) {
         console.log('res', res.data);
         if (res.err) return error(res.err);
         self.setState({
-          showAllPlayers: !self.state.showAllPlayers,
+          showGetPlayers: !self.state.showGetPlayers,
           players: res.data.map(function(player) {
             return {
               ...player,
@@ -165,7 +165,7 @@ const allPlayers = new (function allPlayers(selector, tmpl, props) {
       });
     });
   };
-})('#allPlayers', $.templates('#allPlayersTmpl'), {});
+})('#getPlayers', $.templates('#getPlayersTmpl'), {});
 
 const lobby = new (function Lobby(selector, tmpl, props) {
   this.state = props;

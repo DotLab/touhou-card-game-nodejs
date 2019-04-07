@@ -8,6 +8,7 @@ export default class PlayersList extends React.Component {
     this.app = props.app;
 
     this.toggleView = this.toggleView.bind(this);
+    this.followPlayer = this.followPlayer.bind(this);
 
     this.state = {
       showPlayers: false,
@@ -24,6 +25,14 @@ export default class PlayersList extends React.Component {
     }
   }
 
+  async followPlayer(playerTo) {
+    // const user = this.app.state.user;
+    console.log("following", playerTo);
+
+    const followingList = await this.app.genericApi1('cl_following', playerTo);
+    this.setState({following: followingList});
+  }
+
   render() {
     const s = this.state;
     const user = this.app.state.user;
@@ -34,7 +43,7 @@ export default class PlayersList extends React.Component {
       {s.showPlayers && <div className="card mt-2 px-3 py-2">
           <ul className="py-0 my-0">
           {s.playersList.map(player => (<li key={player.name}>
-            <strong>{player.name}</strong>
+            <strong>{player.name}</strong> <button className="btn btn-primary" onClick={() => this.followPlayer(player.name)}>Follow</button>
             <ul>
               <li><span className="badge badge-primary">Bio</span> "{player.bio}"</li>
               <li><span className="badge badge-info">Last Seen</span> {formatDate(player.lastDate)}</li>
