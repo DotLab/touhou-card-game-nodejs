@@ -25,7 +25,7 @@ export default class Statistics extends React.Component {
     const isLoggedIn = user !== null;
     console.log(user);
     return <div className="container mt-2">
-      {isLoggedIn && <button className="btn btn-info" onClick={this.toggleStats}>Toggle Statistics</button>}
+      {isLoggedIn && <button className="btn btn-info" name="toggleStats" onClick={this.toggleStats}>Toggle Statistics</button>}
       {s.showStats && <div className="card mt-2 px-3 py-2">
         <dl className="row mt-1 mb-0">
           <dt className="col-sm-3">Joined Time</dt>
@@ -46,8 +46,8 @@ export default class Statistics extends React.Component {
           <dd className="col-sm-9">{formatNumber(user.lifeUpgrade)} L</dd>
           <dt className="col-sm-3" name="following">Following</dt>
           <dd className="col-sm-9" name="followingList">{(user.following.toString())}</dd>
-          <dt className="col-sm-3">Followers</dt>
-          <dd className="col-sm-9">{(user.followers)}</dd>
+          <dt className="col-sm-3" name="follower">Followers</dt>
+          <dd className="col-sm-9" name="followerList">{(user.followers.toString())}</dd>
         </dl>
       </div>}
     </div>;

@@ -285,11 +285,22 @@ io.on('connection', function(socket) {
     debug(user.following);
     if (!Array.isArray(user.following) || user.following.length < 1) {
       user.following = [playerTo];
-      debug(user.following);
+      try {
+        await User.findOneAndUpdate({name: playerTo},
+            {'$push': {'followers': user.name}}
+        );
+      } catch (e) {
+        return done(error('follower failed'));
+      }
     } else if (user.following.indexOf(playerTo) === -1) {
       user.following.push(playerTo);
-      // const uniqueArray = [...new Set(playerTo)];
-      // user.following = uniqueArray;
+      try {
+        await User.findOneAndUpdate({name: playerTo},
+            {'$push': {'followers': user.name}}
+        );
+      } catch (e) {
+        return done(error('follower failed'));
+      }
     }
 
     try {

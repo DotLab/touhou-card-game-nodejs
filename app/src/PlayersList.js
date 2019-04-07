@@ -30,7 +30,13 @@ export default class PlayersList extends React.Component {
     console.log("following", playerTo);
 
     const followingList = await this.app.genericApi1('cl_following', playerTo);
-    this.setState({following: followingList});
+    console.log(followingList);
+    console.log(followingList.following);
+    // this.setState({following: followingList});
+    this.app.setState({user: {
+      ...this.app.state.user,
+      following: followingList.following,
+    }});
   }
 
   render() {
@@ -39,7 +45,7 @@ export default class PlayersList extends React.Component {
     const isLoggedIn = user !== null;
 
     return <div className="container mt-2">
-      {isLoggedIn && <button className="btn btn-info" onClick={this.toggleView}>Toggle Players List</button>}
+      {isLoggedIn && <button className="btn btn-info" name="togglePlayer" onClick={this.toggleView}>Toggle Players List</button>}
       {s.showPlayers && <div className="card mt-2 px-3 py-2">
           <ul className="py-0 my-0">
           {s.playersList.map(player => (<li key={player.name}>
