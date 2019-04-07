@@ -196,6 +196,17 @@ class Game {
     return Game.success();
   }
 
+  placeEnv(handIdx) {
+    const player = this.players[this.turn];
+    const card = player.removeCardInHand(handIdx);
+    if (player.field.environmentSlot !== null) {
+      player.field.graveyard.push(player.field.environmentSlot);
+    }
+    player.field.environmentSlot = card;
+    card.place('REVEALED');
+    return Game.success();
+  }
+
   changeDisplay(monsterIdx, display) {
     const player = this.players[this.turn];
 
