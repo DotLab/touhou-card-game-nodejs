@@ -169,6 +169,13 @@ class Game {
     player.field.monsterSlots[monsterIdx] = card;
     card.summon(display, pose);
 
+    // TODO: kuo
+    // if the player has an environment card and it is the first time
+    // that the monster is summoned
+    if (player.field.environmentSlot && !card.hasEnvironment) {
+      player.field.environmentSlot.invoke(card);
+    }
+
     const actionParams = [handIdx, monsterIdx, display, pose];
     if (this.shouldSuspend(player, Game.SUMMON, actionParams, Game.AFTER)) {
       this.suspend(player, Game.SUMMON, actionParams, Game.AFTER);
