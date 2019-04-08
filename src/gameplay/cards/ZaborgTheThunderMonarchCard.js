@@ -1,5 +1,7 @@
 const MonsterCard = require('./MonsterCard');
 
+const Game = require('../Game');
+
 /**
  * ZaborgTheThunderMonarch Card
  * @extends MonsterCard
@@ -16,20 +18,36 @@ class ZaborgTheThunderMonarchCard extends MonsterCard {
 
   /**
    * invoke power
-   * @param {object } game
-   * @param {object} player
-   * @param {array} invokeParams - an array of 2 numbers
-   * 1st number is the opponent player's index
-   * 2nd number is the opponent player's monster card index
-   * set value to null if choose nothing
+   * @param {Game} game
+   * @param {Player} player
+   * @param {Array<String>} invokeParams
+   * [0]: monsterId
    */
   invoke(game, player, invokeParams) {
-    if (invokeParams[0]===null) return;
-    const target = game.players[invokeParams[0]];
-    const targetCard = target.field.monsterSlots[invokeParams[1]];
-    target.field.graveyard.push(targetCard);
-    target.field.monsterSlots[invokeParams[1]] = null;
+    if (!invokeParams[0]) return;
+    const monsterId = invokeParams[0];
+
+    const target = game.findCardOwnerById(monsterId);
+    target.field.killMonsterById(monsterId);
     this.activated = true;
+  }
+
+  takeSnapshot() {
+    const shot = super.takeSnapshot();
+    return {
+      ...shot,
+      actions: [
+        ...shot.actions,
+        {
+          name: 'invoke',
+          decs: 'invoke the effects of this monster',
+          in: Game.SPELL_SLOTS,
+          params: [
+            {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT, desc: 'select the target card'},
+          ],
+        },
+      ],
+    };
   }
 }
 

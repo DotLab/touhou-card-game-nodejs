@@ -1,13 +1,15 @@
 const Field = require('./Field');
 const Card = require('./cards/Card');
 
+/** @typedef {import('./cards/MonsterCard')} MonsterCard */
+
 /**
  * Player class
  */
 class Player {
   /**
    * @constructor
-   * @param {User} user the user
+   * @param {any} user the user
    */
   constructor(user) {
     this.userId = user.id;
@@ -24,7 +26,7 @@ class Player {
       this.hand.push(this.deck.pop());
     }
     this.isSuspended = false;
-    /** @type {Map<String, Boolean>}*/
+    /** @type {Object.<string, boolean>}*/
     this.hasActivated = {};
   }
 
@@ -96,19 +98,24 @@ class Player {
     targetUser.receiveDamage(monster.atk);
   }
 
-  attack(monster, monsterIdx, targetUser, targetMonster, targetMonsterIdx) {
+  /**
+   * @param {MonsterCard} monster
+   * @param {Player} targetUser
+   * @param {MonsterCard} targetMonster
+   */
+  attack(monster, targetUser, targetMonster) {
     if (targetMonster.pose === Card.ATTACK) {
       if (monster.atk > targetMonster.atk) {
         const damage = monster.atk - targetMonster.atk;
-        targetUser.killMonsterOnField(targetMonsterIdx);
+        targetUser.field.killMonsterById(targetMonster.id);
         targetUser.receiveDamage(damage);
       } else if (monster.atk < targetMonster.atk) {
         const damage = targetMonster.atk - monster.atk;
-        this.killMonsterOnField(monsterIdx);
+        this.field.killMonsterById(monster.id);
         this.receiveDamage(damage);
       } else {
-        this.killMonsterOnField(monsterIdx);
-        targetUser.killMonsterOnField(targetMonsterIdx);
+        this.field.killMonsterById(monster.id);
+        targetUser.field.killMonsterById(targetMonster.id);
       }
     }
   }
@@ -131,6 +138,29 @@ class Player {
     const card = this.field.monsterSlots[index];
     this.field.monsterSlots[index] = null;
     this.field.graveyard.push(card);
+  }
+
+  /**
+   * @param {String} id card id
+   * @return {Card|null}
+   */
+  findCardInHandById(id) {
+    for (let i = 0; i < this.hand.length; i += 1) {
+      if (this.hand[i] && this.hand[i].id === id) return this.hand[i];
+    }
+    return null;
+  }
+
+  /**
+   * @param {String} id card id
+   */
+  removeCardInHandById(id) {
+    for (let i = 0; i < this.hand.length; i += 1) {
+      if (this.hand[i] && this.hand[i].id === id) {
+        this.hand.splice(i, 1);
+        return;
+      }
+    }
   }
 }
 

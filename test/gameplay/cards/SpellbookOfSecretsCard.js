@@ -40,8 +40,8 @@ describe('SpellbookOfSecretsCard', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
     const targetName = SpellbookOfEternityCard.Name;
     assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
-    assertGameSuccess(game.place(0, 0, Card.HIDDEN));
-    assertGameSuccess(game.invokeSpell(0, [targetName]));
+    assertGameSuccess(game.place(game.players[game.turn].hand[0].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.invokeSpell(game.players[0].field.spellSlots[0].id, [targetName]));
     assert.isTrue(game.players[0].hand[game.players[0].hand.length-1].name === SpellbookOfEternityCard.Name);
   });
 
@@ -49,8 +49,8 @@ describe('SpellbookOfSecretsCard', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
     const targetName = SpellbookOfEternityCard.Name;
     assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
-    assertGameSuccess(game.place(0, 0, Card.HIDDEN));
-    assertGameSuccess(game.invokeSpell(0, [targetName]));
+    assertGameSuccess(game.place(game.players[game.turn].hand[0].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.invokeSpell(game.players[0].field.spellSlots[0].id, [targetName]));
     assert.isTrue(game.players[0].hand[game.players[0].hand.length-1].name === SpellbookOfEternityCard.Name);
     assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [targetName]));
   });

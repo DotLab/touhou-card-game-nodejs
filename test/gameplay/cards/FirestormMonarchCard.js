@@ -22,8 +22,8 @@ describe('FirestormMonarchCard', () => {
     const preHand = game.players[1].hand;
     const preHandLen = preHand.length;
     const preLife = game.players[1].life;
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
-    assertGameSuccess(game.invokeMonsterEffect(0, [0, 0, 1, 1]));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[0].field.monsterSlots[0].id, [game.players[1].userId]));
     assert.equal(game.players[0].field.monsterSlots[0].name, FirestormMonarchCard.Name);
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     assert.equal(game.players[1].hand.length, preHandLen - 1);
@@ -42,7 +42,7 @@ describe('FirestormMonarchCard', () => {
     // assert.equal(game.players[1].field.graveyard.pop(), droppedCard);
     // assert.equal(game.players[1].field.graveyard.length, 1);
     if (droppedCard.cardType == Card.MONSTER) {
-      assert.equal(game.players[1].life, preLife - FirestormMonarchCard.Life * droppedCard.lv);
+      assert.equal(game.players[1].life, preLife - 100 * droppedCard.lv);
     } else {
       assert.equal(game.players[1].life, preLife);
     }

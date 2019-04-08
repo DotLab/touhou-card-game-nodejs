@@ -25,22 +25,38 @@ class Card {
     this.display = null;
   }
 
-  // canChangeDisplay() {
-  //  return false;
-  // }
-
   endTurn() {
     this.hasChangedDisplay = false;
   }
 
-  canBeTargeted() {
-    return true;
-  }
-
-  canInvoke() {
+  canInvoke(game, player, invokeParams) {
     return false;
   }
 
+  invoke(game, player, invokeParams) {
+  }
+
+  canSummon(display, pose) {
+    return false;
+  }
+
+  summon(display, pose) {
+  }
+
+  canPlace(display) {
+    return false;
+  }
+
+  place(display) {
+  }
+
+  /**
+   * {actions: [{name, stage, in, params: [select, in, of]}]}
+   * select: Game.PLAYER userId
+   * select: Game.SLOT slotId
+   * select: Game.CARD cardId
+   * @return {Object} snapshot
+   */
   takeSnapshot() {
     return {
       id: this.id,

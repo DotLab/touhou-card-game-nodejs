@@ -6,7 +6,7 @@ const MonsterCard = require('./MonsterCard.js');
  */
 class DarkMagicianCard extends MonsterCard {
   constructor() {
-    super(DarkMagicianCard.Name, 'The ultimate wizard in terms of attack and defense.', '/imgs/DarkMagician.jpg', 7, 2500, 2100);
+    super(DarkMagicianCard.Name, 'The ultimate wizard in terms of attack and defense.', '/imgs/cards/DarkMagicianCard.png', 7, 2500, 2100);
   }
 }
 

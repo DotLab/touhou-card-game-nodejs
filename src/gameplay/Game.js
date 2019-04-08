@@ -12,13 +12,13 @@ class Game {
     return {error: true, msg};
   }
 
-  static suspend(phase) {
-    return {suspend: true, phase};
-  }
+  // static suspend(phase) {
+  //   return {suspend: true, phase};
+  // }
 
   /**
    * @constructor
-   * @param {User[]} users users of a game
+   * @param {any[]} users users of a game
    */
   constructor(users) {
     /** @type {Array<Player>} */
@@ -27,20 +27,20 @@ class Game {
     this.round = 0;
     /** @type {Number} */
     this.turn = 0;
-    /** @type {Object} */
+    /** @type {Object.<string, number>} */
     this.playerIndexById = this.players.reduce((acc, cur, i) => {
       acc[cur.userId] = i;
       return acc;
     }, {});
 
-    /** @type {Boolean} */
-    this.isSuspended = false;
-    /** @type {String} */
-    this.suspendedAction = null;
-    /** @type {Array<Object>} */
-    this.suspendedActionParams = null;
-    /** @type {String} */
-    this.suspendedPhase = null;
+    // /** @type {Boolean} */
+    // this.isSuspended = false;
+    // /** @type {String} */
+    // this.suspendedAction = null;
+    // /** @type {Array<Object>} */
+    // this.suspendedActionParams = null;
+    // /** @type {String} */
+    // this.suspendedPhase = null;
   }
 
   /**
@@ -51,77 +51,90 @@ class Game {
     return this.turn === this.playerIndexById[userId];
   }
 
-  /**
-   * @param {Player} actor
-   * @param {String} action
-   * @param {Array<Object>} actionParams
-   * @param {String} phase
-   * @return {Boolean}
-   */
-  shouldSuspend(actor, action, actionParams, phase) {
-    for (let i = 0; i < this.players.length; i += 1) {
-      if (this.players[i].shouldSuspend(this, actor, action, actionParams, phase)) {
-        return true;
-      }
-    }
-  }
+  // /**
+  //  * @param {Player} actor
+  //  * @param {String} action
+  //  * @param {Array<Object>} actionParams
+  //  * @param {String} phase
+  //  * @return {Boolean}
+  //  */
+  // shouldSuspend(actor, action, actionParams, phase) {
+  //   for (let i = 0; i < this.players.length; i += 1) {
+  //     if (this.players[i].shouldSuspend(this, actor, action, actionParams, phase)) {
+  //       return true;
+  //     }
+  //   }
+  // }
+
+  // /**
+  //  * @param {Player} actor
+  //  * @param {String} action
+  //  * @param {Array<Object>} actionParams
+  //  * @param {String} phase
+  //  */
+  // suspend(actor, action, actionParams, phase) {
+  //   this.isSuspended = true;
+  //   this.suspendActor = actor;
+  //   this.suspendedAction = action;
+  //   this.suspendedActionParams = actionParams;
+  //   this.suspendedPhase = phase;
+
+  //   for (let i = 0; i < this.players.length; i += 1) {
+  //     if (this.players[i].shouldSuspend(this, actor, action, actionParams, phase)) {
+  //       this.players[i].suspend();
+  //     }
+  //   }
+  // }
+
+  // /**
+  //  * can only be called when suspended
+  //  * @param {String} userId
+  //  * @param {String} cardId
+  //  * @param {Array<Object>} trapParams
+  //  * @return {Object}
+  //  */
+  // activateTrap(userId, cardId, trapParams) {
+  //   const player = this.players[this.playerIndexById[userId]];
+  //   const card = player.field.findSpellById(cardId);
+
+  //   if (!card.canActivate(this, player, this.suspendActor, this.suspendedAction, this.suspendedActionParams, this.suspendedPhase, trapParams)) {
+  //     return Game.error('cannot activate trap');
+  //   }
+
+  //   card.activate(this, player, this.suspendActor, this.suspendedAction, this.suspendedActionParams, this.suspendedPhase, trapParams);
+  //   return Game.success();
+  // }
 
   /**
-   * @param {Player} actor
-   * @param {String} action
-   * @param {Array<Object>} actionParams
-   * @param {String} phase
+   * @param {String} spellId
+   * @param {Array<String>} invokeParams
+   * @return {any}
    */
-  suspend(actor, action, actionParams, phase) {
-    this.isSuspended = true;
-    this.suspendActor = actor;
-    this.suspendedAction = action;
-    this.suspendedActionParams = actionParams;
-    this.suspendedPhase = phase;
-
-    for (let i = 0; i < this.players.length; i += 1) {
-      if (this.players[i].shouldSuspend(this, actor, action, actionParams, phase)) {
-        this.players[i].suspend();
-      }
-    }
-  }
-
-  /**
-   * can only be called when suspended
-   * @param {String} userId
-   * @param {String} cardId
-   * @param {Array<Object>} trapParams
-   * @return {Object}
-   */
-  activateTrap(userId, cardId, trapParams) {
-    const player = this.players[this.playerIndexById[userId]];
-    const card = player.field.findSpellById(cardId);
-
-    if (!card.canActivate(this, player, this.suspendActor, this.suspendedAction, this.suspendedActionParams, this.suspendedPhase, trapParams)) {
-      return Game.error('cannot activate trap');
-    }
-
-    card.activate(this, player, this.suspendActor, this.suspendedAction, this.suspendedActionParams, this.suspendedPhase, trapParams);
-    return Game.success();
-  }
-
-  invokeSpell(spellIdx, effectParams) {
+  invokeSpell(spellId, invokeParams) {
     const player = this.players[this.turn];
-    const spell = player.field.spellSlots[spellIdx];
+    const spell = player.field.findSpellById(spellId);
 
-    if (!spell.canInvoke(this, player, effectParams)) return Game.error('cannot invoke');
-    spell.invoke(this, player, effectParams);
+    if (!spell) return Game.error('cannot find spell card');
+    if (!spell.canInvoke(this, player, invokeParams)) return Game.error('cannot invoke spell card');
+
+    spell.invoke(this, player, invokeParams);
     player.hasActivated[spell.name] = true;
 
     return Game.success();
   }
 
-  invokeMonsterEffect(monsterIdx, effectParams) {
+  /**
+   * @param {String} monsterId
+   * @param {Array<String>} invokeParams
+   * @return {any}
+   */
+  invokeMonsterEffect(monsterId, invokeParams) {
     const player = this.players[this.turn];
-    const monster = player.field.monsterSlots[monsterIdx];
+    const monster = player.field.findMonsterById(monsterId);
 
-    if (!monster.canInvoke(this, player, effectParams)) return Game.error('cannot invoke');
-    monster.invoke(this, player, effectParams);
+    if (!monster) return Game.error('cannot find monster card');
+    if (!monster.canInvoke(this, player, invokeParams)) return Game.error('cannot invoke monster effects');
+    monster.invoke(this, player, invokeParams);
 
     return Game.success();
   }
@@ -143,7 +156,7 @@ class Game {
 
   /**
    * draw a card
-   * @return {undefined|String} error message
+   * @return {Object} error message
    */
   draw() {
     if (!this.players[this.turn].canDraw()) return Game.error('cannot draw');
@@ -153,97 +166,119 @@ class Game {
 
   /**
    * normal summon a monster
-   * @param {Number} handIdx card index in hand
-   * @param {Number} monsterIdx card index in monsterSlots
+   * @param {String} monsterId card index in hand
+   * @param {String} slotId card index in monsterSlots
    * @param {String} display card display
    * @param {String} pose card pose
-   * @return {undefined|String} error message
+   * @return {Object} error message
    */
-  summon(handIdx, monsterIdx, display, pose) {
+  summon(monsterId, slotId, display, pose) {
     const player = this.players[this.turn];
-    if (handIdx >= player.hand.length) return Game.error('invalid card index');
-    if (!player.hand[handIdx].canSummon(display, pose)) return Game.error('cannot summon card');
-    if (player.field.monsterSlots[monsterIdx] !== null) return Game.error('monster grid occupied');
 
-    const card = player.removeCardInHand(handIdx);
-    player.field.monsterSlots[monsterIdx] = card;
-    card.summon(display, pose);
+    const monster = player.findCardInHandById(monsterId);
+    if (!monster) return Game.error('cannot find monster in hand');
+    if (!monster.canSummon(display, pose)) return Game.error('cannot summon monster');
 
-    const actionParams = [handIdx, monsterIdx, display, pose];
-    if (this.shouldSuspend(player, Game.SUMMON, actionParams, Game.AFTER)) {
-      this.suspend(player, Game.SUMMON, actionParams, Game.AFTER);
-      return Game.suspend(Game.AFTER);
-    }
+    if (!player.field.hasMonsterSlot(slotId)) return Game.error('cannot find monster slot');
+    if (!player.field.isSlotEmpty(slotId)) return Game.error('monster slot is not empty');
+
+    /** @type {any} */
+    player.removeCardInHandById(monsterId);
+    player.field.setSlot(slotId, monster);
+    monster.summon(display, pose);
+
+    // const actionParams = [handIdx, monsterIdx, display, pose];
+    // if (this.shouldSuspend(player, Game.SUMMON, actionParams, Game.AFTER)) {
+    //   this.suspend(player, Game.SUMMON, actionParams, Game.AFTER);
+    //   return Game.suspend(Game.AFTER);
+    // }
 
     return Game.success();
   }
 
-  place(handIdx, spellIdx, display) {
+  /**
+   * @param {String} spellId
+   * @param {String} slotId
+   * @param {String} display
+   * @return {Object}
+   */
+  place(spellId, slotId, display) {
     const player = this.players[this.turn];
-    if (!player.hand[handIdx].canPlace(display)) return Game.error('cannot place card');
 
-    const card = player.removeCardInHand(handIdx);
-    player.field.spellSlots[spellIdx] = card;
-    card.place(display);
+    const spell = player.findCardInHandById(spellId);
+    if (!spell) return Game.error('cannot find spell in hand');
+    if (!spell.canPlace(display)) return Game.error('cannot place spell');
+
+    if (!player.field.hasSpellSlot(slotId)) return Game.error('cannot find spell slot');
+    if (!player.field.isSlotEmpty(slotId)) return Game.error('spell slot is not empty');
+
+    /** @type {any} */
+    player.removeCardInHandById(spellId);
+    player.field.setSlot(slotId, spell);
+    spell.place(display);
 
     return Game.success();
   }
 
-  changeDisplay(monsterIdx, display) {
+  changeDisplay(monsterId, display) {
     const player = this.players[this.turn];
 
-    const monster = player.field.monsterSlots[monsterIdx];
-    if (monster === null) return Game.error('no monster');
-    if (!monster.canChangeDisplay(display)) return Game.error('cannot change display');
+    const monster = player.field.findMonsterById(monsterId);
+    if (!monster) return Game.error('cannot find monster');
+    if (!monster.canChangeDisplay(display)) return Game.error('cannot change monster display');
 
     monster.changeDisplay(display);
 
     return Game.success();
   }
 
-  changePose(monsterIdx, pose) {
+  changePose(monsterId, pose) {
     const player = this.players[this.turn];
 
-    const monster = player.field.monsterSlots[monsterIdx];
-    if (monster === null) return Game.error('no monster');
-    if (!monster.canChangePose(pose)) return Game.error('cannot change pose');
+    const monster = player.field.findMonsterById(monsterId);
+    if (!monster) return Game.error('cannot find monster');
+    if (!monster.canChangePose(pose)) return Game.error('cannot change monster pose');
 
     monster.changePose(pose);
 
     return Game.success();
   }
 
-  /**
-   * normal summon a monster
-   * @param {Number} monsterIdx card index in monsterSlots
-   * @param {Number} targetPlayerIdx target player index
-   * @param {Number} targetMonsterIdx target card index in monsterSlots
-   * @return {undefined|String} error message
-   */
-  attack(monsterIdx, targetPlayerIdx, targetMonsterIdx) {
+  attack(monsterId, targetMonsterId) {
     const player = this.players[this.turn];
-    const monster = player.field.monsterSlots[monsterIdx];
-    if (!monster) return Game.error('invalid card index');
-    if (!monster.canAttack()) return Game.error('cannot attack');
-    if (targetPlayerIdx >= this.players.length) return Game.error('invalid player index');
+    const monster = player.field.findMonsterById(monsterId);
+    if (!monster) return Game.error('cannot find monster');
+    if (!monster.canAttack()) return Game.error('monster cannot attack');
 
-    const targetPlayer = this.players[targetPlayerIdx];
-    if (targetPlayer.canBeDirectlyAttacked()) {
-      player.directAttack(monster, targetPlayer);
-    } else {
-      const targetMonster = targetPlayer.field.monsterSlots[targetMonsterIdx];
-      if (!targetMonster) return Game.error('invalid target card index');
-      if (!targetMonster.canBeTargeted()) return Game.error('cannot be targeted');
+    const targetPlayer = this.findCardOwnerById(targetMonsterId);
+    if (!targetPlayer) return Game.error('cannot find target player');
 
-      player.attack(monster, monsterIdx, targetPlayer, targetMonster, targetMonsterIdx);
-    }
+    const targetMonster = targetPlayer.field.findMonsterById(targetMonsterId);
+    if (!targetMonster) return Game.error('cannot find target monster');
+
+    player.attack(monster, targetPlayer, targetMonster);
+
+    return Game.success();
+  }
+
+  directAttack(monsterId, targetPlayerId) {
+    const player = this.players[this.turn];
+    const monster = player.field.findMonsterById(monsterId);
+    if (!monster) return Game.error('cannot find monster');
+    if (!monster.canAttack()) return Game.error('monster cannot attack');
+
+    const targetPlayer = this.findPlayer(targetPlayerId);
+    if (!targetPlayer) return Game.error('cannot find target player');
+    if (!targetPlayer.canBeDirectlyAttacked()) return Game.error('target player cannot be directly attacked');
+
+    player.directAttack(monster, targetPlayer);
 
     return Game.success();
   }
 
   /**
    * end turn
-   * @return {undefined|String} error message
+   * @return {Object} error message
    */
   endTurn() {
     this.players[this.turn].endTurn();
@@ -272,10 +307,29 @@ class Game {
             environmentSlot: field.environmentSlot ? field.environmentSlot.takeSnapshot() : null,
             monsterSlots: field.monsterSlots.map((card) => (card ? card.takeSnapshot() : null)),
             spellSlots: field.spellSlots.map((card) => (card ? card.takeSnapshot() : null)),
+            slotIds: field.slotIds,
           },
         };
       }),
     };
+  }
+
+  findCardOwnerById(cardId) {
+    for (let i = 0; i < this.players.length; i++) {
+      if (this.players[i].field.findCardById(cardId)) {
+        return this.players[i];
+      }
+    }
+    return null;
+  }
+
+  findPlayer(userId) {
+    for (let i = 0; i < this.players.length; i++) {
+      if (this.players[i].userId === userId) {
+        return this.players[i];
+      }
+    }
+    return null;
   }
 }
 
@@ -291,8 +345,11 @@ Game.MY_TURN = 'MY_TURN';
 Game.WATCHING = 'WATCHING';
 Game.SUSPENDED = 'SUSPENDED';
 
+Game.PLAYER = 'PLAYER';
 Game.CARD = 'CARD';
 Game.SLOT = 'SLOT';
+Game.DISPLAY = 'DISPLAY';
+Game.POSE = 'POSE';
 
 Game.SELF = 'SELF';
 Game.OPPONENT = 'OPPONENT';

@@ -28,5 +28,6 @@ class SpellbookOfSecretsCard extends SpellCard {
 
 SpellbookOfSecretsCard.Name = 'Spellbook of Secrets';
 SpellbookOfSecretsCard.Desc = 'Add 1 "Spellbook" card from your Deck to your hand, except "Spellbook of Secrets". You can only activate 1 "Spellbook of Secrets" per turn.';
+SpellbookOfSecretsCard.ImgUrl = '/imgs/cards/SpellbookOfSecretsCard.png';
 
 module.exports = SpellbookOfSecretsCard;

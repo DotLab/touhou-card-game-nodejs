@@ -1,5 +1,7 @@
 const MonsterCard = require('./MonsterCard');
 
+const Game = require('../Game');
+
 /**
  * RaizaTheStormMonarch Card
  * @extends MonsterCard
@@ -16,25 +18,46 @@ class RaizaTheStormMonarchCard extends MonsterCard {
 
   /**
    * invoke power
-   * @param {object } game
-   * @param {object} player
-   * @param {array} invokeParams - an array of 3 numbers
-   * 1st number is the opponent player's index
-   * 2nd number is the opponent player card type
-   * 0 - being monster, 1 - being spell
-   * 3rd number is the opponent card index
-   * set value to null if choose nothing
+   * @param {Game} game
+   * @param {Player} player
+   * @param {Array<String>} invokeParams - an array of 3 numbers
+   * cardId
    */
   invoke(game, player, invokeParams) {
-    if (invokeParams[0] === null) return;
-    const target = game.players[invokeParams[0]];
-    const type = invokeParams[1] === 0 ? 'monsterSlots' : 'spellSlots';
-    const targetDeck = target.deck;
-    const targetCard = target.field[type][invokeParams[2]];
-    targetDeck.push(targetCard);
-    target.field[type][invokeParams[2]] = null;
+    if (!invokeParams[0]) return;
+
+    const cardId = invokeParams[0];
+    const target = game.findCardOwnerById(cardId);
+    const targetCard = target.field.findCardById(cardId);
+    target.deck.push(targetCard);
+    target.field.removeCardById(cardId);
+
+    // const target = game.players[invokeParams[0]];
+    // const type = invokeParams[1] === 0 ? 'monsterSlots' : 'spellSlots';
+    // const targetDeck = target.deck;
+    // const targetCard = target.field[type][invokeParams[2]];
+    // targetDeck.push(targetCard);
+    // target.field[type][invokeParams[2]] = null;
 
     this.activated = true;
+  }
+
+  takeSnapshot() {
+    const shot = super.takeSnapshot();
+    return {
+      ...shot,
+      actions: [
+        ...shot.actions,
+        {
+          name: 'invoke',
+          decs: 'invoke the effects of this monster',
+          in: Game.SPELL_SLOTS,
+          params: [
+            {select: Game.CARD, desc: 'select the target card'},
+          ],
+        },
+      ],
+    };
   }
 }
 

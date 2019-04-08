@@ -9,19 +9,19 @@ const Card = require('../../src/gameplay/cards/Card');
 const Game = require('../../src/gameplay/Game');
 
 function assertGameSuccess(res) {
-  assert.isObject(res);
-  assert.equal(res.success, true);
+  assert.isObject(res, 'game response is not an object');
+  assert.equal(res.success, true, `game response ${JSON.stringify(res)} is not a success`);
 }
 
 function assertGameError(res, msg) {
-  assert.isObject(res);
-  assert.equal(res.error, true);
+  assert.isObject(res, 'game response is not an object');
+  assert.equal(res.error, true, 'game response is not an error');
   if (typeof msg === 'string') assert.equal(res.msg, msg);
 }
 
 function assertGameSuspend(res, phase) {
-  assert.isObject(res);
-  assert.equal(res.suspend, true);
+  assert.isObject(res, 'game response is not an object');
+  assert.equal(res.suspend, true, 'game response is not a suspend');
   if (typeof phase === 'string') assert.equal(res.phase, phase);
 }
 
@@ -52,15 +52,15 @@ describe('Game', () => {
   it('#summon', () => {
     const game = new Game(mockUsers);
     assertGameError(game.summon(5, 0, Card.REVEALED, Card.ATTACK));
-    assertGameError(game.summon(0, 1, Card.HIDDEN, Card.ATTACK));
+    assertGameError(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(1), Card.HIDDEN, Card.ATTACK));
     assertGameError(game.summon(0, 9, Card.REVEALED, Card.ATTACK));
   });
 
   it('#attack', () => {
     const game = new Game(mockUsers);
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
     assertGameError(game.attack(1, 0, 0));
     assertGameError(game.attack(0, 2, 0));
@@ -94,20 +94,19 @@ describe('Game', () => {
     // console.log(game.players[0].hand);
     // console.log(game.players[1].hand);
     // const blackGirl = game.players[1].deck[1];
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     // console.log(game.players[0].field.monsterSlots[0]);
     // console.log(game.players[1].field.monsterSlots[0]);
     game.endTurn();
     const loserCard = game.players[1].field.monsterSlots[0];
-    assertGameSuccess(game.attack(0, 1, 0));
+    assertGameSuccess(game.attack(game.players[game.turn].field.monsterSlots[0].id, game.players[1].field.monsterSlots[0].id));
     assert.equal(game.players[1].field.monsterSlots[0], null);
     assert.equal(game.players[1].field.graveyard[0], loserCard);
     game.endTurn();
     assert.equal(game.turn, 1);
-    game.summon(1, 0, Card.REVEALED, Card.ATTACK);
-
+    game.summon(game.players[game.turn].hand[1].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
 
     assert.equal(game.players[1].field.monsterSlots[0].name, DarkMagicianGirlCard.Name);
     assert.equal(game.players[1].field.monsterSlots[0].canInvoke(game, game.players[1], []), true);
@@ -116,30 +115,30 @@ describe('Game', () => {
     // console.log(game.players[1].field.graveyard);
     // game.invokeMonsterEffect(0, []);
     const afterAtk = game.players[1].field.monsterSlots[0].atk;
-    assert.equal(afterAtk, beforeAtk + DarkMagicianCard.AtkIncrease );
-    assert.isTrue(game.players[1].field.monsterSlots[0].hasInvoked );
+    assert.equal(afterAtk, beforeAtk + DarkMagicianGirlCard.AtkIncrease );
+    assert.isTrue(game.players[1].field.monsterSlots[0].hasInvoked);
   });
 
   it('#changeDisplay', () => {
     const game = new Game(mockUsers);
     assertGameError(game.changeDisplay(0, Card.REVEALED));
-    assertGameSuccess(game.summon(0, 0, Card.HIDDEN, Card.DEFENSE));
-    assertGameSuccess(game.changeDisplay(0, Card.REVEALED));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.HIDDEN, Card.DEFENSE));
+    assertGameSuccess(game.changeDisplay(game.players[game.turn].field.monsterSlots[0].id, Card.REVEALED));
   });
 
   it('#takeSnapshot', () => {
     const game = new Game(mockUsers);
     assertGameError(game.changeDisplay(0, Card.REVEALED));
-    assertGameSuccess(game.summon(0, 0, Card.HIDDEN, Card.DEFENSE));
-    assertGameSuccess(game.changeDisplay(0, Card.REVEALED));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.HIDDEN, Card.DEFENSE));
+    assertGameSuccess(game.changeDisplay(game.players[game.turn].field.monsterSlots[0].id, Card.REVEALED));
     game.takeSnapshot();
   });
 
   it('#changePose', () => {
     const game = new Game(mockUsers);
     assertGameError(game.changePose(0, Card.ATTACK));
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.DEFENSE));
-    assertGameSuccess(game.changePose(0, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.DEFENSE));
+    assertGameSuccess(game.changePose(game.players[game.turn].field.monsterSlots[0].id, Card.ATTACK));
   });
 
   it('U010: The Gamer is dealt 5 random cards at the beginning of the Game', () => {
@@ -197,17 +196,17 @@ describe('Game', () => {
     const game = new Game(mockUsers);
     assertGameSuccess(game.draw());
     const card1 = game.players[0].hand[0];
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.notEqual(card1, game.players[0].hand[0]);
     assert.equal(card1, game.players[0].field.monsterSlots[0]);
-    assertGameError(game.summon(0, 0, Card.REVEALED, Card.ATTACK)); // cannot summon twice
+    assertGameError(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK)); // cannot summon twice
 
     assertGameSuccess(game.endTurn());
     assertGameSuccess(game.endTurn());
 
     const card2 = game.players[0].hand[0];
-    assertGameError(game.summon(0, 0, Card.REVEALED, Card.ATTACK)); // cannot overlay
-    assertGameSuccess(game.summon(0, 1, Card.REVEALED, Card.ATTACK));
+    assertGameError(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK)); // cannot overlay
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(1), Card.REVEALED, Card.ATTACK));
     assert.notEqual(card2, game.players[0].hand[0]);
     assert.equal(card2, game.players[0].field.monsterSlots[1]);
   });
@@ -216,24 +215,24 @@ describe('Game', () => {
     const game = new Game(mockUsers);
     assertGameSuccess(game.draw());
     const card1 = game.players[0].hand[0];
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     const life = game.players[1].life;
-    assertGameSuccess(game.attack(0, 1, -1));
+    assertGameSuccess(game.directAttack(game.players[game.turn].field.monsterSlots[0].id, game.players[1].userId));
     assert.equal(game.players[1].life, life - card1.atk);
-    assertGameError(game.attack(0, 1, -1)); // cannot attack twice
+    assertGameError(game.directAttack(game.players[game.turn].field.monsterSlots[0].id, game.players[1].userId)); // cannot attack twice
 
     assertGameSuccess(game.endTurn());
     assertGameSuccess(game.endTurn());
 
     assertGameSuccess(game.draw());
     const card2 = game.players[0].hand[0];
-    assertGameSuccess(game.summon(0, 1, Card.REVEALED, Card.ATTACK));
-    assertGameSuccess(game.attack(0, 1, -1));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(1), Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.directAttack(game.players[game.turn].field.monsterSlots[0].id, game.players[1].userId));
     assert.equal(game.players[1].life, life - card1.atk - card1.atk);
-    assertGameSuccess(game.attack(1, 1, -1));
+    assertGameSuccess(game.directAttack(game.players[game.turn].field.monsterSlots[1].id, game.players[1].userId));
     assert.equal(game.players[1].life, life - card1.atk - card1.atk - card2.atk);
-    assertGameError(game.attack(0, 1, -1)); // cannot attack twice
-    assertGameError(game.attack(1, 1, -1)); // cannot attack twice
+    assertGameError(game.directAttack(game.players[game.turn].field.monsterSlots[0].id, game.players[1].userId)); // cannot attack twice
+    assertGameError(game.directAttack(game.players[game.turn].field.monsterSlots[1].id, game.players[1].userId)); // cannot attack twice
   });
 
   it('U016: The Gamer can order the Marionettes to Attack other Gamers\' Marionettes (300 ATK -> 300 ATK)', () => {
@@ -241,16 +240,16 @@ describe('Game', () => {
       {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 1, 300, 300)]},
       {id: 'def', name: 'K', deck: [new MonsterCard('', '', '', 1, 300, 300)]},
     ]);
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
 
     const life = game.players[0].life;
     assert.isObject(game.players[0].field.monsterSlots[0]);
     assert.isObject(game.players[1].field.monsterSlots[0]);
 
-    game.attack(0, 1, 0);
+    assertGameSuccess(game.attack(game.players[game.turn].field.monsterSlots[0].id, game.players[1].field.monsterSlots[0].id));
 
     assert.equal(game.players[0].life, life);
     assert.equal(game.players[1].life, life);
@@ -263,16 +262,16 @@ describe('Game', () => {
       {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 1, 200, 300)]},
       {id: 'def', name: 'K', deck: [new MonsterCard('', '', '', 1, 300, 300)]},
     ]);
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
 
     const life = game.players[0].life;
     assert.isObject(game.players[0].field.monsterSlots[0]);
     assert.isObject(game.players[1].field.monsterSlots[0]);
 
-    game.attack(0, 1, 0);
+    assertGameSuccess(game.attack(game.players[game.turn].field.monsterSlots[0].id, game.players[1].field.monsterSlots[0].id));
 
     assert.equal(game.players[0].life, life - 100);
     assert.equal(game.players[1].life, life);
@@ -285,16 +284,16 @@ describe('Game', () => {
       {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 1, 300, 300)]},
       {id: 'def', name: 'K', deck: [new MonsterCard('', '', '', 1, 200, 300)]},
     ]);
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[0].hand[0].id, game.players[0].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
-    game.summon(0, 0, Card.REVEALED, Card.ATTACK);
+    game.summon(game.players[1].hand[0].id, game.players[1].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK);
     game.endTurn();
 
     const life = game.players[0].life;
     assert.isObject(game.players[0].field.monsterSlots[0]);
     assert.isObject(game.players[1].field.monsterSlots[0]);
 
-    game.attack(0, 1, 0);
+    assertGameSuccess(game.attack(game.players[game.turn].field.monsterSlots[0].id, game.players[1].field.monsterSlots[0].id));
 
     assert.equal(game.players[0].life, life);
     assert.equal(game.players[1].life, life - 100);

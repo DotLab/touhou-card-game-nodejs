@@ -28,5 +28,6 @@ class SpellbookOfEternityCard extends SpellCard {
 
 SpellbookOfEternityCard.Name = 'Spellbook of Eternity';
 SpellbookOfEternityCard.Desc = 'Target 1 of your banished "Spellbook" Spell Cards, except "Spellbook of Eternity"; add that target to your hand. You can only activate 1 "Spellbook of Eternity" per turn.';
+SpellbookOfEternityCard.ImgUrl = '/imgs/cards/SpellbookOfEternityCard.png';
 
 module.exports = SpellbookOfEternityCard;

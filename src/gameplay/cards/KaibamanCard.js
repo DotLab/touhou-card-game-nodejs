@@ -1,6 +1,8 @@
 const MonsterCard = require('./MonsterCard');
 const BlueEyesWhiteDragonCard = require('./BlueEyesWhiteDragonCard');
 const Card = require('./Card');
+const Game = require('../Game');
+
 /**
  * Kaibaman Card
  * @extends MonsterCard
@@ -10,14 +12,14 @@ class KaibamanCard extends MonsterCard {
     super(KaibamanCard.Name, KaibamanCard.Desc, KaibamanCard.ImgUrl, 3, 200, 700);
   }
 
-  canInvoke(game, player, invokeParams) {
+  canInvoke(game, player) {
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === BlueEyesWhiteDragonCard.Name) return true;
     }
     return false;
   }
 
-  invoke(game, player, invokeParams) {
+  invoke(game, player) {
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === BlueEyesWhiteDragonCard.Name) {
         for (let j = 0; j < player.field.monsterSlots.length; j += 1) {
@@ -32,6 +34,23 @@ class KaibamanCard extends MonsterCard {
         }
       }
     }
+  }
+
+  takeSnapshot() {
+    const shot = super.takeSnapshot();
+    return {
+      ...shot,
+      actions: [
+        ...shot.actions,
+        {
+          name: 'invoke',
+          decs: 'invoke the effects of this monster',
+          stage: Game.MY_TURN,
+          in: Game.SPELL_SLOTS,
+          params: [],
+        },
+      ],
+    };
   }
 }
 

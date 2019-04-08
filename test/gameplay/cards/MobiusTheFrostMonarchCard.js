@@ -20,18 +20,18 @@ describe('MobiusTheFrostMonarchCard', ()=>{
     assert.isTrue(game.players[0].hand[1].canInvoke());
     assert.isTrue(game.players[0].hand[2].canInvoke());
     // both spell cards are hidden, waiting to be destroyed
-    assertGameSuccess(game.place(1, 0, Card.HIDDEN));
-    assertGameSuccess(game.place(1, 1, Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[1].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[1].id, game.players[game.turn].field.getSpellSlotId(1), Card.HIDDEN));
     //  end player 0 turn
     assertGameSuccess(game.endTurn());
     // now it is player 1 turn
     assert.equal(game.turn, 1);
     // player 1 summons mobius the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[1].field.monsterSlots[0].name, 'Mobius the Frost Monarch');
     assert.equal(game.players[1].field.monsterSlots[0].pose, Card.ATTACK);
     // activates mobius power on two two spell cards of player 0
-    assertGameSuccess(game.invokeMonsterEffect(0, [0, 0, 0, 1]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[1].field.monsterSlots[0].id, [game.players[0].field.spellSlots[0].id, game.players[0].field.spellSlots[1].id]));
     // now both spell cards should be gone to graveyard
     assert.equal(game.players[0].field.spellSlots[0], null);
     assert.equal(game.players[0].field.spellSlots[1], null);
@@ -40,18 +40,18 @@ describe('MobiusTheFrostMonarchCard', ()=>{
     assert.isTrue(game.players[1].hand[0].canInvoke());
     assert.isTrue(game.players[1].hand[1].canInvoke());
     // both spell cards are hidden, waiting to be destroyed
-    assertGameSuccess(game.place(0, 0, Card.HIDDEN));
-    assertGameSuccess(game.place(0, 1, Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[0].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[0].id, game.players[game.turn].field.getSpellSlotId(1), Card.HIDDEN));
     //  end player 1 turn
     assertGameSuccess(game.endTurn());
     // now it is player 0 turn
     assert.equal(game.turn, 0);
     // player 0 summons mobius the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[0].name, 'Mobius the Frost Monarch');
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     // let mobius uses his power on two two spell cards from player one
-    assertGameSuccess(game.invokeMonsterEffect(0, [1, 0, 1, 1]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[0].field.monsterSlots[0].id, [game.players[1].field.spellSlots[0].id, game.players[1].field.spellSlots[1].id]));
     // now both spell cards should be gone to graveyard
     assert.equal(game.players[1].field.spellSlots[0], null);
     assert.equal(game.players[1].field.spellSlots[1], null);
@@ -64,18 +64,18 @@ describe('MobiusTheFrostMonarchCard', ()=>{
     assert.isTrue(game.players[0].hand[1].canInvoke());
     assert.isTrue(game.players[0].hand[2].canInvoke());
     // both spell cards are hidden, waiting to be destroyed
-    assertGameSuccess(game.place(1, 0, Card.HIDDEN));
-    assertGameSuccess(game.place(1, 1, Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[1].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[1].id, game.players[game.turn].field.getSpellSlotId(1), Card.HIDDEN));
     //  end player 0 turn
     assertGameSuccess(game.endTurn());
     // now it is player 1 turn
     assert.equal(game.turn, 1);
     // player 1 summons mobius the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[1].field.monsterSlots[0].name, 'Mobius the Frost Monarch');
     assert.equal(game.players[1].field.monsterSlots[0].pose, Card.ATTACK);
     // activates mobius power on two two spell cards of player 0
-    assertGameSuccess(game.invokeMonsterEffect(0, [0, 0, null, 1]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[1].field.monsterSlots[0].id, [game.players[0].field.spellSlots[0].id]));
     // now both spell cards should be gone to graveyard
     assert.equal(game.players[0].field.spellSlots[0], null);
     // assert.equal(game.players[0].field.spellSlots[1], null);
@@ -84,18 +84,18 @@ describe('MobiusTheFrostMonarchCard', ()=>{
     assert.isTrue(game.players[1].hand[0].canInvoke());
     assert.isTrue(game.players[1].hand[1].canInvoke());
     // both spell cards are hidden, waiting to be destroyed
-    assertGameSuccess(game.place(0, 0, Card.HIDDEN));
-    assertGameSuccess(game.place(0, 1, Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[0].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[0].id, game.players[game.turn].field.getSpellSlotId(1), Card.HIDDEN));
     //  end player 1 turn
     assertGameSuccess(game.endTurn());
     // now it is player 0 turn
     assert.equal(game.turn, 0);
     // player 0 summons mobius the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[0].name, 'Mobius the Frost Monarch');
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     // let mobius uses his power on two two spell cards from player one
-    assertGameSuccess(game.invokeMonsterEffect(0, [1, 0, 1, 1]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[0].field.monsterSlots[0].id, [game.players[1].field.spellSlots[0].id, game.players[1].field.spellSlots[1].id]));
     // now both spell cards should be gone to graveyard
     assert.equal(game.players[1].field.spellSlots[0], null);
     assert.equal(game.players[1].field.spellSlots[1], null);
@@ -108,18 +108,18 @@ describe('MobiusTheFrostMonarchCard', ()=>{
     assert.isTrue(game.players[0].hand[1].canInvoke());
     assert.isTrue(game.players[0].hand[2].canInvoke());
     // both spell cards are hidden, waiting to be destroyed
-    assertGameSuccess(game.place(1, 0, Card.HIDDEN));
-    assertGameSuccess(game.place(1, 1, Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[1].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[1].id, game.players[game.turn].field.getSpellSlotId(1), Card.HIDDEN));
     //  end player 0 turn
     assertGameSuccess(game.endTurn());
     // now it is player 1 turn
     assert.equal(game.turn, 1);
     // player 1 summons mobius the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[1].field.monsterSlots[0].name, 'Mobius the Frost Monarch');
     assert.equal(game.players[1].field.monsterSlots[0].pose, Card.ATTACK);
     // let mobius uses his power on two two spell cards from player one
-    assertGameSuccess(game.invokeMonsterEffect(0, [0, 0, 0, 1]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[1].field.monsterSlots[0].id, [game.players[0].field.spellSlots[0].id, game.players[0].field.spellSlots[1].id]));
     // now both spell cards should be gone to graveyard
     assert.equal(game.players[0].field.spellSlots[0], null);
     assert.equal(game.players[0].field.spellSlots[1], null);

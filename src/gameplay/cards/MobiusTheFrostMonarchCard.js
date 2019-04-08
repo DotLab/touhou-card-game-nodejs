@@ -1,4 +1,5 @@
 const MonsterCard = require('./MonsterCard');
+const Game = require('../Game');
 
 /**
  * MobiusTheFrostMonarch Card
@@ -24,26 +25,40 @@ class MobiusTheFrostMonarchCard extends MonsterCard {
 
   /**
    * invoke power
-   * @param {object } game
-   * @param {object} player
-   * @param {array} invokeParams - an array of 4 numbers
-   * 1st number is the first player's index
-   * 2nd number is the first player's spell card index
-   * 3rd number is the second player's index
-   * 4th number is the second player's spell card index
-   * set value to null if choose nothing
+   * @param {Game} game
+   * @param {Player} player
+   * @param {Array<String>} invokeParams - an array of 4 numbers
+   * [0]: first cardId
+   * [1]: second cardId
    */
   invoke(game, player, invokeParams) {
-    for (let i = 0; i <invokeParams.length; i+=2) {
-      if (invokeParams[i] === null) {
-        continue;
-      }
-      const target = game.players[invokeParams[i]];
-      const targetCard = target.field.spellSlots[invokeParams[i+1]];
-      target.field.graveyard.push(targetCard);
-      target.field.spellSlots[invokeParams[i+1]] = null;
+    for (let i = 0; i < invokeParams.length; i++) {
+      if (!invokeParams[i]) continue;
+
+      const spellId = invokeParams[i];
+      const target = game.findCardOwnerById(spellId);
+      target.field.killSpellById(spellId);
     }
     this.activated = true;
+  }
+
+  takeSnapshot() {
+    const shot = super.takeSnapshot();
+    return {
+      ...shot,
+      actions: [
+        ...shot.actions,
+        {
+          name: 'invoke',
+          decs: 'invoke the effects of this monster',
+          in: Game.SPELL_SLOTS,
+          params: [
+            {select: Game.CARD, in: Game.SPELL_SLOTS, of: Game.OPPONENT, desc: 'select the first spell to destroy'},
+            {select: Game.CARD, in: Game.SPELL_SLOTS, of: Game.OPPONENT, desc: 'select the second spell to destroy'},
+          ],
+        },
+      ],
+    };
   }
 }
 
