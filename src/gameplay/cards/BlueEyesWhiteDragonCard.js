@@ -12,7 +12,8 @@ class BlueEyesWhiteDragonCard extends MonsterCard {
 
 BlueEyesWhiteDragonCard.Name = 'Blue-Eyes White Dragon';
 BlueEyesWhiteDragonCard.Desc = 'This legendary dragon is a powerful engine of destruction. Virtually invincible, very few have faced this awesome creature and lived to tell the tale.';
-BlueEyesWhiteDragonCard.ImgUrl = '/imgs/card-blue-eyes-white-dragon.png';
+BlueEyesWhiteDragonCard.ImgUrl = '/imgs/cards/BlueEyesWhiteDragonCard.png';
 BlueEyesWhiteDragonCard.Atk = 3000;
 BlueEyesWhiteDragonCard.Dfs = 2500;
+
 module.exports = BlueEyesWhiteDragonCard;

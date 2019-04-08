@@ -114,8 +114,6 @@ function serializeLobby() {
 }
 
 const Game = require('./gameplay/Game');
-const KaibamanCard = require('./gameplay/cards/KaibamanCard');
-const BlueEyesWhiteDragonCard = require('./gameplay/cards/BlueEyesWhiteDragonCard');
 
 const io = require('socket.io')(http);
 io.on('connection', function(socket) {
@@ -451,24 +449,40 @@ io.on('connection', function(socket) {
   //   {id: 'abc', name: 'Kailang', deck: createDeck()},
   //   {id: 'def', name: 'Alice', deck: createDeck()},
   // ]);
+  // room = {id: 'aaa', game};
+  // socket.join(room.id);
+  // game.players[0].field.monsterSlots[0] = new (require('./gameplay/cards/KaibamanCard'))(); game.players[0].field.monsterSlots[0].summon('REVEALED', 'ATTACK');
+  // game.players[1].field.monsterSlots[0] = new (require('./gameplay/cards/KaibamanCard'))(); game.players[1].field.monsterSlots[0].summon('REVEALED', 'ATTACK');
   // socket.emit('sv_game_update', game.takeSnapshot());
 
   socket.on('cl_game_action', async (action, done) => {
     debug('cl_game_action', action);
 
+    if (!user) return done(error('forbidden'));
+    if (!room) return done(error('not in any room'));
+    if (!room.game) return done(error('not in any game'));
+
     let res;
+    const params = action.params;
     switch (action.name) {
-      case 'summon': res = room.game.summon(action.i, action.params[1], action.display, action.pose); break;
-      case 'changeDisplay': res = room.game.changeDisplay(action.i, action.display); break;
-      case 'changePose': res = room.game.changePose(action.i, action.pose); break;
-      case 'directAttack':
-      case 'attack': res = room.game.attack(action.i, action.params[0], action.params[1]); break;
       case 'draw': res = room.game.draw(); break;
       case 'endTurn': res = room.game.endTurn(); break;
+
+      case 'summon': res = room.game.summon(action.cardId, params[0], params[1], params[2]); break;
+      case 'changeDisplay': res = room.game.changeDisplay(action.cardId, params[0]); break;
+      case 'changePose': res = room.game.changePose(action.cardId, params[0]); break;
+      case 'directAttack': res = room.game.directAttack(action.cardId, params[0]); break;
+      case 'attack': res = room.game.attack(action.cardId, params[0]); break;
+      case 'invokeMonsterEffect': res = room.game.invokeMonsterEffect(action.cardId, params); break;
+
+      case 'place': res = room.game.place(action.cardId, params[0], params[1]); break;
+      case 'invokeSpell': res = room.game.invokeSpell(action.cardId, params); break;
     }
 
     debug(res);
-    if (res.success === true) {
+    if (!res) {
+      done(error('unknown action'));
+    } else if (res.success === true) {
       done(success(res));
     } else {
       done(error(res.msg));
@@ -479,11 +493,30 @@ io.on('connection', function(socket) {
   });
 });
 
+const cards = [
+  './gameplay/cards/BlueEyesWhiteDragonCard',
+  './gameplay/cards/DarkMagicAttackCard',
+  './gameplay/cards/DarkMagicVeilCard',
+  './gameplay/cards/DarkMagicianCard',
+  './gameplay/cards/DarkMagicianGirlCard',
+  './gameplay/cards/FirestormMonarchCard',
+  // './gameplay/cards/FloodgateTrapHoleCard',
+  './gameplay/cards/KaibamanCard',
+  './gameplay/cards/MobiusTheFrostMonarchCard',
+  './gameplay/cards/PotOfGreedCard',
+  './gameplay/cards/RaizaTheStormMonarchCard',
+  './gameplay/cards/SageStoneCard',
+  // './gameplay/cards/SpellbookOfEternityCard',
+  // './gameplay/cards/SpellbookOfSecretsCard',
+  './gameplay/cards/ThousandKnivesCard',
+  './gameplay/cards/ZaborgTheThunderMonarchCard',
+];
+
 function createDeck() {
   const deck = [];
   for (let i = 0; i < 20; i += 1) {
-    deck.push(new KaibamanCard());
-    deck.push(new BlueEyesWhiteDragonCard());
+    const SelectedCard = require(cards[Math.floor(Math.random() * cards.length)]);
+    deck.push(new SelectedCard());
   }
   return deck;
 }

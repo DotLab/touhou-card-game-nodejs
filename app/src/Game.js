@@ -17,13 +17,16 @@ class Game extends React.Component {
 
     this.confirmAction = this.confirmAction.bind(this);
     this.cancelAction = this.cancelAction.bind(this);
+
     this.draw = this.draw.bind(this);
     this.endTurn = this.endTurn.bind(this);
 
     this.state = {
       me: null,
+
       selectedCard: null,
-      selectedCardI: null,
+      availableActions: [],
+
       selectedAction: null,
       selectedParams: [],
 
@@ -34,19 +37,29 @@ class Game extends React.Component {
     };
   }
 
+  onCardActionSelected(action) {
+    this.setState({selectedAction: action});
+  }
+
+  appendParam(param) {
+    this.setState({
+      selectedParams: [
+        ...this.state.selectedParams,
+        param
+      ]
+    });
+  }
+
   async confirmAction() {
     const s = this.state;
-    log(s);
+    console.log({name: s.selectedAction.name, params: s.selectedParams});
 
     let err = '';
     try {
       await this.app.genericApi1('cl_game_action', {
         name: s.selectedAction.name,
-        in: s.selectedSlot.props.in,
-        i: s.selectedSlot.props.i,
-        params: s.selectedParams,
-        display: s.display,
-        pose: s.pose,
+        cardId: s.selectedCard.id,
+        params: s.selectedParams
       });
     } catch (e) {
       log(e);
@@ -65,8 +78,6 @@ class Game extends React.Component {
 
   cancelAction() {
     this.setState({
-      selectedCard: null,
-      selectedSlot: null,
       selectedAction: null,
       selectedParams: [],
     });
@@ -138,6 +149,7 @@ class Game extends React.Component {
 
     if (!s.me) {  // watching
       return <div className="mt-2">
+        <h4>you are watching the game</h4>
         {s.players.map((player) => (<div className="Mb(20px)">
           <div><b>{player.userName}</b> ({player.life} Li)</div>
           <div>{player.hand.map((c, i) => (<Slot key={i} game={this} me={player} in={Game.HAND} i={i} card={c} />))}</div>
@@ -161,27 +173,14 @@ class Game extends React.Component {
 
     const me = s.me;
     const field = me.field;
-    let message;
-    if (s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length * 2) {
-      message = `all parameters selected for action '${s.selectedAction.name}' of '${s.selectedCard.name}'!`;
-    } else if (s.selectedAction) {
-      message = `choose parameter ${s.selectedParams.length} for action '${s.selectedAction.name}' of '${s.selectedCard.name}'`;
-    } else if (s.selectedCard) {
-      message = 'choose an action or a different card';
-    } else {
-      switch (s.me.stage) {
-        case Game.MY_TURN: message = 'your turn, choose a card'; break;
-        case Game.SUSPENDED: message = 'game is suspended'; break;
-        case Game.WATCHING: message = 'wait for your turn'; break;
-        default: message = ''; break;
-      }
-    }
 
-    return <div className="Lh(1) mt-2">
+    const currentParam = s.selectedAction && s.selectedParams.length < s.selectedAction.params.length && s.selectedAction.params[s.selectedParams.length];
+
+    return <div className="Lh(1) mt-2 Bgc(snow)">
       {/* opponents */}
-      <div className="W(100%) Ovy(a) Ovx(s) Whs(nw)">
+      <div className="W(100%) Ovy(h) Ovx(s) Whs(nw)">
         {me.opponents.map((opponent, i) => (<div key={i} className="D(ib) Mend(20px)">
-          <div><b>{opponent.userName}</b> ({opponent.life} Li)</div>
+        <div><b>{opponent.userName}</b> ({opponent.life} Li) {s.selectedAction && currentParam.select === Game.PLAYER && <button className="Bdw(0) Lh(1) btn-primary p-0 m-0 rounded" onClick={() => this.appendParam(opponent.userId)}>select</button>}</div>
           <div>{opponent.hand.map((c, i) => (<Slot key={i} game={this} me={opponent} in={Game.HAND} i={i} card={c} />))}</div>
           <div>
             <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={3} card={opponent.field.spellSlots[3]} />
@@ -200,44 +199,74 @@ class Game extends React.Component {
         </div>))}
       </div>
       {/* me */}
-      <div>
-        <Slot game={this} me={me} in={Game.ENVIRONMENT_SLOT} i={0} card={field.environmentSlot} />
-        <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={0} card={field.monsterSlots[0]} />
-        <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={1} card={field.monsterSlots[1]} />
-        <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={2} card={field.monsterSlots[2]} />
-        <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={3} card={field.monsterSlots[3]} />
-      </div>
-      <div>
-        <Slot game={this} me={me} in={Game.GRAVEYARD} i={0} card={field.graveyard[field.graveyard.length - 1]} />
-        <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={0} card={field.spellSlots[0]} />
-        <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={1} card={field.spellSlots[1]} />
-        <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={2} card={field.spellSlots[2]} />
-        <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={3} card={field.spellSlots[3]} />
-      </div>
-      <div>
-        {me.hand.map((c, i) => (<Slot key={i} game={this} me={me} in={Game.HAND} i={i} card={c} />))}
-        <span className="Mstart(5px)">
-          {s.me.stage === Game.MY_TURN && <span>
+      <div className="Cf">
+        <div className="Fl(start) Bgc(ghostwhite)">
+          <div>
+            <Slot game={this} me={me} in={Game.ENVIRONMENT_SLOT} i={0} card={field.environmentSlot} />
+            <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={0} card={field.monsterSlots[0]} slotId={field.slotIds[0]}/>
+            <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={1} card={field.monsterSlots[1]} slotId={field.slotIds[1]}/>
+            <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={2} card={field.monsterSlots[2]} slotId={field.slotIds[2]}/>
+            <Slot game={this} me={me} in={Game.MONSTER_SLOTS} i={3} card={field.monsterSlots[3]} slotId={field.slotIds[3]}/>
+          </div>
+          <div>
+            <Slot game={this} me={me} in={Game.GRAVEYARD} i={0} card={field.graveyard[field.graveyard.length - 1]} />
+            <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={0} card={field.spellSlots[0]} slotId={field.slotIds[4]} />
+            <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={1} card={field.spellSlots[1]} slotId={field.slotIds[5]} />
+            <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={2} card={field.spellSlots[2]} slotId={field.slotIds[6]} />
+            <Slot game={this} me={me} in={Game.SPELL_SLOTS} i={3} card={field.spellSlots[3]} slotId={field.slotIds[7]} />
+          </div>
+          <div>
+            {me.hand.map((c, i) => (<Slot key={i} game={this} me={me} in={Game.HAND} i={i} card={c} />))}
+          </div>
+          <div><b>{me.userName} ({me.life} Li)</b></div>
+        </div>
+        <div>
+          {s.me.stage === Game.MY_TURN ? <div>
+            <h5>it is your turn, you can:</h5>
             <button className="btn btn-secondary mr-2" onClick={this.draw}>draw one card</button>
             <button className="btn btn-secondary mr-2" onClick={this.endTurn}>end turn</button>
-          </span>}
-          {s.selectedAction && <button className="btn btn-info mr-2" onClick={this.cancelAction}>cancel action</button>}
-          {s.selectedAction && s.selectedParams.length >= s.selectedAction.params.length * 2 && <button className="btn btn-success mr-2" onClick={this.confirmAction}>confirm action</button>}
-          {message}
-          {s.err && <span className="C(red)"> [{s.err}] </span>}
-          {s.selectedAction && <span className="D(ib) form-inline">
-            {(s.selectedAction.name === 'summon' || s.selectedAction.name === 'changeDisplay') && <select className="form-control ml-2" name="display" value={s.display} onChange={this.onChange}>
-              <option value="HIDDEN">HIDDEN</option>
-              <option value="REVEALED">REVEALED</option>
-            </select>}
-            {(s.selectedAction.name === 'summon' || s.selectedAction.name === 'changePose') && <select className="form-control ml-2" name="pose" value={s.pose} onChange={this.onChange}>
-              <option value="ATTACK">ATTACK</option>
-              <option value="DEFENSE">DEFENSE</option>
-            </select>}
-          </span>}
-        </span>
+
+            {/* card */}
+            {s.selectedCard ? <div>
+              <h5>card: {s.selectedCard.name} ({s.selectedCard.id.substring(0, 8)})</h5>
+              <img className="H(100px) Mx(a) D(b) shadow" src={s.selectedCard.imgUrl} alt=""/>
+              <div className="Bgc(azure)! card p-2">
+                {s.selectedCard.lv && <div className="Fw(b)">LV {s.selectedCard.lv} ATK {s.selectedCard.atk} DFS {s.selectedCard.dfs}</div>}
+                <div>{s.selectedCard.desc}</div>
+              </div>
+              
+              {/* action */}
+              {s.selectedAction ? <div>
+                <h5>action {s.selectedAction.name}: {s.selectedAction.desc}</h5>
+                <button className="btn btn-danger mr-2" onClick={this.cancelAction}>cancel action</button>
+
+                {/* params */}
+                {s.selectedParams.length < s.selectedAction.params.length ? <div>
+                  <h5>parameter #{s.selectedParams.length}: {currentParam.desc}</h5>
+                  {currentParam.select === Game.DISPLAY ? <div>
+                    <button className="btn btn-info mr-2" onClick={() => this.appendParam('REVEALED')}>REVEALED</button>
+                    <button className="btn btn-info mr-2" onClick={() => this.appendParam('HIDDEN')}>HIDDEN</button>
+                  </div> : currentParam.select === Game.POSE ? <div>
+                    <button className="btn btn-info mr-2" onClick={() => this.appendParam('ATTACK')}>ATTACK</button>
+                    <button className="btn btn-info mr-2" onClick={() => this.appendParam('DEFENSE')}>DEFENSE</button>
+                  </div> : <div>
+                    click the "select" button on the slot or card
+                  </div>}
+                </div> : <button className="btn btn-success mr-2" onClick={this.confirmAction}>
+                  confirm action
+                </button>}
+              </div> : <div>
+                <h5>choose an action or select a different card</h5>
+                {s.availableActions.map(x => <button 
+                  key={x.name}
+                  className="btn btn-info mr-2 mb-2"
+                  onClick={() => this.onCardActionSelected(x)}
+                >{x.name}</button>)}
+              </div>}
+            </div> : <h5>select a card to see actions</h5>}
+          </div> : <h5>please wait for your turn</h5>}
+        </div>
       </div>
-      <div><b>{me.userName} ({me.life} Li)</b></div>
     </div>;
   }
 }
@@ -248,6 +277,9 @@ Game.SUSPENDED = 'SUSPENDED';
 
 Game.CARD = 'CARD';
 Game.SLOT = 'SLOT';
+Game.DISPLAY = 'DISPLAY';
+Game.POSE = 'POSE';
+Game.PLAYER = 'PLAYER';
 
 Game.SELF = 'SELF';
 Game.OPPONENT = 'OPPONENT';
