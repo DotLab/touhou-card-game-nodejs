@@ -32,10 +32,9 @@ class DarkMagicianGirlCard extends MonsterCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this monster',
-          stage: Game.MY_TURN,
-          in: Game.SPELL_SLOTS,
+          name: 'invokeMonsterEffect',
+          desc: 'invoke the effects of this monster',
+          in: Game.MONSTER_SLOTS,
           params: [],
         },
       ],

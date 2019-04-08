@@ -114,7 +114,7 @@ class Game {
     const player = this.players[this.turn];
     const spell = player.field.findSpellById(spellId);
 
-    if (!spell) return Game.error('cannot find spell card');
+    if (!spell) return Game.error('cannot find spell card on field');
     if (!spell.canInvoke(this, player, invokeParams)) return Game.error('cannot invoke spell card');
 
     spell.invoke(this, player, invokeParams);
@@ -132,7 +132,7 @@ class Game {
     const player = this.players[this.turn];
     const monster = player.field.findMonsterById(monsterId);
 
-    if (!monster) return Game.error('cannot find monster card');
+    if (!monster) return Game.error('cannot find monster card on field');
     if (!monster.canInvoke(this, player, invokeParams)) return Game.error('cannot invoke monster effects');
     monster.invoke(this, player, invokeParams);
 
@@ -224,7 +224,7 @@ class Game {
     const player = this.players[this.turn];
 
     const monster = player.field.findMonsterById(monsterId);
-    if (!monster) return Game.error('cannot find monster');
+    if (!monster) return Game.error('cannot find monster on field');
     if (!monster.canChangeDisplay(display)) return Game.error('cannot change monster display');
 
     monster.changeDisplay(display);
@@ -236,7 +236,7 @@ class Game {
     const player = this.players[this.turn];
 
     const monster = player.field.findMonsterById(monsterId);
-    if (!monster) return Game.error('cannot find monster');
+    if (!monster) return Game.error('cannot find monster onfield');
     if (!monster.canChangePose(pose)) return Game.error('cannot change monster pose');
 
     monster.changePose(pose);
@@ -247,14 +247,14 @@ class Game {
   attack(monsterId, targetMonsterId) {
     const player = this.players[this.turn];
     const monster = player.field.findMonsterById(monsterId);
-    if (!monster) return Game.error('cannot find monster');
+    if (!monster) return Game.error('cannot find monster on field');
     if (!monster.canAttack()) return Game.error('monster cannot attack');
 
     const targetPlayer = this.findCardOwnerById(targetMonsterId);
     if (!targetPlayer) return Game.error('cannot find target player');
 
     const targetMonster = targetPlayer.field.findMonsterById(targetMonsterId);
-    if (!targetMonster) return Game.error('cannot find target monster');
+    if (!targetMonster) return Game.error('cannot find target monster on field');
 
     player.attack(monster, targetPlayer, targetMonster);
 
@@ -264,7 +264,7 @@ class Game {
   directAttack(monsterId, targetPlayerId) {
     const player = this.players[this.turn];
     const monster = player.field.findMonsterById(monsterId);
-    if (!monster) return Game.error('cannot find monster');
+    if (!monster) return Game.error('cannot find monster on field');
     if (!monster.canAttack()) return Game.error('monster cannot attack');
 
     const targetPlayer = this.findPlayer(targetPlayerId);

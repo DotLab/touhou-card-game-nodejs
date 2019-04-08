@@ -8,7 +8,7 @@ const Game = require('../Game');
  */
 class FirestormMonarchCard extends MonsterCard {
   constructor() {
-    super(FirestormMonarchCard.Name, FirestormMonarchCard.Desc, '/imgs/cards/FirestormMonarchCard.jpg', 6, 2400, 1000);
+    super(FirestormMonarchCard.Name, FirestormMonarchCard.Desc, '/imgs/cards/FirestormMonarchCard.png', 6, 2400, 1000);
     this.hasInvoked = false;
   }
 
@@ -43,12 +43,12 @@ class FirestormMonarchCard extends MonsterCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this monster',
+          name: 'invokeMonsterEffect',
+          desc: 'invoke the effects of this monster',
           stage: Game.MY_TURN,
-          in: Game.SPELL_SLOTS,
+          in: Game.MONSTER_SLOTS,
           params: [
-            {select: Game.OPPONENT, desc: 'select the opponent to apply the effects'},
+            {select: Game.PLAYER, desc: 'select the opponent to apply the effects'},
           ],
         },
       ],
@@ -56,7 +56,7 @@ class FirestormMonarchCard extends MonsterCard {
   }
 }
 
-FirestormMonarchCard.Name = 'FirestormMonarchCard';
+FirestormMonarchCard.Name = 'Firestorm Monarch';
 FirestormMonarchCard.Desc = 'If this card is Tribute Summoned: Discard 1 random card from your opponents hand, then, if it was a Monster Card, inflict damage to your opponent equal to its original Level x 100.';
 FirestormMonarchCard.Life = 100;
 

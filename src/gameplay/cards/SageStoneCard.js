@@ -59,8 +59,8 @@ class SageStoneCard extends SpellCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this monster',
+          name: 'invokeSpell',
+          desc: 'invoke the effects of this spell',
           in: Game.SPELL_SLOTS,
           params: [
             {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to special summon'},
@@ -74,6 +74,6 @@ class SageStoneCard extends SpellCard {
 
 SageStoneCard.Name = 'Sage Stone';
 SageStoneCard.Desc = 'If you control a face-up "Dark Magician Girl": Special Summon 1 "Dark Magician" from your hand or Deck.';
-SageStoneCard.Url = '/imgs/cards/SageStoneCard.jpg';
+SageStoneCard.Url = '/imgs/cards/SageStoneCard.png';
 
 module.exports = SageStoneCard;

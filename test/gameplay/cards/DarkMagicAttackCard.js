@@ -4,13 +4,16 @@ const Game = require('../../../src/gameplay/Game');
 const Card = require('../../../src/gameplay/cards/Card');
 const DarkMagicianCard = require('../../../src/gameplay/cards/DarkMagicianCard');
 const DarkMagicAttackCard = require('../../../src/gameplay/cards/DarkMagicAttackCard');
-const FloodgateTrapHoleCard = require('../../../src/gameplay/cards/FloodgateTrapHoleCard');
+
+const SpellCard = require('../../../src/gameplay/cards/SpellCard');
+
+const floodgateTrapHoleCard = () => new SpellCard('', '', '');
 
 const {assertGameSuccess} = require('../Game');
 
 describe('DarkMagicAttackCard', () => {
   function buildDeck() {
-    return [new DarkMagicianCard(), new DarkMagicianCard(), new FloodgateTrapHoleCard(), new DarkMagicAttackCard(), new DarkMagicAttackCard()];
+    return [new DarkMagicianCard(), new DarkMagicianCard(), floodgateTrapHoleCard(), new DarkMagicAttackCard(), new DarkMagicAttackCard()];
   }
 
   it('#activate', () => {

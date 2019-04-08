@@ -50,11 +50,11 @@ class DarkMagicAttackCard extends SpellCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this spell',
+          name: 'invokeSpell',
+          desc: 'invoke the effects of this spell',
           in: Game.SPELL_SLOTS,
           params: [
-            {select: Game.OPPONENT, desc: 'select the opponent to apply the effects'},
+            {select: Game.PLAYER, desc: 'select the opponent to apply the effects'},
           ],
         },
       ],

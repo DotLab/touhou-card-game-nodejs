@@ -112,8 +112,7 @@ class MonsterCard extends Card {
           name: 'attack',
           desc: 'order this monster to attack',
           in: Game.MONSTER_SLOTS, params: [
-            {select: Game.OPPONENT, desc: 'select the opponent to attack'},
-            {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT, desc: 'select the opponent\'s monster to attack'},
+            {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT, desc: 'select the monster to attack'},
           ],
         },
         {
@@ -121,7 +120,7 @@ class MonsterCard extends Card {
           desc: 'order this monster to directly attack opponents',
           in: Game.MONSTER_SLOTS,
           params: [
-            {select: Game.OPPONENT, desc: 'select the opponent to attack'},
+            {select: Game.PLAYER, desc: 'select the opponent to attack'},
           ],
         },
       ],

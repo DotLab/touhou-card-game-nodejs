@@ -49,9 +49,9 @@ class RaizaTheStormMonarchCard extends MonsterCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this monster',
-          in: Game.SPELL_SLOTS,
+          name: 'invokeMonsterEffect',
+          desc: 'invoke the effects of this monster',
+          in: Game.MONSTER_SLOTS,
           params: [
             {select: Game.CARD, desc: 'select the target card'},
           ],
@@ -63,6 +63,6 @@ class RaizaTheStormMonarchCard extends MonsterCard {
 
 RaizaTheStormMonarchCard.Name = 'Raiza the Storm Monarch';
 RaizaTheStormMonarchCard.Desc = 'If this card is Tribute Summoned: Target 1 card on the field; place that target on the top of the Deck';
-RaizaTheStormMonarchCard.ImgUrl = '/imgs/card-raizaTheStormMonarch.png';
+RaizaTheStormMonarchCard.ImgUrl = '/imgs/cards/RaizaTheStormMonarchCard.png';
 
 module.exports = RaizaTheStormMonarchCard;

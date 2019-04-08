@@ -43,10 +43,9 @@ class KaibamanCard extends MonsterCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this monster',
-          stage: Game.MY_TURN,
-          in: Game.SPELL_SLOTS,
+          name: 'invokeMonsterEffect',
+          desc: 'invoke the effects of this monster',
+          in: Game.MONSTER_SLOTS,
           params: [],
         },
       ],
@@ -56,6 +55,6 @@ class KaibamanCard extends MonsterCard {
 
 KaibamanCard.Name = 'Kaibaman';
 KaibamanCard.Desc = 'You can Tribute this card; Special Summon 1 "Blue-Eyes White Dragon" from your hand.';
-KaibamanCard.ImgUrl = '/imgs/card-kaibaman.png';
+KaibamanCard.ImgUrl = '/imgs/cards/KaibamanCard.png';
 
 module.exports = KaibamanCard;

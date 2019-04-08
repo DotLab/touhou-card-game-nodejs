@@ -39,9 +39,9 @@ class ZaborgTheThunderMonarchCard extends MonsterCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this monster',
-          in: Game.SPELL_SLOTS,
+          name: 'invokeMonsterEffect',
+          desc: 'invoke the effects of this monster',
+          in: Game.MONSTER_SLOTS,
           params: [
             {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT, desc: 'select the target card'},
           ],
@@ -53,6 +53,6 @@ class ZaborgTheThunderMonarchCard extends MonsterCard {
 
 ZaborgTheThunderMonarchCard.Name = 'Zaborg the Thunder Monarch';
 ZaborgTheThunderMonarchCard.Desc = 'If this card is Tribute Summoned: Target 1 monster on the field; destroy that target.';
-ZaborgTheThunderMonarchCard.ImgUrl = '/imgs/card-zaborgTheThunderMonarch.png';
+ZaborgTheThunderMonarchCard.ImgUrl = '/imgs/cards/ZaborgTheThunderMonarchCard.png';
 
 module.exports = ZaborgTheThunderMonarchCard;

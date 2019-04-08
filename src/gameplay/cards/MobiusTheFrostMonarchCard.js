@@ -49,8 +49,8 @@ class MobiusTheFrostMonarchCard extends MonsterCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this monster',
+          name: 'invokeMonsterEffect',
+          desc: 'invoke the effects of this monster',
           in: Game.SPELL_SLOTS,
           params: [
             {select: Game.CARD, in: Game.SPELL_SLOTS, of: Game.OPPONENT, desc: 'select the first spell to destroy'},
@@ -64,6 +64,6 @@ class MobiusTheFrostMonarchCard extends MonsterCard {
 
 MobiusTheFrostMonarchCard.Name = 'Mobius the Frost Monarch';
 MobiusTheFrostMonarchCard.Desc = 'When this card is Tribute Summoned: You can target up to 2 Spell/Trap Cards on the field; destroy those targets.';
-MobiusTheFrostMonarchCard.ImgUrl = '/imgs/card-mobiusThe FrostMonarch.png';
+MobiusTheFrostMonarchCard.ImgUrl = '/imgs/cards/MobiusTheFrostMonarchCard.png';
 
 module.exports = MobiusTheFrostMonarchCard;

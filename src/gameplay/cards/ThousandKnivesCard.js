@@ -58,8 +58,8 @@ class ThousandKnivesCard extends SpellCard {
       actions: [
         ...shot.actions,
         {
-          name: 'invoke',
-          decs: 'invoke the effects of this monster',
+          name: 'invokeSpell',
+          desc: 'invoke the effects of this spell',
           in: Game.SPELL_SLOTS,
           params: [
             {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT, desc: 'select the target card'},
@@ -72,6 +72,6 @@ class ThousandKnivesCard extends SpellCard {
 
 ThousandKnivesCard.Name = 'Thousand Knives';
 ThousandKnivesCard.Desc = 'If you control "Dark Magician": Target 1 monster your opponent controls; destroy that target.';
-ThousandKnivesCard.ImgUrl = '/Imgs/ThousandKnives.jpg';
+ThousandKnivesCard.ImgUrl = '/imgs/cards/ThousandKnivesCard.png';
 
 module.exports = ThousandKnivesCard;
