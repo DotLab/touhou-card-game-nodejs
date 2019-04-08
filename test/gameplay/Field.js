@@ -77,4 +77,39 @@ describe('Field', () => {
     assert.equal(field.getSlot(field.slotIds[8]).name, '8');
     assert.isNull(field.getSlot('abc'));
   });
+
+  it('#byId', () => {
+    const field = new Field();
+    let c0; let c1; let c2; let c3; let c4; let c5; let c6; let c7; let c8;
+    field.setSlot(field.slotIds[0], c0 = new Card('0', '', ''));
+    field.setSlot(field.slotIds[1], c1 = new Card('1', '', ''));
+    field.setSlot(field.slotIds[2], c2 = new Card('2', '', ''));
+    field.setSlot(field.slotIds[3], c3 = new Card('3', '', ''));
+    field.setSlot(field.slotIds[4], c4 = new Card('4', '', ''));
+    field.setSlot(field.slotIds[5], c5 = new Card('5', '', ''));
+    field.setSlot(field.slotIds[6], c6 = new Card('6', '', ''));
+    field.setSlot(field.slotIds[7], c7 = new Card('7', '', ''));
+    field.setSlot(field.slotIds[8], c8 = new Card('8', '', ''));
+
+    assert.equal(field.findCardById(c0.id).name, '0');
+    assert.equal(field.findCardById(c1.id).name, '1');
+    assert.equal(field.findCardById(c2.id).name, '2');
+    assert.equal(field.findCardById(c3.id).name, '3');
+    assert.equal(field.findCardById(c4.id).name, '4');
+    assert.equal(field.findCardById(c5.id).name, '5');
+    assert.equal(field.findCardById(c6.id).name, '6');
+    assert.equal(field.findCardById(c7.id).name, '7');
+    assert.equal(field.findCardById(c8.id).name, '8');
+
+
+    assert.isNull(field.removeCardById(c0.id));
+    assert.isNull(field.removeCardById(c1.id));
+    assert.isNull(field.removeCardById(c2.id));
+    assert.isNull(field.removeCardById(c3.id));
+    assert.isNull(field.removeCardById(c4.id));
+    assert.isNull(field.removeCardById(c5.id));
+    assert.isNull(field.removeCardById(c6.id));
+    assert.isNull(field.removeCardById(c7.id));
+    assert.isNull(field.removeCardById(c8.id));
+  });
 });
