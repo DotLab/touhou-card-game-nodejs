@@ -56,6 +56,7 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
     // now the monster card go to graveyard
     assert.equal(game.players[1].field.spellSlots[0], null);
     assert.equal(game.players[1].field.graveyard.length, 1);
+    game.takeSnapshot();
   });
 
   it('#choose not to activate', () => {

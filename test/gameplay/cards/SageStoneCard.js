@@ -26,5 +26,6 @@ describe('SageStone', () => {
     assertGameSuccess(game.invokeSpell(game.players[0].field.spellSlots[0].id, [game.players[0].field.getMonsterSlotId(2)]));
     assert.equal(game.players[0].field.monsterSlots[2].name, DarkMagicianCard.Name );
     assert.equal(game.players[0].field.graveyard.length, 2);
+    game.takeSnapshot();
   });
 });

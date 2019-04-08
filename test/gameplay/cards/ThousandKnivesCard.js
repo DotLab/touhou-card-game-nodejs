@@ -33,5 +33,6 @@ describe('ThousandKnives', () => {
     assert.equal(game.players[1].field.monsterSlots[0], null);
     assert.equal(game.players[1].field.graveyard.length, 1);
     assert.equal(game.players[1].field.graveyard.length, 1);
+    game.takeSnapshot();
   });
 });

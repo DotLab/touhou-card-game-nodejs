@@ -32,6 +32,7 @@ describe('SpellbookOfEternityCard', () => {
     assertGameSuccess(game.invokeSpell(game.players[0].field.spellSlots[0].id, [1]));
     assert.isTrue(game.players[0].hand[game.players[0].hand.length-1].name === SpellbookOfSecretsCard.Name);
     assert.isTrue(game.players[0].field.oblivion.length === 1);
+    game.takeSnapshot();
   });
 
   it('#cannotReactivate', () => {

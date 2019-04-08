@@ -66,6 +66,7 @@ describe('Game', () => {
     assertGameError(game.attack(0, 2, 0));
     assertGameError(game.attack(0, 0, 1));
   });
+
   it('#attack1', ()=> {
     const mockUsers1 = [
       {id: 'abc', name: 'F', deck: createMockDeck1()},

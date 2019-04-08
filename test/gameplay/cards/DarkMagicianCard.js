@@ -25,5 +25,6 @@ describe('DarkMagicianCard', () => {
     assertGameSuccess(game.endTurn());
     // end of player[0]'s turn, not it is player[1]'s turn
     assert.equal(game.turn, 1);
+    game.takeSnapshot();
   });
 });

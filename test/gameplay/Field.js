@@ -33,4 +33,48 @@ describe('Field', () => {
     field.monsterSlots[0] = new KaibamanCard();
     assert.isTrue(field.hasMonster());
   });
+
+  it('#hasMonsterSlot', () => {
+    const field = new Field();
+    assert.isFalse(field.hasMonsterSlot('abc'));
+  });
+
+  it('#hasSpellSlot', () => {
+    const field = new Field();
+    assert.isFalse(field.hasSpellSlot('abc'));
+  });
+
+  it('#setSlot', () => {
+    const field = new Field();
+    field.setSlot(field.slotIds[0], new Card('0', '', ''));
+    field.setSlot(field.slotIds[1], new Card('1', '', ''));
+    field.setSlot(field.slotIds[2], new Card('2', '', ''));
+    field.setSlot(field.slotIds[3], new Card('3', '', ''));
+    field.setSlot(field.slotIds[4], new Card('4', '', ''));
+    field.setSlot(field.slotIds[5], new Card('5', '', ''));
+    field.setSlot(field.slotIds[6], new Card('6', '', ''));
+    field.setSlot(field.slotIds[7], new Card('7', '', ''));
+    field.setSlot(field.slotIds[8], new Card('8', '', ''));
+    field.setSlot('abc', new Card('', '', ''));
+
+    assert.equal(field.monsterSlots[0].name, '0');
+    assert.equal(field.monsterSlots[1].name, '1');
+    assert.equal(field.monsterSlots[2].name, '2');
+    assert.equal(field.monsterSlots[3].name, '3');
+    assert.equal(field.spellSlots[0].name, '4');
+    assert.equal(field.spellSlots[1].name, '5');
+    assert.equal(field.spellSlots[2].name, '6');
+    assert.equal(field.spellSlots[3].name, '7');
+
+    assert.equal(field.getSlot(field.slotIds[0]).name, '0');
+    assert.equal(field.getSlot(field.slotIds[1]).name, '1');
+    assert.equal(field.getSlot(field.slotIds[2]).name, '2');
+    assert.equal(field.getSlot(field.slotIds[3]).name, '3');
+    assert.equal(field.getSlot(field.slotIds[4]).name, '4');
+    assert.equal(field.getSlot(field.slotIds[5]).name, '5');
+    assert.equal(field.getSlot(field.slotIds[6]).name, '6');
+    assert.equal(field.getSlot(field.slotIds[7]).name, '7');
+    assert.equal(field.getSlot(field.slotIds[8]).name, '8');
+    assert.isNull(field.getSlot('abc'));
+  });
 });

@@ -72,6 +72,7 @@ describe('RaizaTheStormMonarchCard', ()=> {
     assertGameSuccess(game.endTurn());
     // now it is player 0 turn
     assert.equal(game.turn, 0);
+    game.takeSnapshot();
   });
 
   it('#choose not to activate', ()=> {

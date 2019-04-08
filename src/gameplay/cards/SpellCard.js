@@ -14,12 +14,12 @@ class SpellCard extends Card {
     this.display = display;
   }
 
-  canActivate(game, owner, actor, action, actionParams, phase, trapParams) {
-    return false;
-  }
+  // canActivate(game, owner, actor, action, actionParams, phase, trapParams) {
+  //   return false;
+  // }
 
-  activate(game, owner, actor, action, actionParams, phase, trapParams) {
-  }
+  // activate(game, owner, actor, action, actionParams, phase, trapParams) {
+  // }
 
   canInvoke(game, player, invokeParams) {
     return true;

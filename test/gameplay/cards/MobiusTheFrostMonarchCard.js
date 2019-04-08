@@ -56,6 +56,7 @@ describe('MobiusTheFrostMonarchCard', ()=>{
     assert.equal(game.players[1].field.spellSlots[0], null);
     assert.equal(game.players[1].field.spellSlots[1], null);
     assert.equal(game.players[1].field.graveyard.length, 2);
+    game.takeSnapshot();
   });
 
   it('#activate (with only one player)', ()=> {

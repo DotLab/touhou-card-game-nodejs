@@ -22,5 +22,6 @@ describe('PotOfGreedCard', () => {
     assert.equal(game.players[0].field.spellSlots[0], null);
     assert.equal(game.players[0].field.graveyard[0], card);
     assert.equal(game.players[0].hand.length, preInvokeHand + PotOfGreedCard.CardsDraw);
+    game.takeSnapshot();
   });
 });

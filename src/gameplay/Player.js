@@ -43,17 +43,17 @@ class Player {
     this.hand.push(this.deck.pop());
   }
 
-  shouldSuspend(game, actor, action, actionParams, phase) {
-    return this.field.canActivate(game, this, actor, action, actionParams, phase);
-  }
+  // shouldSuspend(game, actor, action, actionParams, phase) {
+  //   return this.field.canActivate(game, this, actor, action, actionParams, phase);
+  // }
 
-  suspend() {
-    this.isSuspended = true;
-  }
+  // suspend() {
+  //   this.isSuspended = true;
+  // }
 
-  resume() {
-    this.isSuspended = false;
-  }
+  // resume() {
+  //   this.isSuspended = false;
+  // }
 
   /**
    * End turn
@@ -132,12 +132,6 @@ class Player {
   removeCardInHand(index) {
     const removed = this.hand.splice(index, 1);
     return removed[0];
-  }
-
-  killMonsterOnField(index) {
-    const card = this.field.monsterSlots[index];
-    this.field.monsterSlots[index] = null;
-    this.field.graveyard.push(card);
   }
 
   /**

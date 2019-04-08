@@ -28,5 +28,6 @@ describe('DarkMagicVeilCard', () => {
     assert.isFalse(game.players[0].hand[1].canInvoke(game, game.players[0], [game.players[game.turn].field.getMonsterSlotId(0)]));
     assert.equal(game.players[0].field.spellSlots[0], null);
     assert.equal(game.players[0].field.graveyard.length, 1);
+    game.takeSnapshot();
   });
 });

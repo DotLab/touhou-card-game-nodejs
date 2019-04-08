@@ -31,12 +31,12 @@ class Field {
     ];
   }
 
-  hasSlot(id) {
-    for (let i = 0; i < 9; i += 1) {
-      if (this.slotIds[i] === id) return true;
-    }
-    return false;
-  }
+  // hasSlot(id) {
+  //   for (let i = 0; i < 9; i += 1) {
+  //     if (this.slotIds[i] === id) return true;
+  //   }
+  //   return false;
+  // }
 
   hasMonsterSlot(id) {
     for (let i = 0; i < 4; i += 1) {
@@ -89,9 +89,9 @@ class Field {
     return this.slotIds[4 + slotIndex];
   }
 
-  getEnvironmentSlotId() {
-    return this.slotIds[8];
-  }
+  // getEnvironmentSlotId() {
+  //   return this.slotIds[8];
+  // }
 
   /**
   * Remove a card from oblivion field
@@ -122,14 +122,14 @@ class Field {
     return false;
   }
 
-  canActivate(game, owner, actor, action, actionParams, phase) {
-    for (let i = 0; i < this.spellSlots.length; i += 1) {
-      if (this.spellSlots[i] !== null && this.spellSlots[i].canActivate(game, owner, actor, action, actionParams, phase)) {
-        return true;
-      }
-    }
-    return false;
-  }
+  // canActivate(game, owner, actor, action, actionParams, phase) {
+  //   for (let i = 0; i < this.spellSlots.length; i += 1) {
+  //     if (this.spellSlots[i] !== null && this.spellSlots[i].canActivate(game, owner, actor, action, actionParams, phase)) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   /**
    * @param {String} id

@@ -139,20 +139,20 @@ class Game {
     return Game.success();
   }
 
-  resume() {
-    this.isSuspended = false;
-    this.suspendedAction = null;
-    this.suspendedActionParams = null;
-    this.suspendedPhase = null;
+  // resume() {
+  //   this.isSuspended = false;
+  //   this.suspendedAction = null;
+  //   this.suspendedActionParams = null;
+  //   this.suspendedPhase = null;
 
-    for (let i = 0; i < this.players.length; i += 1) {
-      if (this.players[i].isSuspended) {
-        this.players[i].resume();
-      }
-    }
+  //   for (let i = 0; i < this.players.length; i += 1) {
+  //     if (this.players[i].isSuspended) {
+  //       this.players[i].resume();
+  //     }
+  //   }
 
-    return Game.success();
-  }
+  //   return Game.success();
+  // }
 
   /**
    * draw a card
@@ -301,7 +301,7 @@ class Game {
 
           stage: this.isSuspended ? Game.SUSPENDED : (this.isMyTurn(player.userId) ? Game.MY_TURN : Game.WATCHING),
 
-          hand: player.hand.map((card) => card.takeSnapshot()),
+          hand: player.hand.filter((x) => x).map((card) => card.takeSnapshot()),
           field: {
             graveyard: field.graveyard.map((card) => card.takeSnapshot()),
             environmentSlot: field.environmentSlot ? field.environmentSlot.takeSnapshot() : null,

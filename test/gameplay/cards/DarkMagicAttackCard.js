@@ -44,6 +44,7 @@ describe('DarkMagicAttackCard', () => {
     // DMA goes into graveyard
     assert.equal(game.players[0].field.spellSlots[0], null);
     assert.equal(game.players[0].field.graveyard.length, 1);
+    game.takeSnapshot();
   });
 
   it('#cannot activate', () => {
