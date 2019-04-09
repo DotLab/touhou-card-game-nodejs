@@ -43,7 +43,7 @@ export default class PlayersList extends React.Component {
       {s.showPlayers && <div className="card mt-2 px-3 py-2">
           <ul className="py-0 my-0">
           {s.playersList.map(player => (<li key={player.name}>
-            <strong>{player.name}</strong> <button className="btn btn-primary" onClick={() => this.followPlayer(player.name)}>Follow</button>
+            <strong>{player.name}</strong> <button className="btn btn-primary" name={player.name} onClick={() => this.followPlayer(player.name)}>Follow</button>
             <ul>
               <li><span className="badge badge-primary">Bio</span> "{player.bio}"</li>
               <li><span className="badge badge-info">Last Seen</span> {formatDate(player.lastDate)}</li>
