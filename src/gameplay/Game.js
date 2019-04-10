@@ -170,9 +170,10 @@ class Game {
    * @param {String} slotId card index in monsterSlots
    * @param {String} display card display
    * @param {String} pose card pose
+   * @param {Array<String>} tributes tributes for the summon
    * @return {Object} error message
    */
-  summon(monsterId, slotId, display, pose) {
+  summon(monsterId, slotId, display, pose, tributes) {
     const player = this.players[this.turn];
 
     const monster = player.findCardInHandById(monsterId);
@@ -181,6 +182,17 @@ class Game {
 
     if (!player.field.hasMonsterSlot(slotId)) return Game.error('cannot find monster slot');
     if (!player.field.isSlotEmpty(slotId)) return Game.error('monster slot is not empty');
+
+    if (tributes && tributes.length) {
+      for (let i = 0; i < tributes.length; i++) {
+        const id = tributes[i];
+        const tributeMonster = player.field.findMonsterById(id);
+        if (!tributeMonster) return Game.error('cannot find tribute #' + i);
+      }
+      for (let i = 0; i < tributes.length; i++) {
+        player.field.killMonsterById(tributes[i]);
+      }
+    }
 
     /** @type {any} */
     player.removeCardInHandById(monsterId);

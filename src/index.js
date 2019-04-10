@@ -435,6 +435,9 @@ io.on('connection', function(socket) {
       case 'attack': res = room.game.attack(action.cardId, params[0]); break;
       case 'invokeMonsterEffect': res = room.game.invokeMonsterEffect(action.cardId, params); break;
 
+      case 'summonTribute1': res = room.game.summon(action.cardId, params[1], params[2], params[3], [params[0]]); break;
+      case 'summonTribute2': res = room.game.summon(action.cardId, params[2], params[3], params[4], [params[0], params[1]]); break;
+
       case 'place': res = room.game.place(action.cardId, params[0], params[1]); break;
       case 'invokeSpell': res = room.game.invokeSpell(action.cardId, params); break;
     }

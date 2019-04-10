@@ -77,6 +77,46 @@ class MonsterCard extends Card {
   }
 
   takeSnapshot() {
+    let summonAction;
+
+    if (this.lv < 5) {
+      summonAction = {
+        name: 'summon',
+        desc: 'summon this monster to the field',
+        in: Game.HAND,
+        params: [
+          {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to summon'},
+          {select: Game.DISPLAY, desc: 'select the display of the monster'},
+          {select: Game.POSE, desc: 'select the pose of the monster'},
+        ],
+      };
+    } else if (this.lv < 7) {
+      summonAction = {
+        name: 'summonTribute1',
+        desc: 'summon this monster to the field with one tribute',
+        in: Game.HAND,
+        params: [
+          {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select a monster to tribute'},
+          {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to summon'},
+          {select: Game.DISPLAY, desc: 'select the display of the monster'},
+          {select: Game.POSE, desc: 'select the pose of the monster'},
+        ],
+      };
+    } else {
+      summonAction = {
+        name: 'summonTribute2',
+        desc: 'summon this monster to the field with two tribute',
+        in: Game.HAND,
+        params: [
+          {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select the first monster to tribute'},
+          {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select the second monster to tribute'},
+          {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to summon'},
+          {select: Game.DISPLAY, desc: 'select the display of the monster'},
+          {select: Game.POSE, desc: 'select the pose of the monster'},
+        ],
+      };
+    }
+
     return {
       ...super.takeSnapshot(),
       lv: this.lv,
@@ -84,16 +124,7 @@ class MonsterCard extends Card {
       dfs: this.dfs,
       pose: this.pose,
       actions: [
-        {
-          name: 'summon',
-          desc: 'summon this monster to the field',
-          in: Game.HAND,
-          params: [
-            {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to summon'},
-            {select: Game.DISPLAY, desc: 'select the display of the monster'},
-            {select: Game.POSE, desc: 'select the pose of the monster'},
-          ],
-        },
+        summonAction,
         {
           name: 'changeDisplay',
           desc: 'change the display of this monster',
