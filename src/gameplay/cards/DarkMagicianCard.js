@@ -11,5 +11,7 @@ class DarkMagicianCard extends MonsterCard {
 }
 
 DarkMagicianCard.Name = 'Dark Magician';
+DarkMagicianCard.Atk = 2500;
+DarkMagicianCard.Dfs = 2100;
 
 module.exports = DarkMagicianCard;
