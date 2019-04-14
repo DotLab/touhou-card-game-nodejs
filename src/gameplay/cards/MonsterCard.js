@@ -1,6 +1,9 @@
 const Card = require('./Card.js');
 const Game = require('../Game');
 
+const action = Card.createAction;
+const param = Card.createActionParam;
+
 /**
  * Monster Card
  * @extends Card
@@ -80,41 +83,26 @@ class MonsterCard extends Card {
     let summonAction;
 
     if (this.lv < 5) {
-      summonAction = {
-        name: 'summon',
-        desc: 'summon this monster to the field',
-        in: Game.HAND,
-        params: [
-          {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to summon'},
-          {select: Game.DISPLAY, desc: 'select the display of the monster'},
-          {select: Game.POSE, desc: 'select the pose of the monster'},
-        ],
-      };
+      summonAction = action('summon', 'summon this monster to the field', Game.HAND, [
+        param(Game.SLOT, Game.MONSTER_SLOTS, Game.SELF, 'select an empty slot in the monster slots to summon'),
+        param(Game.DISPLAY, undefined, undefined, 'select the display of the monster'),
+        param(Game.POSE, undefined, undefined, 'select the pose of the monster'),
+      ]);
     } else if (this.lv < 7) {
-      summonAction = {
-        name: 'summonTribute1',
-        desc: 'summon this monster to the field with one tribute',
-        in: Game.HAND,
-        params: [
-          {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select a monster to tribute'},
-          {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to summon'},
-          {select: Game.DISPLAY, desc: 'select the display of the monster'},
-          {select: Game.POSE, desc: 'select the pose of the monster'},
-        ],
-      };
+      summonAction = action('summonTribute1', 'summon this monster to the field with one tribute', Game.HAND, [
+        param(Game.CARD, Game.MONSTER_SLOTS, Game.SELF, 'select a monster to tribute'),
+        param(Game.SLOT, Game.MONSTER_SLOTS, Game.SELF, 'select an empty slot in the monster slots to summon'),
+        param(Game.DISPLAY, undefined, undefined, 'select the display of the monster'),
+        param(Game.POSE, undefined, undefined, 'select the pose of the monster'),
+      ]);
     } else {
-      summonAction = {
-        name: 'summonTribute2',
-        desc: 'summon this monster to the field with two tribute',
-        in: Game.HAND,
-        params: [
-          {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select the first monster to tribute'},
-          {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select the second monster to tribute'},
-          {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to summon'},
-          {select: Game.DISPLAY, desc: 'select the display of the monster'},
-          {select: Game.POSE, desc: 'select the pose of the monster'},
-        ],
-      };
+      summonAction = action('summonTribute2', 'summon this monster to the field with two tribute', Game.HAND, [
+        param(Game.CARD, Game.MONSTER_SLOTS, Game.SELF, 'select the first monster to tribute'),
+        param(Game.CARD, Game.MONSTER_SLOTS, Game.SELF, 'select the second monster to tribute'),
+        param(Game.SLOT, Game.MONSTER_SLOTS, Game.SELF, 'select an empty slot in the monster slots to summon'),
+        param(Game.DISPLAY, undefined, undefined, 'select the display of the monster'),
+        param(Game.POSE, undefined, undefined, 'select the pose of the monster'),
+      ]);
     }
 
     return {
@@ -125,35 +113,18 @@ class MonsterCard extends Card {
       pose: this.pose,
       actions: [
         summonAction,
-        {
-          name: 'changeDisplay',
-          desc: 'change the display of this monster',
-          in: Game.MONSTER_SLOTS, params: [
-            {select: Game.DISPLAY, desc: 'select the display of the monster'},
-          ],
-        },
-        {
-          name: 'changePose',
-          desc: 'change the pose of this monster',
-          in: Game.MONSTER_SLOTS, params: [
-            {select: Game.POSE, desc: 'select the pose of the monster'},
-          ],
-        },
-        {
-          name: 'attack',
-          desc: 'order this monster to attack',
-          in: Game.MONSTER_SLOTS, params: [
-            {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT, desc: 'select the monster to attack'},
-          ],
-        },
-        {
-          name: 'directAttack',
-          desc: 'order this monster to directly attack opponents',
-          in: Game.MONSTER_SLOTS,
-          params: [
-            {select: Game.PLAYER, desc: 'select the opponent to attack'},
-          ],
-        },
+        action('changeDisplay', 'change the display of this monster', Game.MONSTER_SLOTS, [
+          param(Game.DISPLAY, undefined, undefined, 'select the display of the monster'),
+        ]),
+        action('changePose', 'change the pose of this monster', Game.MONSTER_SLOTS, [
+          param(Game.POSE, undefined, undefined, 'select the pose of the monster'),
+        ]),
+        action('attack', 'order this monster to attack', Game.MONSTER_SLOTS, [
+          param(Game.CARD, Game.MONSTER_SLOTS, Game.OPPONENT, 'select the monster to attack'),
+        ]),
+        action('directAttack', 'order this monster to directly attack opponents', Game.MONSTER_SLOTS, [
+          param(Game.PLAYER, undefined, undefined, 'select the opponent to attack'),
+        ]),
       ],
     };
   }
