@@ -32,46 +32,85 @@ class MonsterCard extends Card {
     this.cardType = Card.MONSTER;
   }
 
+  /**
+   * check if can summon
+   * @param {String} display
+   * @param {String} pose
+   * @return {Boolean}
+   */
   canSummon(display, pose) {
     if (display === Card.HIDDEN && pose === Card.ATTACK) return false;
     return true;
   }
 
+  /**
+   * summon
+   * @param {String} display
+   * @param {String} pose
+   */
   summon(display, pose) {
     this.display = display;
     this.pose = pose;
   }
 
+  /**
+   * check if can change display
+   * @param {String} display
+   * @return {Boolean}
+   */
   canChangeDisplay(display) {
     if (this.hasChangedDisplay) return false;
     if (this.lockDisplay) return false;
     return true;
   }
 
+  /**
+   * check if can change pose
+   * @param {String} pose
+   * @return {Boolean}
+   */
   canChangePose(pose) {
     if (this.hasChangedPose) return false;
     if (this.lockPose) return false;
     return true;
   }
 
+  /**
+   * change display
+   * @param {String} display
+   */
   changeDisplay(display) {
     this.display = display;
     this.hasChangedDisplay = true;
   }
 
+  /**
+   * change pose
+   * @param {String} pose
+   */
   changePose(pose) {
     this.pose = pose;
     this.hasChangedPose = true;
   }
 
+  /**
+   * check can attack
+   * @return {Boolean}
+   */
   canAttack() {
     return this.pose === Card.ATTACK && !this.hasAttacked;
   }
 
+  /**
+   * attack
+   */
   attack() {
     this.hasAttacked = true;
   }
 
+  /**
+   * end turn
+   */
   endTurn() {
     super.endTurn();
     this.hasAttacked = false;
@@ -79,6 +118,10 @@ class MonsterCard extends Card {
     this.hasChangedPose = false;
   }
 
+  /**
+   * take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     let summonAction;
 
