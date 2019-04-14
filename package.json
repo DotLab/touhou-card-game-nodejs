@@ -14,7 +14,7 @@
     "serve-docs": "http-server docs -c-1",
     "start": "node src/index.js",
     "debug": "nodemon src/index.js",
-    "debug-be": "nodemon -w ./src -w ./test --exec \"npm run mocha\"",
+    "debug-be": "nodemon -w ./src -w ./test --exec \"mocha --recursive\"",
     "debug-be-coverage": "nodemon -w ./src -w ./test --exec \"npm run mocha && npm run serve-coverage\"",
     "debug-docs": "nodemon -w ./src --exec \"npm run jsdoc && npm run serve-docs\"",
     "build-app": "cd ./app && npm ci && npm run atomize && npm run build",

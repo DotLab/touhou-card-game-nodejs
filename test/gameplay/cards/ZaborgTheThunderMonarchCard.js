@@ -17,7 +17,7 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
   it('#activate', ()=> {
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
     // player 0 place one monster card
-    assertGameSuccess(game.summon(1, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[0].hand[1].id, game.players[0].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[0].name, BlueEyesWhiteDragonCard.Name);
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     assert.equal(game.players[0].field.monsterSlots[0].lv, 8);
@@ -28,16 +28,16 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
     // now it is player 1 turn
     assert.equal(game.turn, 1);
     // player 1 summons Zaborg the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[1].field.monsterSlots[0].name, ZaborgTheThunderMonarchCard.Name);
     assert.equal(game.players[1].field.monsterSlots[0].pose, Card.ATTACK);
     // activates Zaborg power on two two spell cards of player 0
-    assertGameSuccess(game.invokeMonsterEffect(0, [0, 0]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[1].field.monsterSlots[0].id, [game.players[0].field.monsterSlots[0].id]));
     // now player 0 monster card should be gone to graveyard
     assert.equal(game.players[0].field.monsterSlots[0], null);
     assert.equal(game.players[0].field.graveyard.length, 1);
     // player 1 then place a monster card for player 0 to destroy
-    assertGameSuccess(game.summon(0, 1, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(1), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[1].field.monsterSlots[1].name, BlueEyesWhiteDragonCard.Name);
     assert.equal(game.players[1].field.monsterSlots[1].pose, Card.ATTACK);
     assert.equal(game.players[1].field.monsterSlots[1].lv, 8);
@@ -48,20 +48,21 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
     // now it is player 0 turn
     assert.equal(game.turn, 0);
     // player 0 summons Zaborg the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[0].name, ZaborgTheThunderMonarchCard.Name);
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     // let Zaborg uses his power on two two spell cards from player one
-    assertGameSuccess(game.invokeMonsterEffect(0, [1, 0]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[0].field.monsterSlots[0].id, [game.players[1].field.monsterSlots[0].id]));
     // now the monster card go to graveyard
     assert.equal(game.players[1].field.spellSlots[0], null);
     assert.equal(game.players[1].field.graveyard.length, 1);
+    game.takeSnapshot();
   });
 
-  it('#choose not to activate', ()=> {
+  it('#choose not to activate', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
     // player 0 place one monster card
-    assertGameSuccess(game.summon(1, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[0].hand[1].id, game.players[0].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[0].name, BlueEyesWhiteDragonCard.Name);
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     assert.equal(game.players[0].field.monsterSlots[0].lv, 8);
@@ -72,15 +73,15 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
     // now it is player 1 turn
     assert.equal(game.turn, 1);
     // player 1 summons Zaborg the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[1].hand[0].id, game.players[1].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[1].field.monsterSlots[0].name, ZaborgTheThunderMonarchCard.Name);
     assert.equal(game.players[1].field.monsterSlots[0].pose, Card.ATTACK);
     // activates Zaborg power on two two spell cards of player 0
-    assertGameSuccess(game.invokeMonsterEffect(0, [null, null]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[1].field.monsterSlots[0].id, [null, null]));
     // now player 0 monster card should be gone to graveyard
     assert.equal(game.players[0].field.graveyard.length, 0);
     // player 1 then place a monster card for player 0 to destroy
-    assertGameSuccess(game.summon(0, 1, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[1].hand[0].id, game.players[1].field.getMonsterSlotId(1), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[1].field.monsterSlots[1].name, BlueEyesWhiteDragonCard.Name);
     assert.equal(game.players[1].field.monsterSlots[1].pose, Card.ATTACK);
     assert.equal(game.players[1].field.monsterSlots[1].lv, 8);
@@ -95,7 +96,7 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
   it('#cannot activate', ()=>{
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
     // player 0 place a monster cards
-    assertGameSuccess(game.summon(1, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[0].hand[1].id, game.players[0].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[0].name, BlueEyesWhiteDragonCard.Name);
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
     assert.equal(game.players[0].field.monsterSlots[0].lv, 8);
@@ -106,11 +107,11 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
     // now it is player 1 turn
     assert.equal(game.turn, 1);
     // player 1 summons Zaborg the frost monarch
-    assertGameSuccess(game.summon(0, 0, Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.summon(game.players[1].hand[0].id, game.players[1].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[1].field.monsterSlots[0].name, ZaborgTheThunderMonarchCard.Name);
     assert.equal(game.players[1].field.monsterSlots[0].pose, Card.ATTACK);
     // let Zaborg uses his power on two two spell cards from player one
-    assertGameSuccess(game.invokeMonsterEffect(0, [0, 0]));
+    assertGameSuccess(game.invokeMonsterEffect(game.players[1].field.monsterSlots[0].id, [game.players[0].field.monsterSlots[0].id]));
     // now both spell cards should be gone to graveyard
     assert.equal(game.players[0].field.monsterSlots[0], null);
     assert.equal(game.players[0].field.graveyard.length, 1);

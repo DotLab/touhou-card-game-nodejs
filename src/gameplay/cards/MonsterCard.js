@@ -27,7 +27,6 @@ class MonsterCard extends Card {
     this.hasChangedPose = false;
     this.lockPose = false;
     this.cardType = Card.MONSTER;
-    // TODO: kuo
     this.hasEnvironment = false;
   }
 
@@ -41,13 +40,13 @@ class MonsterCard extends Card {
     this.pose = pose;
   }
 
-  canChangeDisplay() {
+  canChangeDisplay(display) {
     if (this.hasChangedDisplay) return false;
     if (this.lockDisplay) return false;
     return true;
   }
 
-  canChangePose() {
+  canChangePose(pose) {
     if (this.hasChangedPose) return false;
     if (this.lockPose) return false;
     return true;
@@ -85,15 +84,47 @@ class MonsterCard extends Card {
       atk: this.atk,
       dfs: this.dfs,
       pose: this.pose,
-      /* eslint-disable no-multi-spaces */
       actions: [
-        {name: 'summon',        stage: Game.MY_TURN, in: Game.HAND,          params: [{select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF}]},
-        {name: 'changeDisplay', stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: []},
-        {name: 'changePose',    stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: []},
-        {name: 'attack',        stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: [{select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT}]},
-        {name: 'directAttack',  stage: Game.MY_TURN, in: Game.MONSTER_SLOTS, params: [{select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.OPPONENT}]},
+        {
+          name: 'summon',
+          desc: 'summon this monster to the field',
+          in: Game.HAND,
+          params: [
+            {select: Game.SLOT, in: Game.MONSTER_SLOTS, of: Game.SELF, desc: 'select an empty slot in the monster slots to summon'},
+            {select: Game.DISPLAY, desc: 'select the display of the monster'},
+            {select: Game.POSE, desc: 'select the pose of the monster'},
+          ],
+        },
+        {
+          name: 'changeDisplay',
+          desc: 'change the display of this monster',
+          in: Game.MONSTER_SLOTS, params: [
+            {select: Game.DISPLAY, desc: 'select the display of the monster'},
+          ],
+        },
+        {
+          name: 'changePose',
+          desc: 'change the pose of this monster',
+          in: Game.MONSTER_SLOTS, params: [
+            {select: Game.POSE, desc: 'select the pose of the monster'},
+          ],
+        },
+        {
+          name: 'attack',
+          desc: 'order this monster to attack',
+          in: Game.MONSTER_SLOTS, params: [
+            {select: Game.CARD, in: Game.MONSTER_SLOTS, of: Game.OPPONENT, desc: 'select the monster to attack'},
+          ],
+        },
+        {
+          name: 'directAttack',
+          desc: 'order this monster to directly attack opponents',
+          in: Game.MONSTER_SLOTS,
+          params: [
+            {select: Game.PLAYER, desc: 'select the opponent to attack'},
+          ],
+        },
       ],
-      /* eslint-enable no-multi-spaces */
     };
   }
 }

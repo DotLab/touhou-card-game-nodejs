@@ -28,10 +28,11 @@ describe('SpellbookOfEternityCard', () => {
     game.players[0].field.oblivion.push(new SpellbookOfEternityCard());
     game.players[0].field.oblivion.push(new SpellbookOfSecretsCard());
     assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [1]));
-    assertGameSuccess(game.place(0, 0, Card.HIDDEN));
-    assertGameSuccess(game.invokeSpell(0, [1]));
+    assertGameSuccess(game.place(game.players[game.turn].hand[0].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.invokeSpell(game.players[0].field.spellSlots[0].id, [1]));
     assert.isTrue(game.players[0].hand[game.players[0].hand.length-1].name === SpellbookOfSecretsCard.Name);
     assert.isTrue(game.players[0].field.oblivion.length === 1);
+    game.takeSnapshot();
   });
 
   it('#cannotReactivate', () => {
@@ -40,8 +41,8 @@ describe('SpellbookOfEternityCard', () => {
     game.players[0].field.oblivion.push(new SpellbookOfSecretsCard());
     game.players[0].field.oblivion.push(new SpellbookOfSecretsCard());
     assert.isTrue(game.players[0].hand[0].canInvoke(game, game.players[0], [1]));
-    assertGameSuccess(game.place(0, 0, Card.HIDDEN));
-    assertGameSuccess(game.invokeSpell(0, [1]));
+    assertGameSuccess(game.place(game.players[game.turn].hand[0].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.invokeSpell(game.players[0].field.spellSlots[0].id, [1]));
     assert.isTrue(game.players[0].hand[game.players[0].hand.length-1].name === SpellbookOfSecretsCard.Name);
     assert.isTrue(game.players[0].field.oblivion.length === 2);
     assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [1]));
