@@ -144,13 +144,19 @@ describe('Game', () => {
 
   it('#summon 1 tribute success', () => {
     let card1;
+    // create a game with one player
     const game = new Game([
       {id: 'abc', name: 'F', deck: [card1 = new MonsterCard('', '', '', 5, 100, 100)]},
     ]);
+    // record hand count
     const handCount = game.players[game.turn].hand.length;
+    // add and record a lv 5 monster card to the field
     const card2 = game.players[game.turn].field.monsterSlots[0] = new MonsterCard('', '', '', 5, 100, 100);
+    // tribute summon 1 card from hand using 1 monster should succeed
     assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(1), Card.REVEALED, Card.DEFENSE, [card2.id]));
+    // hand has 1 card less
     assert.equal(game.players[game.turn].hand.length, handCount - 1);
+    // the card is summoned
     assert.equal(game.players[game.turn].field.monsterSlots[1].id, card1.id);
   });
 
