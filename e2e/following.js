@@ -1,6 +1,7 @@
 const assert = require('chai').assert;
 
 const {createWebdriver, E2E_INDEX} = require('./utils');
+
 const {By, until} = require('selenium-webdriver');
 
 describe('followingAndFollower', () => {
@@ -12,39 +13,47 @@ describe('followingAndFollower', () => {
 
   it('open index page', async () => {
     await driver.get(E2E_INDEX);
+    // const createNewTab = await Key.chord(Key.CONTROL, Key.);
+    driver.executeScript('window.open("http://localhost:3000/");');
+    // Key.chord
+    await driver.get(E2E_INDEX);
+    const tabHandles =await driver.getAllWindowHandles();
+    await driver.switchTo().window(tabHandles[0]);
+    // console.log(driver.getAllWindowHandles().length);
   });
 
-  it('register1', async () => {
+  async function register(regName, regPassword) {
     const registerName = await driver.findElement(By.name('registerName'));
     const registerPassword = await driver.findElement(By.name('registerPassword'));
 
-    await registerName.sendKeys('testName1');
-    await registerPassword.sendKeys('testPassword1');
-    await registerName.submit();
+    await registerName.clear();
+    await registerPassword.clear();
+
+    await registerName.sendKeys(regName);
+    await registerPassword.sendKeys(regPassword);
+
+    registerName.submit();
 
     await driver.wait(until.elementLocated(By.css('.alert')));
     const alert = await driver.findElement(By.css('.alert'));
     assert.match(await alert.getText(), /Registered!/);
+  }
+
+
+  it('register1', async () => {
+    await register('testName1', 'testPassword1');
   });
 
   it('register2', async () => {
-    driver.navigate().refresh();
-    const registerName = await driver.findElement(By.name('registerName'));
-    const registerPassword = await driver.findElement(By.name('registerPassword'));
-
-    await registerName.sendKeys('testName2');
-    await registerPassword.sendKeys('testPassword2');
-    await registerName.submit();
-
-    await driver.wait(until.elementLocated(By.css('.alert')));
-    const alert = await driver.findElement(By.css('.alert'));
-    assert.match(await alert.getText(), /Registered!/);
+    await register('testName2', 'testPassword2');
   });
 
   it('login1', async () => {
     const loginName = await driver.findElement(By.name('loginName'));
     const loginPassword = await driver.findElement(By.name('loginPassword'));
 
+    await loginName.clear();
+    await loginPassword.clear();
     await loginName.sendKeys('testName1');
     await loginPassword.sendKeys('testPassword1');
     await loginName.submit();
@@ -69,10 +78,14 @@ describe('followingAndFollower', () => {
   });
 
   it('login2', async () => {
-    driver.navigate().refresh();
+    // const switchTab = await Key.chord(Key.CONTROL, Key.TAB);
+    const tabHandles =await driver.getAllWindowHandles();
+    await driver.switchTo().window(tabHandles[1]);
+
     const loginName = await driver.findElement(By.name('loginName'));
     const loginPassword = await driver.findElement(By.name('loginPassword'));
-
+    loginName.clear();
+    loginPassword.clear();
     await loginName.sendKeys('testName2');
     await loginPassword.sendKeys('testPassword2');
     await loginName.submit();
