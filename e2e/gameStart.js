@@ -90,7 +90,7 @@ describe('gameStart', () => {
   });
 
   it('joinRoom', async () => {
-    const joinRoom = await driver.findElement(By.linkText('Join'));
+    const joinRoom = await driver.findElement(By.xpath('//*[contains(text(), \'Join\')]'));
     await joinRoom.click();
   });
 
@@ -98,7 +98,7 @@ describe('gameStart', () => {
     const tabHandles =await driver.getAllWindowHandles();
     await driver.switchTo().window(tabHandles[0]);
 
-    const proposeStart = await driver.findElement(By.linkText('Propose to Start a Game'));
+    const proposeStart = await driver.findElement(By.xpath('//*[contains(text(), \'Propose to Start a Game\')]'));
     await proposeStart.click();
   });
 
@@ -106,7 +106,7 @@ describe('gameStart', () => {
     const tabHandles =await driver.getAllWindowHandles();
     await driver.switchTo().window(tabHandles[1]);
 
-    const agreeStart = await driver.findElement(By.linkText('Agree to Start the Game'));
+    const agreeStart = await driver.findElement(By.xpath('//*[contains(text(), \'Agree to Start the Game\')]'));
     await agreeStart.click();
   });
 
@@ -114,13 +114,7 @@ describe('gameStart', () => {
     const tabHandles =await driver.getAllWindowHandles();
     await driver.switchTo().window(tabHandles[0]);
 
-    const agreeStart = await driver.findElement(By.linkText('Start the Game'));
+    const agreeStart = await driver.findElement(By.xpath('//*[contains(text(), \'Start the Game\')]'));
     await agreeStart.click();
-  });
-
-  it('findLife', async () => {
-    const life = await driver.findElement(By.linkText('draw one card'));
-    const lifeText = await life.getText();
-    assert.equal(lifeText, 'draw one card');
   });
 });
