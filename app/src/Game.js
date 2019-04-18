@@ -17,12 +17,14 @@ class Game extends React.Component {
 
     this.confirmAction = this.confirmAction.bind(this);
     this.cancelAction = this.cancelAction.bind(this);
+    this.hideGame = this.hideGame.bind(this);
 
     this.draw = this.draw.bind(this);
     this.endTurn = this.endTurn.bind(this);
 
     this.state = {
       me: null,
+      players: null,
 
       selectedCard: null,
       availableActions: [],
@@ -35,6 +37,13 @@ class Game extends React.Component {
       display: 'HIDDEN',
       pose: 'DEFENSE',
     };
+  }
+
+  hideGame() {
+    this.setState({
+      me: null,
+      players: null,
+    });
   }
 
   onCardActionSelected(action) {
@@ -129,9 +138,9 @@ class Game extends React.Component {
       if (me) {
         me.opponents = opponents;
         log('me', me);
-        this.setState({me, players: null});
+        this.setState({hasEnded: snapshot.hasEnded, me, players: null});
       } else { // watcher
-        this.setState({me: null, players});
+        this.setState({hasEnded: snapshot.hasEnded, me: null, players});
       }
     });
   }
@@ -150,23 +159,26 @@ class Game extends React.Component {
     if (!s.me) {  // watching
       return <div className="mt-2">
         <h4>you are watching the game</h4>
+        {s.hasEnded && <div className="alert alert-primary">game has ended, <span className="Cur(p) alert-link" onClick={this.hideGame}>hide game</span></div>}
         {s.players.map((player) => (<div className="Mb(20px)">
-          <div><b>{player.userName}</b> ({player.life} Li)</div>
-          <div>{player.hand.map((c, i) => (<Slot key={i} game={this} me={player} in={Game.HAND} i={i} card={c} />))}</div>
-          <div>
-            <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={3} card={player.field.spellSlots[3]} />
-            <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={2} card={player.field.spellSlots[2]} />
-            <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={1} card={player.field.spellSlots[1]} />
-            <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={0} card={player.field.spellSlots[0]} />
-            <Slot game={this} me={player} in={Game.GRAVEYARD} i={0} card={player.field.graveyard[player.field.graveyard.length - 1]} />
-          </div>
-          <div>
-            <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={3} card={player.field.monsterSlots[3]} />
-            <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={2} card={player.field.monsterSlots[2]} />
-            <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={1} card={player.field.monsterSlots[1]} />
-            <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={0} card={player.field.monsterSlots[0]} />
-            <Slot game={this} me={player} in={Game.ENVIRONMENT_SLOT} i={0} card={player.field.environmentSlot} />
-          </div>
+          <div><b>{player.userName}</b> ({player.life} Li) <span>{player.stage === Game.MY_TURN ? "player's turn" : "waiting..."}</span></div>
+          {player.life > 0 ? <div>
+            <div>{player.hand.map((c, i) => (<Slot key={i} game={this} me={player} in={Game.HAND} i={i} card={c} />))}</div>
+            <div>
+              <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={3} card={player.field.spellSlots[3]} />
+              <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={2} card={player.field.spellSlots[2]} />
+              <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={1} card={player.field.spellSlots[1]} />
+              <Slot game={this} me={player} in={Game.SPELL_SLOTS} i={0} card={player.field.spellSlots[0]} />
+              <Slot game={this} me={player} in={Game.GRAVEYARD} i={0} card={player.field.graveyard[player.field.graveyard.length - 1]} />
+            </div>
+            <div>
+              <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={3} card={player.field.monsterSlots[3]} />
+              <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={2} card={player.field.monsterSlots[2]} />
+              <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={1} card={player.field.monsterSlots[1]} />
+              <Slot game={this} me={player} in={Game.MONSTER_SLOTS} i={0} card={player.field.monsterSlots[0]} />
+              <Slot game={this} me={player} in={Game.ENVIRONMENT_SLOT} i={0} card={player.field.environmentSlot} />
+            </div>
+          </div> : <div>player is dead, rest in peace</div>}
         </div>))}
       </div>;
     }
@@ -177,29 +189,32 @@ class Game extends React.Component {
     const currentParam = s.selectedAction && s.selectedParams.length < s.selectedAction.params.length && s.selectedAction.params[s.selectedParams.length];
 
     return <div className="Lh(1) mt-2 Bgc(snow)">
+      {s.hasEnded && <div className="alert alert-primary">game has ended, <span className="Cur(p) alert-link" onClick={this.hideGame}>hide game</span></div>}
       {/* opponents */}
       <div className="W(100%) Ovy(h) Ovx(s) Whs(nw)">
         {me.opponents.map((opponent, i) => (<div key={i} className="D(ib) Mend(20px)">
-        <div><b>{opponent.userName}</b> ({opponent.life} Li) {s.selectedAction && currentParam.select === Game.PLAYER && <button className="Bdw(0) Lh(1) btn-primary p-0 m-0 rounded" onClick={() => this.appendParam(opponent.userId)}>select</button>}</div>
-          <div>{opponent.hand.map((c, i) => (<Slot key={i} game={this} me={opponent} in={Game.HAND} i={i} card={c} />))}</div>
-          <div>
-            <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={3} card={opponent.field.spellSlots[3]} />
-            <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={2} card={opponent.field.spellSlots[2]} />
-            <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={1} card={opponent.field.spellSlots[1]} />
-            <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={0} card={opponent.field.spellSlots[0]} />
-            <Slot game={this} me={opponent} in={Game.GRAVEYARD} i={0} card={opponent.field.graveyard[opponent.field.graveyard.length - 1]} />
-          </div>
-          <div>
-            <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={3} card={opponent.field.monsterSlots[3]} />
-            <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={2} card={opponent.field.monsterSlots[2]} />
-            <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={1} card={opponent.field.monsterSlots[1]} />
-            <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={0} card={opponent.field.monsterSlots[0]} />
-            <Slot game={this} me={opponent} in={Game.ENVIRONMENT_SLOT} i={0} card={opponent.field.environmentSlot} />
-          </div>
+          <div><b>{opponent.userName}</b> ({opponent.life} Li) <span>{opponent.stage === Game.MY_TURN ? "opponent's turn" : "waiting..."}</span> {s.selectedAction && currentParam.select === Game.PLAYER && <button className="Bdw(0) Lh(1) btn-primary p-0 m-0 rounded" onClick={() => this.appendParam(opponent.userId)}>select</button>}</div>
+          {opponent.life > 0 ? <div>
+            <div>{opponent.hand.map((c, i) => (<Slot key={i} game={this} me={opponent} in={Game.HAND} i={i} card={c} />))}</div>
+            <div>
+              <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={3} card={opponent.field.spellSlots[3]} />
+              <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={2} card={opponent.field.spellSlots[2]} />
+              <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={1} card={opponent.field.spellSlots[1]} />
+              <Slot game={this} me={opponent} in={Game.SPELL_SLOTS} i={0} card={opponent.field.spellSlots[0]} />
+              <Slot game={this} me={opponent} in={Game.GRAVEYARD} i={0} card={opponent.field.graveyard[opponent.field.graveyard.length - 1]} />
+            </div>
+            <div>
+              <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={3} card={opponent.field.monsterSlots[3]} />
+              <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={2} card={opponent.field.monsterSlots[2]} />
+              <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={1} card={opponent.field.monsterSlots[1]} />
+              <Slot game={this} me={opponent} in={Game.MONSTER_SLOTS} i={0} card={opponent.field.monsterSlots[0]} />
+              <Slot game={this} me={opponent} in={Game.ENVIRONMENT_SLOT} i={0} card={opponent.field.environmentSlot} />
+            </div>
+          </div> : <div>opponent is dead, rest in peace</div>}
         </div>))}
       </div>
       {/* me */}
-      <div className="Cf">
+      {me.life > 0 ? <div className="Cf">
         <div className="Fl(start) Bgc(ghostwhite)">
           <div>
             <Slot game={this} me={me} in={Game.ENVIRONMENT_SLOT} i={0} card={field.environmentSlot} />
@@ -266,7 +281,7 @@ class Game extends React.Component {
             </div> : <h5>select a card to see actions</h5>}
           </div> : <h5>please wait for your turn</h5>}
         </div>
-      </div>
+      </div> : <div>you are dead, rest in peace</div>}
     </div>;
   }
 }
