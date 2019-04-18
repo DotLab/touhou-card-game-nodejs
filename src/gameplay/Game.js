@@ -153,7 +153,7 @@ class Game {
     return Game.success();
   }
 
-  placeEnvironment(envId) {
+  applyEnvironment(envId) {
     const player = this.players[this.turn];
     const env = player.findCardInHandById(envId);
     if (!env) return Game.error('cannot find environment card in hand');

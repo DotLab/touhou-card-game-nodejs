@@ -440,6 +440,8 @@ io.on('connection', function(socket) {
 
       case 'place': res = room.game.place(action.cardId, params[0], params[1]); break;
       case 'invokeSpell': res = room.game.invokeSpell(action.cardId, params); break;
+
+      case 'applyEnvironment': res = room.game.applyEnvironment(action.cardId); break;
     }
 
     debug(res);
@@ -482,6 +484,8 @@ const cards = [
   // './gameplay/cards/SpellbookOfSecretsCard',
   './gameplay/cards/ThousandKnivesCard',
   './gameplay/cards/ZaborgTheThunderMonarchCard',
+  './gameplay/cards/SorcerousSpellWallCard',
+  './gameplay/cards/TwistedSpaceCard',
 ];
 
 function createDeck() {

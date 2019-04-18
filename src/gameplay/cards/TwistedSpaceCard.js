@@ -25,7 +25,7 @@ class TwistedSpaceCard extends EnvironmentCard {
 
 TwistedSpaceCard.Name = 'Twisted Space';
 TwistedSpaceCard.Desc = 'Once you summon a monster, swap its attack and defense';
-TwistedSpaceCard.ImgUrl = '/imgs/card-twisted-space.png';
+TwistedSpaceCard.ImgUrl = '/imgs/cards/TwistedSpaceCard.jpg';
 
 module.exports = TwistedSpaceCard;
 

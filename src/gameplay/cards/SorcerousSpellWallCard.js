@@ -24,7 +24,7 @@ class SorcerousSpellWallCard extends EnvironmentCard {
 
 SorcerousSpellWallCard.Name = 'Sorcerous Spell Wall';
 SorcerousSpellWallCard.Desc = 'All monsters you control gain 300 ATK and 300 DEF.';
-SorcerousSpellWallCard.ImgUrl = '/imgs/card-sorcerous-spell-wall.png';
+SorcerousSpellWallCard.ImgUrl = '/imgs/cards/SorcerousSpellWallCard.png';
 SorcerousSpellWallCard.Atk = 300;
 SorcerousSpellWallCard.Dfs = 300;
 
