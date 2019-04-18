@@ -451,8 +451,17 @@ io.on('connection', function(socket) {
       done(error(res.msg));
     }
 
-    // socket.emit('sv_game_update', game.takeSnapshot());
+    room.game.checkGameEnd();
     io.to(room.id).emit('sv_game_update', room.game.takeSnapshot());
+
+    if (room.game.hasEnded) {
+      room.game = null;
+      room.hasStarted = false;
+      room.hasProposed = false;
+      Object.keys(room.members).forEach((x) => room.members[x].hasAgreed = false);
+      io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+      io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+    }
   });
 });
 
