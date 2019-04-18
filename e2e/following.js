@@ -14,10 +14,10 @@ describe('followingAndFollower', () => {
   it('open index page', async () => {
     await driver.get(E2E_INDEX);
     // const createNewTab = await Key.chord(Key.CONTROL, Key.);
-    driver.executeScript('window.open("http://localhost:3000/");');
+    driver.executeScript(`window.open('${E2E_INDEX}');`);
     // Key.chord
     await driver.get(E2E_INDEX);
-    const tabHandles =await driver.getAllWindowHandles();
+    const tabHandles = await driver.getAllWindowHandles();
     await driver.switchTo().window(tabHandles[0]);
     // console.log(driver.getAllWindowHandles().length);
   });
