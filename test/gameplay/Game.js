@@ -142,6 +142,16 @@ describe('Game', () => {
     assertGameSuccess(game.changePose(game.players[game.turn].field.monsterSlots[0].id, Card.ATTACK));
   });
 
+  it('#checkGameEnd', () => {
+    const game = new Game(mockUsers);
+    assert.isFalse(game.hasEnded);
+    assert.isFalse(game.checkGameEnd());
+    assert.isFalse(game.hasEnded);
+    game.players[0].life = 0;
+    assert.isTrue(game.checkGameEnd());
+    assert.isTrue(game.hasEnded);
+  });
+
   it('U010: The Gamer is dealt 5 random cards at the beginning of the Game', () => {
     const game = new Game(mockUsers);
     game.players.forEach((player) => {

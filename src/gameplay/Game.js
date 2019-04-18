@@ -32,6 +32,7 @@ class Game {
       acc[cur.userId] = i;
       return acc;
     }, {});
+    this.hasEnded = false;
 
     // /** @type {Boolean} */
     // this.isSuspended = false;
@@ -282,16 +283,37 @@ class Game {
    */
   endTurn() {
     this.players[this.turn].endTurn();
-    this.turn += 1;
-    if (this.turn >= this.players.length) {
-      this.round += 1;
-      this.turn = 0;
-    }
+
+    do {
+      this.turn += 1;
+      if (this.turn >= this.players.length) {
+        this.round += 1;
+        this.turn = 0;
+      }
+    } while (this.players[this.turn].life <= 0);
+
     return Game.success();
+  }
+
+  checkGameEnd() {
+    let aliveCount = 0;
+    this.players.forEach((player) => {
+      if (player.life > 0) {
+        aliveCount += 1;
+      }
+    });
+
+    if (aliveCount == 1) { // somebody wins
+      this.hasEnded = true;
+      return true;
+    }
+
+    return false;
   }
 
   takeSnapshot() {
     return {
+      hasEnded: this.hasEnded,
       players: this.players.map((player) => {
         const field = player.field;
         return {
