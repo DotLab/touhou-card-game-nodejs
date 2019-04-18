@@ -15,6 +15,7 @@ describe('registerLogin', () => {
   });
 
   it('register', async () => {
+    // driver.navigate().refresh();
     const registerName = await driver.findElement(By.name('registerName'));
     const registerPassword = await driver.findElement(By.name('registerPassword'));
 
