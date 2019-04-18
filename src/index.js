@@ -435,6 +435,9 @@ io.on('connection', function(socket) {
       case 'attack': res = room.game.attack(action.cardId, params[0]); break;
       case 'invokeMonsterEffect': res = room.game.invokeMonsterEffect(action.cardId, params); break;
 
+      case 'summonTribute1': res = room.game.summon(action.cardId, params[1], params[2], params[3], [params[0]]); break;
+      case 'summonTribute2': res = room.game.summon(action.cardId, params[2], params[3], params[4], [params[0], params[1]]); break;
+
       case 'place': res = room.game.place(action.cardId, params[0], params[1]); break;
       case 'invokeSpell': res = room.game.invokeSpell(action.cardId, params); break;
     }
@@ -448,8 +451,17 @@ io.on('connection', function(socket) {
       done(error(res.msg));
     }
 
-    // socket.emit('sv_game_update', game.takeSnapshot());
+    room.game.checkGameEnd();
     io.to(room.id).emit('sv_game_update', room.game.takeSnapshot());
+
+    if (room.game.hasEnded) {
+      room.game = null;
+      room.hasStarted = false;
+      room.hasProposed = false;
+      Object.keys(room.members).forEach((x) => room.members[x].hasAgreed = false);
+      io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+      io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+    }
   });
 });
 
