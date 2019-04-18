@@ -30,6 +30,7 @@ class MonsterCard extends Card {
     this.hasChangedPose = false;
     this.lockPose = false;
     this.cardType = Card.MONSTER;
+    this.hasEnvironment = false;
   }
 
   /**
