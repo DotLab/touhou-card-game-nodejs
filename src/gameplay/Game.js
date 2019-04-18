@@ -186,8 +186,8 @@ class Game {
     player.removeCardInHandById(monsterId);
     player.field.setSlot(slotId, monster);
     monster.summon(display, pose);
-    if (player.field.environmentSlot && !monster.hasEnvironment) {
-      player.field.environmentSlot.invoke(monster);
+    if (player.field.environmentSlot) {
+      player.field.environmentSlot.applyEnvironment(monster);
     }
 
     // const actionParams = [handIdx, monsterIdx, display, pose];
@@ -223,7 +223,7 @@ class Game {
     return Game.success();
   }
 
-  placeEnv(envId) {
+  placeEnvironment(envId) {
     const player = this.players[this.turn];
     const env = player.findCardInHandById(envId);
     if (!env) return Game.error('cannot find environment card in hand');

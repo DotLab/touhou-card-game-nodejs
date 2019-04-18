@@ -13,7 +13,7 @@ class SorcerousSpellWallCard extends EnvironmentCard {
    * apply effect to a monster card
    * @param {object} monsterCard
    */
-  invoke(monsterCard) {
+  applyEnvironment(monsterCard) {
     // the monster card gains 300 points increase in attack and defense.
     // this effect can only apply once.
     monsterCard.atk += SorcerousSpellWallCard.Atk;

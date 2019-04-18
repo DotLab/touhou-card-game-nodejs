@@ -6,14 +6,6 @@ class EnvironmentCard extends Card {
   }
 
   /**
-   * environment card can be placed without restrictions
-   * @return {boolean}
-   */
-  canPlace() {
-    return true;
-  }
-
-  /**
    * set the display of environment card
    * @param {string} display
    */

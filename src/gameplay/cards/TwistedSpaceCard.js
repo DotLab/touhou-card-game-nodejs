@@ -13,8 +13,8 @@ class TwistedSpaceCard extends EnvironmentCard {
    * apply effect to a monster card
    * @param {object} monsterCard
    */
-  invoke(monsterCard) {
-    // the monster card gains 300 points increase in attack and defense.
+  applyEnvironment(monsterCard) {
+    // swap monster's attack and defense
     // this effect can only apply once.
     const temp = monsterCard.atk;
     monsterCard.atk = monsterCard.dfs;

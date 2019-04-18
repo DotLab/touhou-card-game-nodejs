@@ -14,7 +14,7 @@ describe('DarkMagicVeilCard', () => {
 
   it('#invoke', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
-    assertGameSuccess(game.placeEnv(game.players[game.turn].hand[0].id));
+    assertGameSuccess(game.placeEnvironment(game.players[game.turn].hand[0].id));
     assertGameSuccess(game.summon(game.players[0].hand[0].id, game.players[0].field.getMonsterSlotId(1), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[1].atk, DarkMagicianCard.Dfs);
     assert.equal(game.players[0].field.monsterSlots[1].dfs, DarkMagicianCard.Atk);

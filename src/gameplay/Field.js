@@ -3,6 +3,7 @@ const Card = require('../gameplay/cards/Card');
 // /** @typedef {import('../gameplay/cards/Card')} Card */
 /** @typedef {import('../gameplay/cards/MonsterCard')} MonsterCard */
 /** @typedef {import('../gameplay/cards/SpellCard')} SpellCard */
+/** @typedef {import('../gameplay/cards/EnvironmentCard')} EnvironmentCard */
 
 /**
  * The field
@@ -16,7 +17,7 @@ class Field {
     this.monsterSlots = [null, null, null, null];
     /** @type {SpellCard[]} */
     this.spellSlots = [null, null, null, null];
-    /** @type {Card} */
+    /** @type {EnvironmentCard} */
     this.environmentSlot = null;
     /** @type {Card[]} */
     this.graveyard = [];
