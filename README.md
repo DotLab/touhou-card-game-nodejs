@@ -33,6 +33,11 @@ Clone this repository:
 git clone https://github.com/DotLab/touhou-card-game-nodejs
 ```
 
+Go to the project root directory:
+```
+cd touhou-card-game-nodejs
+```
+
 Install back-end dependencies:
 ```
 npm install
@@ -44,6 +49,8 @@ cd app && npm install
 ```
 
 ## Production build
+Go to the project root directory.
+
 Build front end:
 ```
 npm run build-app
@@ -57,12 +64,17 @@ npm start
 
 ## Development commands
 ### Enable debug log in console
-Set environment variable `DEBUG` to `"tcg*"`:
+Go to the project root directory.
+
+To enable debugging console output, set environment variable `DEBUG` to `tcg*`.
+The following example is for Linux-like systems.
 ```
-export DEBUG="tcg*"
+export DEBUG=tcg*
 ```
 
 ### Start web app for development
+Go to the project root directory.
+
 Start back-end server on port 3000:
 ```
 npm run debug
@@ -79,7 +91,41 @@ When asked **"Would you like to run the app on another port instead,"** say yes.
 cd app && npm start
 ```
 
+Now whenever any files are updated, the back end and front end will be restarted automatically.
+
+### Run end-to-end test using the development back end and front end
+Start web app for development.
+
+Set environment variable `E2E_INDEX` to `http://localhost:3001`.
+The following example is for Linux-like systems.
+```
+export E2E_INDEX=http://localhost:3001
+```
+
+Clear database:
+```
+node ./scripts/clearDatabase.js
+```
+
+Run selenium:
+```
+npm start e2e
+```
+
 ### Run end-to-end tests
+Go to the project root directory.
+
+Build front end:
+```
+npm run build-app
+```
+
+Run production server on port 3000.
+This server also serves front end.
+```
+npm start
+```
+
 Clear database:
 ```
 node ./scripts/clearDatabase.js
@@ -91,6 +137,8 @@ npm start e2e
 ```
 
 ### Miscellany
+Go to the project root directory.
+
 Check formats:
 ```
 npm run lint
