@@ -11,6 +11,15 @@ class Card {
     return text;
   }
 
+  static createAction(name, desc, position, params) {
+    return {name, desc, in: position, params};
+  }
+
+  static createActionParam(select, position, owner, desc) {
+    return {select, in: position, of: owner, desc};
+  }
+
+
   /**
    * @constructor
    * @param {String} name unique name

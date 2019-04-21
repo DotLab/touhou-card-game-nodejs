@@ -15,6 +15,8 @@ exports.User = mongoose.model('User', {
   spiritPointsCount: Number,
   magicPointsCount: Number,
   lifeUpgrade: Number,
+  following: [String],
+  followers: [String],
 });
 
 // A User has a record of each game they have played
@@ -22,4 +24,10 @@ exports.Record = mongoose.model('Record', {
   userId: ObjectId,
   gameId: String,
   hasWon: Boolean,
+});
+
+exports.Flag = mongoose.model('Flag', {
+  message: String,
+  playerFrom: String,
+  playerTo: String,
 });

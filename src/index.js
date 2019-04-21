@@ -167,6 +167,8 @@ io.on('connection', function(socket) {
       spiritPointsCount: 100,
       magicPointsCount: 100,
       lifeUpgrade: 0,
+      following: [],
+      followers: [],
     });
 
     done(success());
@@ -208,6 +210,8 @@ io.on('connection', function(socket) {
         spiritPointsCount: user.spiritPointsCount,
         magicPointsCount: user.magicPointsCount,
         lifeUpgrade: user.lifeUpgrade,
+        following: user.following,
+        followers: user.followers,
       }));
     } else {
       done(error('wrong username/password'));
@@ -259,6 +263,8 @@ io.on('connection', function(socket) {
       bio: doc.bio,
       lastDate: doc.lastDate,
       lifeUpgrade: doc.lifeUpgrade,
+      following: doc.following,
+      followers: doc.followers,
     })).sort((a, b) => {
       if (a.lifeUpgrade && !b.lifeUpgrade) return 0;
       if (!a.lifeUpgrade && b.lifeUpgrade) return 1;
@@ -266,6 +272,40 @@ io.on('connection', function(socket) {
     });
 
     done(success(users));
+  });
+
+  socket.on('cl_following', async (playerTo, done) => {
+    debug('cl_following', playerTo);
+
+    if (!user) return done(error('forbidden'));
+
+    // update playerTo.followers
+    if (!Array.isArray(user.following) || user.following.length < 1) {
+      user.following = [playerTo];
+      try {
+        await User.findOneAndUpdate({name: playerTo},
+            {'$push': {'followers': user.name}}
+        );
+      } catch (e) {
+        return done(error('follower failed'));
+      }
+    } else if (user.following.indexOf(playerTo) === -1) {
+      user.following.push(playerTo);
+      try {
+        await User.findOneAndUpdate({name: playerTo},
+            {'$push': {'followers': user.name}}
+        );
+      } catch (e) {
+        return done(error('follower failed'));
+      }
+    }
+
+    try {
+      await User.findByIdAndUpdate(user.id, user);
+      return done(success({following: user.following}));
+    } catch (e) {
+      return done(error('following failed'));
+    }
   });
 
   socket.on('cl_create_room', async ({name}, done) => {
@@ -435,8 +475,13 @@ io.on('connection', function(socket) {
       case 'attack': res = room.game.attack(action.cardId, params[0]); break;
       case 'invokeMonsterEffect': res = room.game.invokeMonsterEffect(action.cardId, params); break;
 
+      case 'summonTribute1': res = room.game.summon(action.cardId, params[1], params[2], params[3], [params[0]]); break;
+      case 'summonTribute2': res = room.game.summon(action.cardId, params[2], params[3], params[4], [params[0], params[1]]); break;
+
       case 'place': res = room.game.place(action.cardId, params[0], params[1]); break;
       case 'invokeSpell': res = room.game.invokeSpell(action.cardId, params); break;
+
+      case 'applyEnvironment': res = room.game.applyEnvironment(action.cardId); break;
     }
 
     debug(res);
@@ -448,8 +493,17 @@ io.on('connection', function(socket) {
       done(error(res.msg));
     }
 
-    // socket.emit('sv_game_update', game.takeSnapshot());
+    room.game.checkGameEnd();
     io.to(room.id).emit('sv_game_update', room.game.takeSnapshot());
+
+    if (room.game.hasEnded) {
+      room.game = null;
+      room.hasStarted = false;
+      room.hasProposed = false;
+      Object.keys(room.members).forEach((x) => room.members[x].hasAgreed = false);
+      io.to(room.id).emit(SV_UPDATE_ROOM, serializeRoom(room));
+      io.to(LOBBY).emit(SV_UPDATE_LOBBY, serializeLobby());
+    }
   });
 });
 
@@ -470,6 +524,8 @@ const cards = [
   // './gameplay/cards/SpellbookOfSecretsCard',
   './gameplay/cards/ThousandKnivesCard',
   './gameplay/cards/ZaborgTheThunderMonarchCard',
+  './gameplay/cards/SorcerousSpellWallCard',
+  './gameplay/cards/TwistedSpaceCard',
 ];
 
 function createDeck() {
