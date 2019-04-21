@@ -79,6 +79,7 @@ describe('gameStart', () => {
     const tabHandles =await driver.getAllWindowHandles();
     await driver.switchTo().window(tabHandles[1]);
 
+    // find and fill the login fields
     const loginName = await driver.findElement(By.name('loginName'));
     const loginPassword = await driver.findElement(By.name('loginPassword'));
     loginName.clear();
