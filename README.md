@@ -8,6 +8,15 @@ work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 ---
 
+[![Build Status](https://travis-ci.org/DotLab/touhou-card-game-nodejs.svg?branch=master)](https://travis-ci.org/DotLab/touhou-card-game-nodejs)
+[![Coverage Status](https://coveralls.io/repos/github/DotLab/touhou-card-game-nodejs/badge.svg?branch=master)](https://coveralls.io/github/DotLab/touhou-card-game-nodejs?branch=master)
+
+Coverage status: <https://coveralls.io/github/DotLab/touhou-card-game-nodejs>
+
+CI status: <https://travis-ci.org/DotLab/touhou-card-game-nodejs>
+
+---
+
 Main Contributors
 - Kailang <https://github.com/Kailang>
 - Enlne <https://github.com/Enlne>
@@ -15,15 +24,6 @@ Main Contributors
 - SirCharlie <https://github.com/SirCharlie>
 - Danielczl315 <https://github.com/Danielczl315>
 - BingXuhan <https://github.com/BingXuhan>
-
----
-
-[![Build Status](https://travis-ci.org/DotLab/touhou-card-game-nodejs.svg?branch=master)](https://travis-ci.org/DotLab/touhou-card-game-nodejs)
-[![Coverage Status](https://coveralls.io/repos/github/DotLab/touhou-card-game-nodejs/badge.svg?branch=master)](https://coveralls.io/github/DotLab/touhou-card-game-nodejs?branch=master)
-
-Coverage status: <https://coveralls.io/github/DotLab/touhou-card-game-nodejs>
-
-CI status: <https://travis-ci.org/DotLab/touhou-card-game-nodejs>
 
 ## Development setup
 Install NodeJS 10.x LTS: <https://nodejs.org>
@@ -57,7 +57,10 @@ npm start
 
 ## Development commands
 ### Enable debug log in console
-Set environment variable to
+Set environment variable `DEBUG` to `"tcg*"`:
+```
+export DEBUG="tcg*"
+```
 
 ### Start web app for development
 Start back-end server on port 3000:
