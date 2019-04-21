@@ -24,14 +24,22 @@ class ZaborgTheThunderMonarchCard extends MonsterCard {
    * [0]: monsterId
    */
   invoke(game, player, invokeParams) {
+    // if no monster is specified, skip the effect
     if (!invokeParams[0]) return;
     const monsterId = invokeParams[0];
 
+    // find the targeted monster and destroy it
     const target = game.findCardOwnerById(monsterId);
     target.field.killMonsterById(monsterId);
+
+    // monster's effect could only apply once
     this.activated = true;
   }
 
+  /**
+   * take snapshot of the current card
+   * @return {Object} the snapshot of the game
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {
