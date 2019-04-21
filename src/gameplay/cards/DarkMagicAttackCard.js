@@ -4,11 +4,21 @@ const Game = require('../Game');
 
 /** @typedef {import('../Player')} Player */
 
+/**
+ * DarkMagicAttackCard
+ * @extends SpellCard
+ */
 class DarkMagicAttackCard extends SpellCard {
   constructor() {
     super(DarkMagicAttackCard.Name, DarkMagicAttackCard.Desc, DarkMagicAttackCard.ImgUrl);
   }
 
+  /**
+   * Check if can invoke
+   * @param {Game} game
+   * @param {Player} player
+   * @return {Boolean}
+   */
   canInvoke(game, player) {
     for (let i = 0; i < player.field.monsterSlots.length; i += 1) {
       if (player.field.monsterSlots[i] !== null && player.field.monsterSlots[i].name === DarkMagicianCard.Name) return true;
@@ -17,6 +27,7 @@ class DarkMagicAttackCard extends SpellCard {
   }
 
   /**
+   * Invoke card effects
    * @param {Game} game
    * @param {Player} player
    * @param {[String]} invokeParams [opponentId]
@@ -43,6 +54,10 @@ class DarkMagicAttackCard extends SpellCard {
     }
   }
 
+  /**
+   * Take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

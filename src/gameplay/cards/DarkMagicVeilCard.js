@@ -5,6 +5,10 @@ const Card = require('./Card');
 
 /** @typedef {import('../Player')} Player */
 
+/**
+ * DarkMagicVeilCard
+ * @extends SpellCard
+ */
 class DarkMagicVeilCard extends SpellCard {
   constructor() {
     super(DarkMagicVeilCard.Name, DarkMagicVeilCard.Desc, DarkMagicVeilCard.ImgUrl);
@@ -53,6 +57,10 @@ class DarkMagicVeilCard extends SpellCard {
     }
   }
 
+  /**
+   * Take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

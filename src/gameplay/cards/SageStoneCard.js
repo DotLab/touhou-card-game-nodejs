@@ -7,11 +7,22 @@ const Game = require('../Game');
 
 /** @typedef {import('../Player')} Player */
 
+/**
+ * SageStoneCard
+ * @extends SpellCard
+ */
 class SageStoneCard extends SpellCard {
   constructor() {
     super(SageStoneCard.Name, SageStoneCard.Desc, SageStoneCard.Url);
   }
 
+  /**
+   * Check if can invoke
+   * @param {Game} game
+   * @param {Player} player
+   * @param {Array} invokeParams
+   * @return {Boolean}
+   */
   canInvoke(game, player, invokeParams) {
     if (player.field.monsterSlots[invokeParams[0]] != null) return false;
     for (let i = 0; i < player.field.monsterSlots.length; i += 1) {
@@ -52,6 +63,10 @@ class SageStoneCard extends SpellCard {
     }
   }
 
+  /**
+   * Take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

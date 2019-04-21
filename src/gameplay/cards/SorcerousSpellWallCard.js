@@ -1,7 +1,7 @@
 const EnvironmentCard = require('./EnvironmentCard');
 
 /**
- * SorcerousSpellWall Card
+ * SorcerousSpellWallCard
  * @extends EnvironmentCard
  */
 class SorcerousSpellWallCard extends EnvironmentCard {

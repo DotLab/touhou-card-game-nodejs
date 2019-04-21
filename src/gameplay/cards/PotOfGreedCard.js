@@ -1,11 +1,22 @@
 const SpellCard = require('./SpellCard');
 const Game = require('../Game');
 
+/** @typedef {import('../Player')} Player */
+
+/**
+ * PotOfGreedCard
+ * @extends SpellCard
+ */
 class PotOfGreedCard extends SpellCard {
   constructor() {
     super(PotOfGreedCard.Name, PotOfGreedCard.Desc, PotOfGreedCard.ImgUrl);
   }
 
+  /**
+   * Invoke card effects
+   * @param {Game} game
+   * @param {Player} player
+   */
   invoke(game, player) {
     for ( let i = 0; i < PotOfGreedCard.CardsDraw; i++) {
       player.draw();
@@ -18,6 +29,10 @@ class PotOfGreedCard extends SpellCard {
     }
   }
 
+  /**
+   * Take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

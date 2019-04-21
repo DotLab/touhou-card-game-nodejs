@@ -6,7 +6,7 @@ const Card = require('../gameplay/cards/Card');
 /** @typedef {import('../gameplay/cards/EnvironmentCard')} EnvironmentCard */
 
 /**
- * The field
+ * Field
  */
 class Field {
   /**
@@ -32,13 +32,11 @@ class Field {
     ];
   }
 
-  // hasSlot(id) {
-  //   for (let i = 0; i < 9; i += 1) {
-  //     if (this.slotIds[i] === id) return true;
-  //   }
-  //   return false;
-  // }
-
+  /**
+   * Check if has monster slot with id
+   * @param {String} id
+   * @return {Boolean}
+   */
   hasMonsterSlot(id) {
     for (let i = 0; i < 4; i += 1) {
       if (this.slotIds[i] === id) return true;
@@ -46,6 +44,11 @@ class Field {
     return false;
   }
 
+  /**
+   * Check if has spell slot with id
+   * @param {String} id
+   * @return {Boolean}
+   */
   hasSpellSlot(id) {
     for (let i = 4; i < 8; i += 1) {
       if (this.slotIds[i] === id) return true;
@@ -53,10 +56,21 @@ class Field {
     return false;
   }
 
+  /**
+   * Check if slot empty
+   * @param {String} id
+   * @return {Boolean}
+   */
   isSlotEmpty(id) {
     return !this.getSlot(id);
   }
 
+  /**
+   * Set the slot
+   * @param {String} id
+   * @param {Card} card
+   * @return {Card}
+   */
   setSlot(id, card) {
     if (id === this.slotIds[0]) return this.monsterSlots[0] = card;
     if (id === this.slotIds[1]) return this.monsterSlots[1] = card;
@@ -69,6 +83,11 @@ class Field {
     if (id === this.slotIds[8]) return this.environmentSlot = card;
   }
 
+  /**
+   * Get slot
+   * @param {String} id
+   * @return {Card}
+   */
   getSlot(id) {
     if (id === this.slotIds[0]) return this.monsterSlots[0];
     if (id === this.slotIds[1]) return this.monsterSlots[1];
@@ -82,17 +101,23 @@ class Field {
     return null;
   }
 
+  /**
+   * Get monster slot ID
+   * @param {Number} slotIndex
+   * @return {String}
+   */
   getMonsterSlotId(slotIndex) {
     return this.slotIds[slotIndex];
   }
 
+  /**
+   * Get spell slot id
+   * @param {Number} slotIndex
+   * @return {String}
+   */
   getSpellSlotId(slotIndex) {
     return this.slotIds[4 + slotIndex];
   }
-
-  // getEnvironmentSlotId() {
-  //   return this.slotIds[8];
-  // }
 
   /**
   * Remove a card from oblivion field
@@ -104,6 +129,9 @@ class Field {
     return removed[0];
   }
 
+  /**
+   * end turn
+   */
   endTurn() {
     if (this.monsterSlots[0]) this.monsterSlots[0].endTurn();
     if (this.monsterSlots[1]) this.monsterSlots[1].endTurn();
@@ -116,21 +144,16 @@ class Field {
     if (this.environmentSlot) this.environmentSlot.endTurn();
   }
 
+  /**
+   * Check if has monster
+   * @return {Boolean}
+   */
   hasMonster() {
     for (let i = 0; i < this.monsterSlots.length; i += 1) {
       if (this.monsterSlots[i] !== null) return true;
     }
     return false;
   }
-
-  // canActivate(game, owner, actor, action, actionParams, phase) {
-  //   for (let i = 0; i < this.spellSlots.length; i += 1) {
-  //     if (this.spellSlots[i] !== null && this.spellSlots[i].canActivate(game, owner, actor, action, actionParams, phase)) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
 
   /**
    * @param {String} id
@@ -154,6 +177,11 @@ class Field {
     return null;
   }
 
+  /**
+   * Find card by id
+   * @param {String} id
+   * @return {Card}
+   */
   findCardById(id) {
     if (this.monsterSlots[0] && this.monsterSlots[0].id === id) return this.monsterSlots[0];
     if (this.monsterSlots[1] && this.monsterSlots[1].id === id) return this.monsterSlots[1];
@@ -167,6 +195,11 @@ class Field {
     return null;
   }
 
+  /**
+   * Remove card by id
+   * @param {String} id
+   * @return {Object}
+   */
   removeCardById(id) {
     if (this.monsterSlots[0] && this.monsterSlots[0].id === id) return this.monsterSlots[0] = null;
     if (this.monsterSlots[1] && this.monsterSlots[1].id === id) return this.monsterSlots[1] = null;
@@ -180,6 +213,10 @@ class Field {
     return null;
   }
 
+  /**
+   * Kill monster by id
+   * @param {String} id
+   */
   killMonsterById(id) {
     for (let i = 0; i < this.monsterSlots.length; i += 1) {
       if (this.monsterSlots[i] && this.monsterSlots[i].id === id) {
@@ -190,6 +227,10 @@ class Field {
     }
   }
 
+  /**
+   * Kill spell by id
+   * @param {String} id
+   */
   killSpellById(id) {
     for (let i = 0; i < this.spellSlots.length; i += 1) {
       if (this.spellSlots[i] && this.spellSlots[i].id === id) {

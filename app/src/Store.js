@@ -57,11 +57,6 @@ export default class Store extends React.Component {
               <td className="Va(m)!">{LIFE_UPGRADE_COST} SP</td>
               <td className="Va(m)!">{user.spiritPointsCount >= LIFE_UPGRADE_COST ? <button className="btn btn-danger" onClick={this.buyLife}>Buy</button> : "Too Poor To Buy"}</td>
             </tr>
-            {/* <tr>
-              <td>Card Upgrade </td>
-              <td>-100 Spirit Points </td>
-              <td>Not yet implemented </td>
-            </tr> */}
           </tbody>
         </table>
 

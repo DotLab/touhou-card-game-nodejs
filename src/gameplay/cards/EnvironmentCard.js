@@ -3,6 +3,10 @@ const Game = require('../Game');
 
 const action = Card.createAction;
 
+/**
+ * EnvironmentCard
+ * @extends Card
+ */
 class EnvironmentCard extends Card {
   constructor(name, desc, imgUrl) {
     super(name, desc, imgUrl);
@@ -16,6 +20,10 @@ class EnvironmentCard extends Card {
     this.display = display;
   }
 
+  /**
+   * Take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     return {
       ...super.takeSnapshot(),

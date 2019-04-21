@@ -2,7 +2,7 @@ const MonsterCard = require('./MonsterCard');
 const Game = require('../Game');
 
 /**
- * MobiusTheFrostMonarch Card
+ * MobiusTheFrostMonarchCard
  * @extends MonsterCard
  */
 class MobiusTheFrostMonarchCard extends MonsterCard {
