@@ -14,7 +14,7 @@ describe('gameStart', () => {
   it('open index page', async () => {
     await driver.get(E2E_INDEX);
     // const createNewTab = await Key.chord(Key.CONTROL, Key.);
-    driver.executeScript('window.open("http://localhost:3000/");');
+    await driver.executeScript(`window.open('${E2E_INDEX}');`);
     // Key.chord
     await driver.get(E2E_INDEX);
     const tabHandles =await driver.getAllWindowHandles();
@@ -41,11 +41,11 @@ describe('gameStart', () => {
 
 
   it('register1', async () => {
-    await register('testName1', 'testPassword1');
+    await register('gameStart3', 'gameStartPassword3');
   });
 
   it('register2', async () => {
-    await register('testName2', 'testPassword2');
+    await register('gameStart4', 'gameStartPassword4');
   });
 
   it('login1', async () => {
@@ -54,13 +54,13 @@ describe('gameStart', () => {
 
     await loginName.clear();
     await loginPassword.clear();
-    await loginName.sendKeys('testName1');
-    await loginPassword.sendKeys('testPassword1');
+    await loginName.sendKeys('gameStart3');
+    await loginPassword.sendKeys('gameStartPassword3');
     await loginName.submit();
 
     await driver.wait(until.elementLocated(By.css('.alert')));
     const alert = await driver.findElement(By.css('.alert'));
-    assert.match(await alert.getText(), /Welcome testName1!/);
+    assert.match(await alert.getText(), /Welcome gameStart3!/);
   });
 
   it('createRoom', async () => {
@@ -69,10 +69,13 @@ describe('gameStart', () => {
     await findRoom.clear();
     await findRoom.sendKeys('room1');
     await findRoom.submit();
+
+    const roomCreated = await driver.findElement(By.xpath('//*[contains(text(), \'Joined room:\')]'));
+
+    assert.equal(await roomCreated.getText(), 'Joined room: room1 (owned by gameStart3)  Leave Room');
   });
 
   it('login2', async () => {
-    // const switchTab = await Key.chord(Key.CONTROL, Key.TAB);
     const tabHandles =await driver.getAllWindowHandles();
     await driver.switchTo().window(tabHandles[1]);
 
@@ -80,18 +83,21 @@ describe('gameStart', () => {
     const loginPassword = await driver.findElement(By.name('loginPassword'));
     loginName.clear();
     loginPassword.clear();
-    await loginName.sendKeys('testName2');
-    await loginPassword.sendKeys('testPassword2');
+    await loginName.sendKeys('gameStart4');
+    await loginPassword.sendKeys('gameStartPassword4');
     await loginName.submit();
 
     await driver.wait(until.elementLocated(By.css('.alert')));
     const alert = await driver.findElement(By.css('.alert'));
-    assert.match(await alert.getText(), /Welcome testName2!/);
+    assert.match(await alert.getText(), /Welcome gameStart4!/);
   });
 
   it('joinRoom', async () => {
     const joinRoom = await driver.findElement(By.xpath('//*[contains(text(), \'Join\')]'));
     await joinRoom.click();
+
+    const roomJoined = await driver.findElement(By.xpath('//*[contains(text(), \'Joined room:\')]'));
+    assert.equal(await roomJoined.getText(), 'Joined room: room1 (owned by gameStart3) 1 members: gameStart4, Leave Room');
   });
 
   it('proposeStart', async () => {
@@ -100,6 +106,9 @@ describe('gameStart', () => {
 
     const proposeStart = await driver.findElement(By.xpath('//*[contains(text(), \'Propose to Start a Game\')]'));
     await proposeStart.click();
+
+    const waitingState = await driver.findElement(By.xpath('//*[@id="lobby"]/div/div[2]/div/div/ul/li'));
+    assert.equal(await waitingState.getText(), 'gameStart4 Waiting for agreement');
   });
 
   it('AgreeToStart', async () => {
@@ -108,6 +117,9 @@ describe('gameStart', () => {
 
     const agreeStart = await driver.findElement(By.xpath('//*[contains(text(), \'Agree to Start the Game\')]'));
     await agreeStart.click();
+
+    const agreedState = await driver.findElement(By.xpath('//*[@id="lobby"]/div/div[2]/div/div/ul/li'));
+    assert.equal(await agreedState.getText(), 'gameStart4 Agreed to start');
   });
 
   it('startGame', async () => {
@@ -116,5 +128,8 @@ describe('gameStart', () => {
 
     const agreeStart = await driver.findElement(By.xpath('//*[contains(text(), \'Start the Game\')]'));
     await agreeStart.click();
+
+    const startState = await driver.findElement(By.xpath('//*[@id="lobby"]/div/div[2]'));
+    assert.equal(await startState.getText(), 'Enjoy the game!');
   });
 });
