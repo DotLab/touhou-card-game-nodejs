@@ -4,13 +4,16 @@ const {createWebdriver, E2E_INDEX} = require('./utils');
 const {By} = require('selenium-webdriver');
 
 describe('showIndex', () => {
+  // start a web
   const driver = createWebdriver();
 
   after(() => {
+    // close the web
     driver.quit();
   });
 
   it('open index page', async () => {
+    // go to the game page
     await driver.get(E2E_INDEX);
   });
 
