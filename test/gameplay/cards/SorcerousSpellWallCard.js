@@ -16,7 +16,7 @@ describe('SorcerousSpellWallCard', () => {
   it('#invoke', () => {
     // build the game, create one user
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
-    // player 0 should deploy the environment card
+    // player 0 should deploy the environment card Sorcerous Spell Wall
     assertGameSuccess(game.applyEnvironment(game.players[game.turn].hand[0].id));
     // then player 0 should summon the tested monster card
     assertGameSuccess(game.summon(game.players[0].hand[0].id, game.players[0].field.getMonsterSlotId(1), Card.REVEALED, Card.ATTACK));
