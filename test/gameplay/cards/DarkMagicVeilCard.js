@@ -12,6 +12,10 @@ describe('DarkMagicVeilCard', () => {
     return [new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicVeilCard(), new DarkMagicVeilCard(), new DarkMagicVeilCard()];
   }
 
+  function buildDeck2() {
+    return [new DarkMagicVeilCard(), new DarkMagicVeilCard(), new DarkMagicVeilCard(), new DarkMagicVeilCard(), new DarkMagicVeilCard()];
+  }
+
   it('#invoke', () => {
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
     // Dark Magic Attack can invoke!
@@ -29,5 +33,11 @@ describe('DarkMagicVeilCard', () => {
     assert.equal(game.players[0].field.spellSlots[0], null);
     assert.equal(game.players[0].field.graveyard.length, 1);
     game.takeSnapshot();
+  });
+
+  it('#cannotInvoke', () => {
+    const game = new Game([{id: 'abc', deck: buildDeck2()}]);
+    // Dark Magic Attack can invoke!
+    assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [game.players[game.turn].field.getMonsterSlotId(0)]));
   });
 });

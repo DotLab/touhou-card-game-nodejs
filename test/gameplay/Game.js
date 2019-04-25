@@ -160,6 +160,20 @@ describe('Game', () => {
     assert.equal(game.players[game.turn].field.monsterSlots[1].id, card1.id);
   });
 
+  it('#findCardOwnerById', () => {
+    const game = new Game([
+      {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 5, 100, 100)]},
+    ]);
+    assert.equal(game.findCardOwnerById(null), null);
+  });
+
+  it('#findPlayer', () => {
+    const game = new Game([
+      {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 5, 100, 100)]},
+    ]);
+    assert.equal(game.findPlayer(null), null);
+  });
+
   it('#summon 1 tribute error', () => {
     const game = new Game([
       {id: 'abc', name: 'F', deck: [new MonsterCard('', '', '', 5, 100, 100)]},

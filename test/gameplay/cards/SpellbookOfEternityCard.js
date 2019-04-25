@@ -4,6 +4,7 @@ const Game = require('../../../src/gameplay/Game');
 const Card = require('../../../src/gameplay/cards/Card');
 const SpellbookOfSecretsCard = require('../../../src/gameplay/cards/SpellbookOfSecretsCard');
 const SpellbookOfEternityCard = require('../../../src/gameplay/cards/SpellbookOfEternityCard');
+const BlueEyesWhiteDragonCard = require('../../../src/gameplay/cards/BlueEyesWhiteDragonCard');
 const {assertGameSuccess} = require('../Game');
 
 describe('SpellbookOfEternityCard', () => {
@@ -22,6 +23,13 @@ describe('SpellbookOfEternityCard', () => {
     // Can't invoke for the card with same name
     const game = new Game([{id: 'abc', deck: buildDeck()}]);
     game.players[0].field.oblivion.push(new SpellbookOfEternityCard());
+    assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [0]));
+  });
+
+  it('#incorrectName', () => {
+    // Cannot invoke if name does not have spellbook
+    const game = new Game([{id: 'abc', deck: buildDeck()}]);
+    game.players[0].field.oblivion.push(new BlueEyesWhiteDragonCard());
     assert.isFalse(game.players[0].hand[0].canInvoke(game, game.players[0], [0]));
   });
 

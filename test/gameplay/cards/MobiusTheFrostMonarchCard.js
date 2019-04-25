@@ -141,4 +141,24 @@ describe('MobiusTheFrostMonarchCard', ()=>{
     // mobius cannot activates his power twice
     assertGameError(game.invokeMonsterEffect(0, [0, 0, 0, 0]));
   });
+
+  it('#cannot activate (empty target)', ()=>{
+    const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
+    // player 0 place two spell cards
+    assert.isTrue(game.players[0].hand[1].canInvoke());
+    assert.isTrue(game.players[0].hand[2].canInvoke());
+    // both spell cards are hidden, waiting to be destroyed
+    assertGameSuccess(game.place(game.players[game.turn].hand[1].id, game.players[game.turn].field.getSpellSlotId(0), Card.HIDDEN));
+    assertGameSuccess(game.place(game.players[game.turn].hand[1].id, game.players[game.turn].field.getSpellSlotId(1), Card.HIDDEN));
+    //  end player 0 turn
+    assertGameSuccess(game.endTurn());
+    // now it is player 1 turn
+    assert.equal(game.turn, 1);
+    // player 1 summons mobius the frost monarch
+    assertGameSuccess(game.summon(game.players[game.turn].hand[0].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
+    assert.equal(game.players[1].field.monsterSlots[0].name, 'Mobius the Frost Monarch');
+    assert.equal(game.players[1].field.monsterSlots[0].pose, Card.ATTACK);
+    // let mobius uses his power on two two spell cards from player one
+    assertGameSuccess(game.invokeMonsterEffect(game.players[1].field.monsterSlots[0].id, [game.players[0].field.spellSlots[0].id, null]));
+  });
 });

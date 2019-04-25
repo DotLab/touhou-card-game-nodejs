@@ -15,11 +15,9 @@ class SpellbookOfEternityCard extends SpellCard {
     const name = oblivion[oblivionIdx].name;
     if (!name.includes('Spellbook')) return false; //  not a spellbook card
     if (name == SpellbookOfEternityCard.Name) return false;
-    if (oblivion.length == 0) return false; // no card in oblivion
     if (player.hasActivated[SpellbookOfEternityCard.Name] == true) {
       return false; // if has activated on this turn
     }
-    if (! (oblivion[oblivionIdx] instanceof SpellCard) ) return false; // not a spell card
     return true;
   }
 

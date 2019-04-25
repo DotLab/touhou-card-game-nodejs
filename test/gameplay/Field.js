@@ -34,6 +34,21 @@ describe('Field', () => {
     assert.isTrue(field.hasMonster());
   });
 
+  it('#findCardById', () => {
+    const field = new Field();
+    assert.equal(field.findCardById(null), null);
+  });
+
+  it('#findSpellById', () => {
+    const field = new Field();
+    assert.equal(field.findSpellById(null), null);
+  });
+
+  it('#removeCardById', () => {
+    const field = new Field();
+    assert.equal(field.removeCardById(null), null);
+  });
+
   it('#hasMonsterSlot', () => {
     const field = new Field();
     assert.isFalse(field.hasMonsterSlot('abc'));
