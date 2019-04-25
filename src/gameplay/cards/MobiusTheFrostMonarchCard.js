@@ -33,15 +33,23 @@ class MobiusTheFrostMonarchCard extends MonsterCard {
    */
   invoke(game, player, invokeParams) {
     for (let i = 0; i < invokeParams.length; i++) {
+      // if the first parameter is not specified, then no effect should apply
       if (!invokeParams[i]) continue;
 
+      // find the corresponding spell card
       const spellId = invokeParams[i];
       const target = game.findCardOwnerById(spellId);
+      // kill that spell card
       target.field.killSpellById(spellId);
     }
+    // effect could only apply once
     this.activated = true;
   }
 
+  /**
+   * take snapshot of the current card
+   * @return {Object} the snapshot of the game
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

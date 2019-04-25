@@ -10,13 +10,15 @@ const BlueEyesWhiteDragonCard = require('../../../src/gameplay/cards/BlueEyesWhi
 const {assertGameSuccess, assertGameError} = require('../Game');
 
 describe('ZaborgTheThunderMonarchCard', ()=>{
+  // initialize a deck with two monster cards, BlueEyesWhiteDragonCard, and the tested card, ZaborgTheThunderMonarchCard
   function buildDeck() {
     return [new BlueEyesWhiteDragonCard(), new BlueEyesWhiteDragonCard, new ZaborgTheThunderMonarchCard()];
   }
 
   it('#activate', ()=> {
+    // build the game, create two users, then assign cards to them.
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
-    // player 0 place one monster card
+    // player 0 place one monster card, set it to reveal and attack
     assertGameSuccess(game.summon(game.players[0].hand[1].id, game.players[0].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[0].name, BlueEyesWhiteDragonCard.Name);
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
@@ -60,6 +62,7 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
   });
 
   it('#choose not to activate', () => {
+    // build the game, create two users, then assign cards to them.
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
     // player 0 place one monster card
     assertGameSuccess(game.summon(game.players[0].hand[1].id, game.players[0].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
@@ -94,6 +97,7 @@ describe('ZaborgTheThunderMonarchCard', ()=>{
   });
 
   it('#cannot activate', ()=>{
+    // build the game, create two users, then assign cards to them.
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
     // player 0 place a monster cards
     assertGameSuccess(game.summon(game.players[0].hand[1].id, game.players[0].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
