@@ -1,7 +1,7 @@
 const EnvironmentCard = require('./EnvironmentCard');
 
 /**
- * TwistedSpace Card
+ * TwistedSpaceCard
  * @extends EnvironmentCard
  */
 class TwistedSpaceCard extends EnvironmentCard {

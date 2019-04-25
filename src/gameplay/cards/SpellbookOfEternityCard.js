@@ -1,5 +1,9 @@
 const SpellCard = require('./SpellCard');
 
+/**
+ * SpellbookOfEternityCard
+ * @extends SpellCard
+ */
 class SpellbookOfEternityCard extends SpellCard {
   constructor() {
     super(SpellbookOfEternityCard.Name, SpellbookOfEternityCard.Desc, SpellbookOfEternityCard.ImgUrl);

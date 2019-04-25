@@ -2,6 +2,8 @@ const MonsterCard = require('./MonsterCard');
 const DarkMagicianCard = require('./DarkMagicianCard');
 const Game = require('../Game');
 
+/** @typedef {import('../Player')} Player */
+
 /**
  * DarkMagicianGirl Card
  * @extends MonsterCard
@@ -12,10 +14,19 @@ class DarkMagicianGirlCard extends MonsterCard {
     this.hasInvoked = false;
   }
 
+  /**
+   * Check if can invoke
+   * @return {Boolean}
+   */
   canInvoke() {
     return !this.hasInvoked;
   }
 
+  /**
+   * Invoke card effects
+   * @param {Game} game
+   * @param {Player} player
+   */
   invoke(game, player) {
     let count = 0;
     for (let i = 0; i < player.field.graveyard.length; i += 1) {
@@ -25,6 +36,10 @@ class DarkMagicianGirlCard extends MonsterCard {
     this.hasInvoked = true;
   }
 
+  /**
+   * Take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

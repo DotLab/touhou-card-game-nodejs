@@ -17,14 +17,17 @@ export default class App extends React.Component {
       message: '',
       user: null,
     };
-
-    // this.login({loginName: 'aaaa', loginPassword: 'aaaa'});
   }
 
   error(err) {
     alert(JSON.stringify(err));
   }
 
+  /**
+   * Send a generic API request
+   * @param {String} event 
+   * @return {Promise}
+   */
   genericApi0(event) {
     return new Promise((resolve, reject) => {
       this.socket.emit(event, (res) => {
@@ -35,6 +38,12 @@ export default class App extends React.Component {
     });
   }
 
+  /**
+   * Send a generic API request
+   * @param {String} event 
+   * @param {Object} arg1
+   * @return {Promise}
+   */
   genericApi1(event, arg1) {
     return new Promise((resolve, reject) => {
       this.socket.emit(event, arg1, (res) => {

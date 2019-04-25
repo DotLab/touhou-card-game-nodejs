@@ -445,16 +445,6 @@ io.on('connection', function(socket) {
     done(success());
   });
 
-  // const game = new Game([
-  //   {id: 'abc', name: 'Kailang', deck: createDeck()},
-  //   {id: 'def', name: 'Alice', deck: createDeck()},
-  // ]);
-  // room = {id: 'aaa', game};
-  // socket.join(room.id);
-  // game.players[0].field.monsterSlots[0] = new (require('./gameplay/cards/KaibamanCard'))(); game.players[0].field.monsterSlots[0].summon('REVEALED', 'ATTACK');
-  // game.players[1].field.monsterSlots[0] = new (require('./gameplay/cards/KaibamanCard'))(); game.players[1].field.monsterSlots[0].summon('REVEALED', 'ATTACK');
-  // socket.emit('sv_game_update', game.takeSnapshot());
-
   socket.on('cl_game_action', async (action, done) => {
     debug('cl_game_action', action);
 
@@ -514,14 +504,11 @@ const cards = [
   './gameplay/cards/DarkMagicianCard',
   './gameplay/cards/DarkMagicianGirlCard',
   './gameplay/cards/FirestormMonarchCard',
-  // './gameplay/cards/FloodgateTrapHoleCard',
   './gameplay/cards/KaibamanCard',
   './gameplay/cards/MobiusTheFrostMonarchCard',
   './gameplay/cards/PotOfGreedCard',
   './gameplay/cards/RaizaTheStormMonarchCard',
   './gameplay/cards/SageStoneCard',
-  // './gameplay/cards/SpellbookOfEternityCard',
-  // './gameplay/cards/SpellbookOfSecretsCard',
   './gameplay/cards/ThousandKnivesCard',
   './gameplay/cards/ZaborgTheThunderMonarchCard',
   './gameplay/cards/SorcerousSpellWallCard',

@@ -4,7 +4,8 @@ const Game = require('../Game');
 const action = Card.createAction;
 
 /**
- * Environment Card
+ * EnvironmentCard
+ * @extends Card
  */
 class EnvironmentCard extends Card {
   /**
@@ -26,8 +27,8 @@ class EnvironmentCard extends Card {
   }
 
   /**
-   * take snapshot
-   * @return {Object} the snapshot of the game
+   * Take snapshot
+   * @return {Object}
    */
   takeSnapshot() {
     return {

@@ -1,10 +1,21 @@
 const SpellCard = require('./SpellCard');
 
+/**
+ * SpellbookOfSecretsCard
+ * @extends SpellCard
+ */
 class SpellbookOfSecretsCard extends SpellCard {
   constructor() {
     super(SpellbookOfSecretsCard.Name, SpellbookOfSecretsCard.Desc, SpellbookOfSecretsCard.ImgUrl);
   }
 
+  /**
+   * Check if can invoke
+   * @param {Game} game
+   * @param {Player} player
+   * @param {Array} invokeParams
+   * @return {Boolean}
+   */
   canInvoke(game, player, invokeParams) {
     const name = invokeParams[0];
     if (!name.includes('Spellbook')) return false; //  not a spellbook card
@@ -18,6 +29,12 @@ class SpellbookOfSecretsCard extends SpellCard {
     return true;
   }
 
+  /**
+   * Invoke card effects
+   * @param {Game} game
+   * @param {Player} player
+   * @param {Array} invokeParams
+   */
   invoke(game, player, invokeParams) {
     const name = invokeParams[0];
     const index = player.findCardInDeckByName(name);

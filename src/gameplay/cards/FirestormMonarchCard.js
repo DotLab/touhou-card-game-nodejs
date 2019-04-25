@@ -12,7 +12,11 @@ class FirestormMonarchCard extends MonsterCard {
     this.hasInvoked = false;
   }
 
-  canInvoke(game, player, invokeParams) {
+  /**
+   * Check if can invoke
+   * @return {Boolean}
+   */
+  canInvoke() {
     return !this.hasInvoked;
   }
 
@@ -36,6 +40,10 @@ class FirestormMonarchCard extends MonsterCard {
     this.hasInvoked = true;
   }
 
+  /**
+   * Take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

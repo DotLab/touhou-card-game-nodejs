@@ -3,6 +3,8 @@ const BlueEyesWhiteDragonCard = require('./BlueEyesWhiteDragonCard');
 const Card = require('./Card');
 const Game = require('../Game');
 
+/** @typedef {import('../Player')} Player */
+
 /**
  * Kaibaman Card
  * @extends MonsterCard
@@ -12,6 +14,12 @@ class KaibamanCard extends MonsterCard {
     super(KaibamanCard.Name, KaibamanCard.Desc, KaibamanCard.ImgUrl, 3, 200, 700);
   }
 
+  /**
+   * Check if can invoke
+   * @param {Game} game
+   * @param {Player} player
+   * @return {Boolean}
+   */
   canInvoke(game, player) {
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === BlueEyesWhiteDragonCard.Name) return true;
@@ -19,6 +27,11 @@ class KaibamanCard extends MonsterCard {
     return false;
   }
 
+  /**
+   * Invoke card effects
+   * @param {Game} game
+   * @param {Player} player
+   */
   invoke(game, player) {
     for (let i = 0; i < player.hand.length; i += 1) {
       if (player.hand[i].name === BlueEyesWhiteDragonCard.Name) {
@@ -36,6 +49,10 @@ class KaibamanCard extends MonsterCard {
     }
   }
 
+  /**
+   * Take snapshot
+   * @return {Object}
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

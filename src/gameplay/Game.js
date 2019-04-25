@@ -1,13 +1,22 @@
 const Player = require('./Player');
 
 /**
- * The Game
+ * Game
  */
 class Game {
+  /**
+   * Create game response
+   * @return {Object}
+   */
   static success() {
     return {success: true};
   }
 
+  /**
+   * Create game response
+   * @param {String} msg
+   * @return {Object}
+   */
   static error(msg) {
     return {error: true, msg};
   }
@@ -203,7 +212,7 @@ class Game {
   }
 
   /**
-   * attck
+   * Attack
    * @param {String} monsterId
    * @param {String} targetMonsterId
    * @return {Object}
@@ -264,6 +273,10 @@ class Game {
     return Game.success();
   }
 
+  /**
+   * Check if game end
+   * @return {boolean}
+   */
   checkGameEnd() {
     let aliveCount = 0;
     this.players.forEach((player) => {

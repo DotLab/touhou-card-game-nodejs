@@ -1,9 +1,10 @@
 const MonsterCard = require('./MonsterCard');
-
 const Game = require('../Game');
 
+/** @typedef {import('../Player')} Player */
+
 /**
- * ZaborgTheThunderMonarch Card
+ * ZaborgTheThunderMonarchCard
  * @extends MonsterCard
  */
 class ZaborgTheThunderMonarchCard extends MonsterCard {
@@ -12,6 +13,13 @@ class ZaborgTheThunderMonarchCard extends MonsterCard {
     this.activated = false;
   }
 
+  /**
+   * Check if can invoke
+   * @param {Game} game
+   * @param {Player} player
+   * @param {Array} invokeParams
+   * @return {Boolean}
+   */
   canInvoke(game, player, invokeParams) {
     return !this.activated;
   }
@@ -38,7 +46,7 @@ class ZaborgTheThunderMonarchCard extends MonsterCard {
 
   /**
    * take snapshot of the current card
-   * @return {Object} the snapshot of the game
+   * @return {Object} the snapshot of the card
    */
   takeSnapshot() {
     const shot = super.takeSnapshot();

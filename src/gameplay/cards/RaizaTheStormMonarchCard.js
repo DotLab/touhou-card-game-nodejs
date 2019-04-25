@@ -3,7 +3,7 @@ const MonsterCard = require('./MonsterCard');
 const Game = require('../Game');
 
 /**
- * RaizaTheStormMonarch Card
+ * RaizaTheStormMonarchCard
  * @extends MonsterCard
  */
 class RaizaTheStormMonarchCard extends MonsterCard {

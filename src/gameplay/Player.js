@@ -1,10 +1,10 @@
 const Field = require('./Field');
-const Card = require('./cards/Card');
 
 /** @typedef {import('./cards/MonsterCard')} MonsterCard */
+/** @typedef {import('./cards/Card')} Card */
 
 /**
- * Player class
+ * Player
  */
 class Player {
   /**
@@ -30,6 +30,10 @@ class Player {
     this.hasActivated = {};
   }
 
+  /**
+   * Check if can draw
+   * @return {Boolean}
+   */
   canDraw() {
     if (this.hasDrawn) return false;
     return true;
@@ -42,18 +46,6 @@ class Player {
     this.hasDrawn = true;
     this.hand.push(this.deck.pop());
   }
-
-  // shouldSuspend(game, actor, action, actionParams, phase) {
-  //   return this.field.canActivate(game, this, actor, action, actionParams, phase);
-  // }
-
-  // suspend() {
-  //   this.isSuspended = true;
-  // }
-
-  // resume() {
-  //   this.isSuspended = false;
-  // }
 
   /**
    * End turn
@@ -81,18 +73,26 @@ class Player {
 
   /**
    * @param {Number} index of card in Deck
-   * @return the card
+   * @return {Card}
    */
-
   removeCardFromDeck(index) {
     const card = this.deck.splice(index, 1);
     return card[0];
   }
 
+  /**
+   * Check if can be directly attacked
+   * @return {Boolean}
+   */
   canBeDirectlyAttacked() {
     return !this.field.hasMonster();
   }
 
+  /**
+   * Direct attack
+   * @param {MonsterCard} monster
+   * @param {Player} targetUser
+   */
   directAttack(monster, targetUser) {
     monster.attack();
     targetUser.receiveDamage(monster.atk);
@@ -104,22 +104,24 @@ class Player {
    * @param {MonsterCard} targetMonster
    */
   attack(monster, targetUser, targetMonster) {
-    if (targetMonster.pose === Card.ATTACK) {
-      if (monster.atk > targetMonster.atk) {
-        const damage = monster.atk - targetMonster.atk;
-        targetUser.field.killMonsterById(targetMonster.id);
-        targetUser.receiveDamage(damage);
-      } else if (monster.atk < targetMonster.atk) {
-        const damage = targetMonster.atk - monster.atk;
-        this.field.killMonsterById(monster.id);
-        this.receiveDamage(damage);
-      } else {
-        this.field.killMonsterById(monster.id);
-        targetUser.field.killMonsterById(targetMonster.id);
-      }
+    if (monster.atk > targetMonster.atk) {
+      const damage = monster.atk - targetMonster.atk;
+      targetUser.field.killMonsterById(targetMonster.id);
+      targetUser.receiveDamage(damage);
+    } else if (monster.atk < targetMonster.atk) {
+      const damage = targetMonster.atk - monster.atk;
+      this.field.killMonsterById(monster.id);
+      this.receiveDamage(damage);
+    } else {
+      this.field.killMonsterById(monster.id);
+      targetUser.field.killMonsterById(targetMonster.id);
     }
   }
 
+  /**
+   * Receive damage
+   * @param {Number} attack
+   */
   receiveDamage(attack) {
     this.life -= attack;
   }

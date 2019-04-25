@@ -127,7 +127,6 @@ class Game extends React.Component {
 
       for (let i = 0; i < players.length; i += 1) {
         players[i].i = i;
-        // if (players[i].userId === 'abc') {// user.id) {
         if (players[i].userId === this.app.state.user.id) {
           me = players[i];
         } else {
