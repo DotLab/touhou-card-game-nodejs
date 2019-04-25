@@ -13,13 +13,15 @@ const PotOfGreedCard = require('../../../src/gameplay/cards/PotOfGreedCard');
 const {assertGameSuccess, assertGameError} = require('../Game');
 
 describe('RaizaTheStormMonarchCard', ()=> {
+  // initialize a deck with one monster card, BlueEyesWhiteDragonCard, and the tested card, RaizaTheStormMonarchCard
   function buildDeck() {
     return [new BlueEyesWhiteDragonCard(), new RaizaTheStormMonarchCard()];
   }
 
   it('#activate (upon monster card)', () => {
+    // build the game, create two users, then assign cards to them.
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
-    // player 0 place one monster card
+    // player 0 place the  BlueEyesWhiteDragonCard monster card, set it to reveal, attack
     assertGameSuccess(game.summon(game.players[game.turn].hand[1].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
     assert.equal(game.players[0].field.monsterSlots[0].name, BlueEyesWhiteDragonCard.Name);
     assert.equal(game.players[0].field.monsterSlots[0].pose, Card.ATTACK);
@@ -47,9 +49,11 @@ describe('RaizaTheStormMonarchCard', ()=> {
   });
 
   it('#activate (upon spell card)', () => {
+    // initialize a deck with one spell card, PotOfGreedCard, and the tested card, RaizaTheStormMonarchCard
     function buildDeck2() {
       return [new PotOfGreedCard(), new RaizaTheStormMonarchCard()];
     }
+    // build the game, create two users, then assign cards to them.
     const game = new Game([{id: 'abc', deck: buildDeck2()}, {id: 'def', deck: buildDeck2()}]);
     // player 0 place one spell card
     assert.isTrue(game.players[0].hand[1].canInvoke());
@@ -76,6 +80,7 @@ describe('RaizaTheStormMonarchCard', ()=> {
   });
 
   it('#choose not to activate', ()=> {
+    // build the game, create two users, then assign cards to them.
     const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
     // player 0 place one monster card
     assertGameSuccess(game.summon(game.players[game.turn].hand[1].id, game.players[game.turn].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));

@@ -8,6 +8,12 @@ const action = Card.createAction;
  * @extends Card
  */
 class EnvironmentCard extends Card {
+  /**
+   * @constructor
+   * @param {string} name name of the environment card
+   * @param {string} desc description of the card
+   * @param {string} imgUrl imageUrl of the card
+   */
   constructor(name, desc, imgUrl) {
     super(name, desc, imgUrl);
   }

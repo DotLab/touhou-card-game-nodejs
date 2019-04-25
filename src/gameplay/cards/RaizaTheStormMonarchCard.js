@@ -20,28 +20,30 @@ class RaizaTheStormMonarchCard extends MonsterCard {
    * invoke power
    * @param {Game} game
    * @param {Player} player
-   * @param {Array<String>} invokeParams - an array of 3 numbers
+   * @param {Array<String>} invokeParams - an array of 1 numbers
    * cardId
    */
   invoke(game, player, invokeParams) {
     if (!invokeParams[0]) return;
 
+    // find the card
     const cardId = invokeParams[0];
+    // find the owner of that card
     const target = game.findCardOwnerById(cardId);
     const targetCard = target.field.findCardById(cardId);
+    // put that card to top of the deck
     target.deck.push(targetCard);
+    // remove the card from the field
     target.field.removeCardById(cardId);
 
-    // const target = game.players[invokeParams[0]];
-    // const type = invokeParams[1] === 0 ? 'monsterSlots' : 'spellSlots';
-    // const targetDeck = target.deck;
-    // const targetCard = target.field[type][invokeParams[2]];
-    // targetDeck.push(targetCard);
-    // target.field[type][invokeParams[2]] = null;
-
+    // monster's effect could only apply once
     this.activated = true;
   }
 
+  /**
+   * take snapshot of the current card
+   * @return {Object} the snapshot of the game
+   */
   takeSnapshot() {
     const shot = super.takeSnapshot();
     return {

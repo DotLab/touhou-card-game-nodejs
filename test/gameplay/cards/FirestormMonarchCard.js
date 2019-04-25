@@ -8,10 +8,12 @@ const DarkMagicianCard = require('../../../src/gameplay/cards/DarkMagicianCard')
 const {assertGameSuccess, assertGameError} = require('../Game');
 
 describe('FirestormMonarchCard', () => {
+  // initialize a deck with seven tested monster cards, FirestormMonarchCard
   function buildDeck1() {
     return [new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard(), new FirestormMonarchCard()];
   }
 
+  // initialize a deck with five monster cards DarkMagicianCard
   function buildDeck2() {
     return [new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard(), new DarkMagicianCard()];
   }

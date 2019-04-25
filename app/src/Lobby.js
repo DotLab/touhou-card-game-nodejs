@@ -138,7 +138,7 @@ export default class Lobby extends React.Component {
       return <div></div>;
     }
 
-    return <div className="container mt-2">
+    return <div id="lobby" className="container mt-2">
       <h2 className="h3">Lobby</h2>
       {!s.room ? <div>
         {s.lobby && <div><strong>{formatNumber(s.lobby.length)} user(s) in lobby:</strong> {s.lobby.map(({name}) => (<em key={name}>{name}, </em>))}</div>}
