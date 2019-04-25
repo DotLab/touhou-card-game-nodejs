@@ -35,4 +35,18 @@ describe('ThousandKnives', () => {
     assert.equal(game.players[1].field.graveyard.length, 1);
     game.takeSnapshot();
   });
+
+  it('#cannotActivate (no dark magician present)', ()=>{
+    const game = new Game([{id: 'abc', deck: buildDeck()}, {id: 'def', deck: buildDeck()}]);
+    // end of player[0]'s turn
+    assertGameSuccess(game.endTurn());
+    assert.equal(game.turn, 1);
+    // player[1] place cards on field
+    assertGameSuccess(game.summon(game.players[1].hand[0].id, game.players[1].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
+    assertGameSuccess(game.endTurn());
+    // end of player[1]'s turn, not it is player[0]'s turn
+    assert.equal(game.turn, 0);
+    // Thousand Knives cannot invoke!
+    assert.isFalse(game.players[0].hand[1].canInvoke(game, game.players[0], [game.players[1].field.monsterSlots[0].id]));
+  });
 });

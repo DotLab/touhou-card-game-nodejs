@@ -24,10 +24,9 @@ class SageStoneCard extends SpellCard {
    * @return {Boolean}
    */
   canInvoke(game, player, invokeParams) {
-    if (player.field.monsterSlots[invokeParams[0]] != null) return false;
     for (let i = 0; i < player.field.monsterSlots.length; i += 1) {
       if (player.field.monsterSlots[i] !== null && player.field.monsterSlots[i].name === DarkMagicianGirlCard.Name) {
-        if (player.field.monsterSlots[i].display = Card.REVEALED) {
+        if (player.field.monsterSlots[i].display == Card.REVEALED) {
           return true;
         }
       }

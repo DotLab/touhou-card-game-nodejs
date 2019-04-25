@@ -38,7 +38,8 @@ describe('KaibamanCard', () => {
   it('#cannotInvoke', () => {
     const game = new Game([{id: 'abc', deck: buildDeck2()}, {id: 'def', deck: buildDeck2()}]);
     assertGameSuccess(game.summon(game.players[0].hand[0].id, game.players[0].field.getMonsterSlotId(0), Card.REVEALED, Card.ATTACK));
-    assertGameError(game.invokeMonsterEffect(0, []));
+    // console.log(game.players[0]);
+    assertGameError(game.invokeMonsterEffect(game.players[0].field.monsterSlots[0].id, []));
     assertGameSuccess(game.endTurn());
     // end of player[0]'s turn, not it is player[1]'s turn
     assert.equal(game.turn, 1);

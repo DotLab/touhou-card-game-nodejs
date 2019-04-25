@@ -20,10 +20,6 @@ class ThousandKnivesCard extends SpellCard {
    * @return {Boolean}
    */
   canInvoke(game, player, invokeParams) {
-    const cardId = invokeParams[0];
-    const target = game.findCardOwnerById(cardId);
-
-    if (!target.field.findCardById(cardId)) return false;
     for (let i = 0; i < player.field.monsterSlots.length; i += 1) {
       if (player.field.monsterSlots[i] !== null && player.field.monsterSlots[i].name === DarkMagicianCard.Name) return true;
     }

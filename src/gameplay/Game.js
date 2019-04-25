@@ -78,7 +78,6 @@ class Game {
   invokeMonsterEffect(monsterId, invokeParams) {
     const player = this.players[this.turn];
     const monster = player.field.findMonsterById(monsterId);
-
     if (!monster) return Game.error('cannot find monster card on field');
     if (!monster.canInvoke(this, player, invokeParams)) return Game.error('cannot invoke monster effects');
     monster.invoke(this, player, invokeParams);
@@ -162,6 +161,11 @@ class Game {
     return Game.success();
   }
 
+  /**
+   * apply environment card to field, replace existing one
+   * @param {string} envId id of the environment card
+   * @return {{msg: String, error: boolean}|{success: boolean}}
+   */
   applyEnvironment(envId) {
     const player = this.players[this.turn];
     const env = player.findCardInHandById(envId);
